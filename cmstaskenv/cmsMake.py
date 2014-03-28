@@ -33,7 +33,7 @@ import shutil
 import tempfile
 import yaml
 
-from cms.grading import get_compilation_command
+from cms.grading import get_compilation_commands
 from cmstaskenv.Test import test_testcases, clean_test_env
 
 
@@ -178,7 +178,7 @@ def build_sols_list(base_dir, task_type, in_out_files, yaml_conf):
 
         srcs = []
         # The grader, when present, must be in the first position of
-        # srcs; see docstring of get_compilation_command().
+        # srcs; see docstring of get_compilation_commands().
         if task_type == ['Batch', 'Grad'] or \
                 task_type == ['Batch', 'GradComp']:
             srcs.append(os.path.join(SOL_DIRNAME,
@@ -193,11 +193,11 @@ def build_sols_list(base_dir, task_type, in_out_files, yaml_conf):
 
         def compile_src(srcs, exe, for_evaluation, lang, assume=None):
             if lang != 'pas' or len(srcs) == 1:
-                call(base_dir, get_compilation_command(
+                call(base_dir, get_compilation_commands(
                     lang,
                     srcs,
                     exe,
-                    for_evaluation=for_evaluation))
+                    for_evaluation=for_evaluation)[0])
 
             # When using Pascal with graders, file naming conventions
             # require us to do a bit of trickery, i.e., performing the
@@ -216,11 +216,11 @@ def build_sols_list(base_dir, task_type, in_out_files, yaml_conf):
                 if os.path.exists(os.path.join(SOL_DIRNAME, lib_filename)):
                     shutil.copyfile(os.path.join(SOL_DIRNAME, lib_filename),
                                     os.path.join(tempdir, lib_filename))
-                call(tempdir, get_compilation_command(
+                call(tempdir, get_compilation_commands(
                     lang,
                     new_srcs,
                     new_exe,
-                    for_evaluation=for_evaluation))
+                    for_evaluation=for_evaluation)[0])
                 shutil.copyfile(os.path.join(tempdir, new_exe),
                                 os.path.join(base_dir, exe))
                 shutil.copymode(os.path.join(tempdir, new_exe),
@@ -268,7 +268,7 @@ def build_checker_list(base_dir, task_type):
             lang = lang[1:]
 
             def compile_check(src, exe, assume=None):
-                call(base_dir, get_compilation_command(lang, [src], exe))
+                call(base_dir, get_compilation_commands(lang, [src], exe)[0])
 
             actions.append(([src], [exe],
                             functools.partial(compile_check, src, exe),
@@ -338,8 +338,8 @@ def build_gen_list(base_dir, task_type):
 
     def compile_src(src, exe, lang, assume=None):
         if lang in ['cpp', 'c', 'pas']:
-            call(base_dir, get_compilation_command(lang, [src], exe,
-                                                   for_evaluation=False))
+            call(base_dir, get_compilation_commands(lang, [src], exe,
+                                                    for_evaluation=False)[0])
         elif lang in ['py', 'sh']:
             os.symlink(os.path.basename(src), exe)
         else:
