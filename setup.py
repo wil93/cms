@@ -7,6 +7,7 @@
 # Copyright © 2010-2012 Matteo Boscariol <boscarim@hotmail.com>
 # Copyright © 2013 Luca Wehrstedt <luca.wehrstedt@gmail.com>
 # Copyright © 2014 Artem Iglikov <artem.iglikov@gmail.com>
+# Copyright © 2015 William Di Luigi <williamdiluigi@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -38,7 +39,7 @@ import pwd
 import grp
 
 from glob import glob
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 # Root directories for the /usr and /var trees.
@@ -50,132 +51,35 @@ def do_setup():
     """Execute the setup thanks to setuptools.
 
     """
-    old_umask = os.umask(0022)
-
-    package_data = {
-        "cms.io": [
-            os.path.join("static", "*"),
-        ],
-        "cms.server": [
-            os.path.join("static", "jq", "*.*"),
-            os.path.join("static", "sh", "*.*"),
-            os.path.join("static", "css", "*.*"),
-            os.path.join("static", "js", "*.*"),
-            os.path.join("static", "img", "*.*"),
-            os.path.join("static", "img", "mimetypes", "*.*"),
-            os.path.join("static", "*.*"),
-            os.path.join("templates", "contest", "*.*"),
-            os.path.join("templates", "admin", "*.*"),
-            os.path.join("templates", "ranking", "*.*"),
-        ],
-        "cms.service": [
-            os.path.join("templates", "printing", "*.*"),
-        ],
-        "cmsranking": [
-            os.path.join("static", "img", "*.*"),
-            os.path.join("static", "lib", "*.*"),
-            os.path.join("static", "*.*"),
-        ],
-        "cmstestsuite": [
-            os.path.join("code", "*.*"),
-            os.path.join("tasks", "batch_stdio", "data", "*.*"),
-            os.path.join("tasks", "batch_fileio", "data", "*.*"),
-            os.path.join("tasks", "batch_fileio_managed", "code", "*"),
-            os.path.join("tasks", "batch_fileio_managed", "data", "*.*"),
-            os.path.join("tasks", "communication", "code", "*"),
-            os.path.join("tasks", "communication", "data", "*.*"),
-        ],
-    }
-
-    # Apparently, pip installs package_data with the permissions they
-    # have on the source. We fix the source permissions here. (Though,
-    # pip works on a copy, so no changes happen.)
-    for package in package_data:
-        for path in package_data[package]:
-            for file_ in glob(os.path.join(package.replace(".", "/"), path)):
-                os.chmod(file_, 0644)
-
-    setup(name="cms",
-          version="1.3.0pre",
-          author="The CMS development team",
-          author_email="contestms@freelists.org",
-          url="https://github.com/cms-dev/cms",
-          download_url="https://github.com/cms-dev/cms/archive/master.tar.gz",
-          description="A contest management system and grader "
-                      "for IOI-like programming competitions",
-          packages=["cms",
-                    "cms.db",
-                    "cms.server",
-                    "cms.service",
-                    "cms.io",
-                    "cms.grading",
-                    "cms.grading.scoretypes",
-                    "cms.grading.tasktypes",
-                    "cmscommon",
-                    "cmsranking",
-                    "cmscontrib",
-                    "cmscontrib.updaters",
-                    "cmstaskenv",
-                    "cmstestsuite",
-                    "cmstestsuite.web",
-                    "cmstestsuite.tasks",
-                    "cmstestsuite.tasks.batch_stdio",
-                    "cmstestsuite.tasks.batch_fileio",
-                    "cmstestsuite.tasks.batch_fileio_managed",
-                    "cmstestsuite.tasks.communication",
-                    "cmscompat"],
-          package_data=package_data,
-          scripts=["scripts/cmsLogService",
-                   "scripts/cmsScoringService",
-                   "scripts/cmsEvaluationService",
-                   "scripts/cmsWorker",
-                   "scripts/cmsResourceService",
-                   "scripts/cmsChecker",
-                   "scripts/cmsContestWebServer",
-                   "scripts/cmsAdminWebServer",
-                   "scripts/cmsProxyService",
-                   "scripts/cmsPrintingService",
-
-                   "scripts/cmsRankingWebServer",
-
-                   "scripts/cmsInitDB",
-                   "scripts/cmsDropDB"],
-          entry_points={
-              "console_scripts": [
-                  "cmsRunTests=cmstestsuite.RunTests:main",
-                  "cmsReplayContest=cmstestsuite.ReplayContest:main",
-                  "cmsAdaptContest=cmstestsuite.AdaptContest:main",
-                  "cmsTestFileCacher=cmstestsuite.TestFileCacher:main",
-
-                  "cmsAddUser=cmscontrib.AddUser:main",
-                  "cmsRemoveUser=cmscontrib.RemoveUser:main",
-                  "cmsRemoveTask=cmscontrib.RemoveTask:main",
-                  "cmsComputeComplexity=cmscontrib.ComputeComplexity:main",
-                  "cmsImporter=cmscontrib.Importer:main",
-                  "cmsReimporter=cmscontrib.Reimporter:main",
-                  "cmsSpoolExporter=cmscontrib.SpoolExporter:main",
-                  "cmsContestExporter=cmscontrib.ContestExporter:main",
-                  "cmsContestImporter=cmscontrib.ContestImporter:main",
-                  "cmsDumpUpdater=cmscontrib.DumpUpdater:main",
-                  "cmsRWSHelper=cmscontrib.RWSHelper:main",
-
-                  "cmsMake=cmstaskenv.cmsMake:main",
-
-                  "cmsYamlImporter=cmscompat.YamlImporter:main",
-                  "cmsYamlReimporter=cmscompat.YamlReimporter:main",
-              ]
-          },
-          keywords="ioi programming contest grader management system",
-          license="Affero General Public License v3",
-          classifiers=[
-              "Development Status :: 3 - Alpha",
-              "Natural Language :: English",
-              "Operating System :: POSIX :: Linux",
-              "Programming Language :: Python :: 2",
-              "License :: OSI Approved :: "
-              "GNU Affero General Public License v3",
-          ])
-    os.umask(old_umask)
+    setup(
+        name="cms",
+        version="1.3.0pre",
+        author="The CMS development team",
+        author_email="contestms@freelists.org",
+        url="http://cms-dev.github.io/",
+        download_url="https://github.com/cms-dev/cms/archive/master.tar.gz",
+        description="A contest management system and grader for "
+                    "IOI-like programming competitions",
+        packages=find_packages(),
+        package_data={
+            "server": ["*.css", "*.csv", "*.gif", "*.html", "*.ico",
+                       "*.js", "*.png", "*.po", "*.pot", "*.txt"],
+            "service": ["*.tex"],
+        },
+        entry_points="""
+            [console_scripts]
+            cms=cms.cli:cli
+        """,
+        keywords="ioi competive programming contest grader management "
+                 "system",
+        license="Affero General Public License v3",
+        classifiers=[
+            "Development Status :: 5 - Production/Stable",
+            "Natural Language :: English",
+            "Operating System :: POSIX :: Linux",
+            "Programming Language :: Python :: 2",
+            "License :: OSI Approved :: GNU Affero General Public License v3",
+        ])
 
 
 def copyfile(src, dest, owner, perm, group=None):
