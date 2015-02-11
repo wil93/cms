@@ -127,12 +127,11 @@ class Config(object):
             sys.argv[0] != '/usr/bin/python'
 
         if self.installed:
-            self.log_dir = os.path.join("/", "var", "local", "log", "cms")
-            self.cache_dir = os.path.join("/", "var", "local", "cache", "cms")
-            self.data_dir = os.path.join("/", "var", "local", "lib", "cms")
-            self.run_dir = os.path.join("/", "var", "local", "run", "cms")
-            paths = [os.path.join("/", "usr", "local", "etc", "cms.conf"),
-                     os.path.join("/", "etc", "cms.conf")]
+            self.log_dir = os.path.join("/", "var", "log", "cms")
+            self.cache_dir = os.path.join("/", "var", "cache", "cms")
+            self.data_dir = os.path.join("/", "var", "lib", "cms")
+            self.run_dir = os.path.join("/", "var", "run", "cms")
+            paths = [os.path.join("/", "etc", "cms.conf")]
         else:
             self.log_dir = "log"
             self.cache_dir = "cache"
@@ -143,8 +142,7 @@ class Config(object):
                 paths += [os.path.abspath(os.path.join(
                           os.path.dirname(__file__),
                           '..', 'config', 'cms.conf'))]
-            paths += [os.path.join("/", "usr", "local", "etc", "cms.conf"),
-                      os.path.join("/", "etc", "cms.conf")]
+            paths += [os.path.join("/", "etc", "cms.conf")]
 
         # Allow user to override config file path using environment
         # variable 'CMS_CONFIG'.

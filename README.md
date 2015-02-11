@@ -57,8 +57,8 @@ proposals and critics, get opinions and reviews, etc.) is
 [github](https://github.com/cms-dev/cms/issues) instead.**
 
 To help with the troubleshooting, you can collect the complete log
-files that are placed in /var/local/log/cms/ (if CMS was running
-installed) or in ./log (if it was running from the local copy).
+files that are placed in /var/log/cms/ (if CMS was running installed) or
+in ./log (if it was running from the local copy).
 
 
 Testimonials

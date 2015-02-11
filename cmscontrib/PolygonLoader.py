@@ -330,7 +330,7 @@ class PolygonLoader(Loader):
             if os.path.exists(checker_src):
                 logger.info("Checker found, compiling")
                 checker_exe = os.path.join(task_path, "files", "checker")
-                testlib_path = "/usr/local/include/cms/testlib.h"
+                testlib_path = "/usr/include/cms/testlib.h"
                 if not config.installed:
                     testlib_path = os.path.join(os.path.dirname(__file__),
                                                 "polygon", "testlib.h")

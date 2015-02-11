@@ -440,7 +440,7 @@ class ContestWebServer(WebService):
         # Retrieve the available translations.
         if config.installed:
             self.localization_dir = os.path.join(
-                "/", "usr", "local", "share", "locale")
+                "/", "usr", "share", "locale")
         else:
             self.localization_dir = os.path.join(
                 os.path.dirname(__file__), "mo")

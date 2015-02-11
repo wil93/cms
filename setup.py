@@ -42,8 +42,10 @@ from setuptools import setup
 
 
 # Root directories for the /usr and /var trees.
-USR_ROOT = os.path.join("/", "usr", "local")
-VAR_ROOT = os.path.join("/", "var", "local")
+ROOT = "MAKEPKG_INSTALL_ROOT"
+USR_ROOT = os.path.join(ROOT, "usr")
+VAR_ROOT = os.path.join(ROOT, "var")
+ETC_ROOT = os.path.join(ROOT, "etc")
 
 
 def do_setup():
@@ -279,16 +281,16 @@ def install():
     root = pwd.getpwnam("root")
     cmsuser_grp = grp.getgrnam("cmsuser")
 
-    print("copying isolate to /usr/local/bin/.")
+    print("copying isolate to /usr/bin/.")
     makedir(os.path.join(USR_ROOT, "bin"), root, 0755)
     copyfile(os.path.join(".", "isolate", "isolate"),
              os.path.join(USR_ROOT, "bin", "isolate"),
              root, 04750, group=cmsuser_grp)
 
-    print("copying configuration to /usr/local/etc/.")
-    makedir(os.path.join(USR_ROOT, "etc"), root, 0755)
+    print("copying configuration to /etc/.")
+    makedir(ETC_ROOT, root, 0755)
     for conf_file_name in ["cms.conf", "cms.ranking.conf"]:
-        conf_file = os.path.join(USR_ROOT, "etc", conf_file_name)
+        conf_file = os.path.join(ETC_ROOT, conf_file_name)
         # Skip if destination is a symlink
         if os.path.islink(conf_file):
             continue
@@ -316,7 +318,7 @@ def install():
     dirs = [os.path.join(VAR_ROOT, "log"),
             os.path.join(VAR_ROOT, "cache"),
             os.path.join(VAR_ROOT, "lib"),
-            os.path.join(VAR_ROOT, "run"),
+            os.path.join(ROOT, "run"),  # On Archlinux /var/run is a symlink to /run
             os.path.join(USR_ROOT, "include"),
             os.path.join(USR_ROOT, "share")]
     for _dir in dirs:

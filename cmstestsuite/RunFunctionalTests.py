@@ -421,7 +421,7 @@ def main():
     CONFIG["TEST_DIR"] = git_root
     CONFIG["CONFIG_PATH"] = "%s/config/cms.conf" % CONFIG["TEST_DIR"]
     if CONFIG["TEST_DIR"] is None:
-        CONFIG["CONFIG_PATH"] = "/usr/local/etc/cms.conf"
+        CONFIG["CONFIG_PATH"] = "/etc/cms.conf"
     cms_config = get_cms_config()
 
     if not config_is_usable(cms_config):

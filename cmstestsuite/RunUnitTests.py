@@ -185,7 +185,7 @@ def main():
     CONFIG["TEST_DIR"] = git_root
     CONFIG["CONFIG_PATH"] = "%s/config/cms.conf" % CONFIG["TEST_DIR"]
     if CONFIG["TEST_DIR"] is None:
-        CONFIG["CONFIG_PATH"] = "/usr/local/etc/cms.conf"
+        CONFIG["CONFIG_PATH"] = "/etc/cms.conf"
 
     if CONFIG["TEST_DIR"] is not None:
         # Set up our expected environment.

@@ -65,8 +65,8 @@ Setting the ``backdoor`` configuration key to true causes services to
 serve a Python console (accessible with netcat), running in the same
 interpreter instance as the service, allowing to inspect and modify its
 data, live. It will be bound to a local UNIX domain socket, usually at
-:file:`/var/local/run/cms/{service}_{shard}`. Access is granted only to
-users belonging to the cmsuser group.
+:file:`/var/run/cms/{service}_{shard}`. Access is granted only to users
+belonging to the cmsuser group.
 Although there's no authentication mechanism to prevent unauthorized
 access, the restrictions on the file should make it safe to run the
 backdoor everywhere, even on workers that are used as contestants'
@@ -76,7 +76,7 @@ following is a complete working connection command:
 
 .. sourcecode:: bash
 
-    rlwrap netcat -U /var/local/run/cms/EvaluationService_0
+    rlwrap netcat -U /var/run/cms/EvaluationService_0
 
 Substitute ``netcat`` with your implementation (``nc``, ``ncat``, etc.)
 if needed.
