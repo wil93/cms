@@ -1,0 +1,2 @@
+recursive-include cms/server *.css *.csv *.gif *.html *.ico *.js *.png *.po *.pot *.txt
+recursive-include cms/service *.tex

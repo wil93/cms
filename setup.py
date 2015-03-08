@@ -61,11 +61,7 @@ def do_setup():
         description="A contest management system and grader for "
                     "IOI-like programming competitions",
         packages=find_packages(),
-        package_data={
-            "server": ["*.css", "*.csv", "*.gif", "*.html", "*.ico",
-                       "*.js", "*.png", "*.po", "*.pot", "*.txt"],
-            "service": ["*.tex"],
-        },
+        include_package_data=True,
         entry_points="""
             [console_scripts]
             cms=cms.cli:cli
