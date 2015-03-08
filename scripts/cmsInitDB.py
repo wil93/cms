@@ -1,8 +1,7 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 # Contest Management System - http://cms-dev.github.io/
-# Copyright © 2013 Luca Wehrstedt <luca.wehrstedt@gmail.com>
+# Copyright © 2013-2014 Luca Wehrstedt <luca.wehrstedt@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -17,6 +16,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Script to initialize the database schema used by CMS.
+
+It will not check the current status of the DB and we therefore suggest
+to run it only on an blank DB (we don't guarantee this script to be
+idempotent).
+
+"""
+
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -26,10 +33,32 @@ from __future__ import unicode_literals
 import gevent.monkey
 gevent.monkey.patch_all()
 
+import argparse
+import logging
 import sys
 
-from cmsranking.RankingWebServer import main
+from cms import ConfigError
+from cms.db import test_db_connection, init_db
 
 
-if __name__ == "__main__":
-    sys.exit(0 if main() is True else 1)
+logger = logging.getLogger(__name__)
+
+
+def main():
+    """Parse arguments and perform operation.
+
+    """
+    test_db_connection()
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    args = parser.parse_args()
+
+    return init_db()
+
+
+def cli():
+    try:
+        sys.exit(0 if main() is True else 1)
+    except ConfigError as error:
+        logger.critical(error.message)
+        sys.exit(1)

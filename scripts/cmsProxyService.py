@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 # Contest Management System - http://cms-dev.github.io/
@@ -47,7 +46,7 @@ def main():
                                    ask_contest=ask_for_contest).run()
 
 
-if __name__ == "__main__":
+def cli():
     try:
         sys.exit(0 if main() is True else 1)
     except ConfigError as error:

@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 # Contest Management System - http://cms-dev.github.io/
@@ -30,8 +29,8 @@ import logging
 import sys
 
 from cms import ConfigError, default_argument_parser
-from cms.db import test_db_connection
-from cms.server.AdminWebServer import AdminWebServer
+from cms.db import ask_for_contest, test_db_connection
+from cms.server.ContestWebServer import ContestWebServer
 
 
 logger = logging.getLogger(__name__)
@@ -42,11 +41,12 @@ def main():
 
     """
     test_db_connection()
-    return default_argument_parser("Admins' web server for CMS.",
-                                   AdminWebServer).run()
+    return default_argument_parser("Contestants' web server for CMS.",
+                                   ContestWebServer,
+                                   ask_contest=ask_for_contest).run()
 
 
-if __name__ == "__main__":
+def cli():
     try:
         sys.exit(0 if main() is True else 1)
     except ConfigError as error:

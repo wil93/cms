@@ -69,6 +69,19 @@ def do_setup():
         entry_points="""
             [console_scripts]
             cms=cms.cli:cli
+            cmsLogService=scripts.cmsLogService:cli
+            cmsScoringService=scripts.cmsScoringService:cli
+            cmsEvaluationService=scripts.cmsEvaluationService:cli
+            cmsWorker=scripts.cmsWorker:cli
+            cmsResourceService=scripts.cmsResourceService:cli
+            cmsChecker=scripts.cmsChecker:cli
+            cmsContestWebServer=scripts.cmsContestWebServer:cli
+            cmsAdminWebServer=scripts.cmsAdminWebServer:cli
+            cmsProxyService=scripts.cmsProxyService:cli
+            cmsPrintingService=scripts.cmsPrintingService:cli
+            cmsRankingWebServer=scripts.cmsRankingWebServer:cli
+            cmsInitDB=scripts.cmsInitDB:cli
+            cmsDropDB=scripts.cmsDropDB:cli
         """,
         keywords="ioi competive programming contest grader management "
                  "system",

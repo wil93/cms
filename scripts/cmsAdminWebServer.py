@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 # Contest Management System - http://cms-dev.github.io/
@@ -30,7 +29,8 @@ import logging
 import sys
 
 from cms import ConfigError, default_argument_parser
-from cms.service.Checker import Checker
+from cms.db import test_db_connection
+from cms.server.AdminWebServer import AdminWebServer
 
 
 logger = logging.getLogger(__name__)
@@ -40,11 +40,12 @@ def main():
     """Parse arguments and launch service.
 
     """
-    return default_argument_parser(
-        "Checker for aliveness of other CMS service.", Checker).run()
+    test_db_connection()
+    return default_argument_parser("Admins' web server for CMS.",
+                                   AdminWebServer).run()
 
 
-if __name__ == "__main__":
+def cli():
     try:
         sys.exit(0 if main() is True else 1)
     except ConfigError as error:

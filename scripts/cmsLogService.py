@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 # Contest Management System - http://cms-dev.github.io/
@@ -30,8 +29,7 @@ import logging
 import sys
 
 from cms import ConfigError, default_argument_parser
-from cms.db import test_db_connection
-from cms.service.ScoringService import ScoringService
+from cms.service.LogService import LogService
 
 
 logger = logging.getLogger(__name__)
@@ -41,12 +39,10 @@ def main():
     """Parse arguments and launch service.
 
     """
-    test_db_connection()
-    return default_argument_parser("Score computer for CMS.",
-                                   ScoringService).run()
+    return default_argument_parser("Logger for CMS.", LogService).run()
 
 
-if __name__ == "__main__":
+def cli():
     try:
         sys.exit(0 if main() is True else 1)
     except ConfigError as error:

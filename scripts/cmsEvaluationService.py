@@ -1,8 +1,7 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 # Contest Management System - http://cms-dev.github.io/
-# Copyright © 2014 Fabian Gundlach <320pointsguy@gmail.com>
+# Copyright © 2013 Luca Wehrstedt <luca.wehrstedt@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -30,8 +29,8 @@ import logging
 import sys
 
 from cms import ConfigError, default_argument_parser
-from cms.db import test_db_connection
-from cms.service.PrintingService import PrintingService
+from cms.db import ask_for_contest, test_db_connection
+from cms.service.EvaluationService import EvaluationService
 
 
 logger = logging.getLogger(__name__)
@@ -42,11 +41,13 @@ def main():
 
     """
     test_db_connection()
-    return default_argument_parser("Printing job handler for CMS.",
-                                   PrintingService).run()
+    return default_argument_parser(
+        "Submission's compiler and evaluator for CMS.",
+        EvaluationService,
+        ask_contest=ask_for_contest).run()
 
 
-if __name__ == "__main__":
+def cli():
     try:
         sys.exit(0 if main() is True else 1)
     except ConfigError as error:

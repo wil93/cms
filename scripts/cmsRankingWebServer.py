@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 # Contest Management System - http://cms-dev.github.io/
@@ -26,26 +25,10 @@ from __future__ import unicode_literals
 import gevent.monkey
 gevent.monkey.patch_all()
 
-import logging
 import sys
 
-from cms import ConfigError, default_argument_parser
-from cms.service.LogService import LogService
+from cmsranking.RankingWebServer import main
 
 
-logger = logging.getLogger(__name__)
-
-
-def main():
-    """Parse arguments and launch service.
-
-    """
-    return default_argument_parser("Logger for CMS.", LogService).run()
-
-
-if __name__ == "__main__":
-    try:
-        sys.exit(0 if main() is True else 1)
-    except ConfigError as error:
-        logger.critical(error.message)
-        sys.exit(1)
+def cli():
+    sys.exit(0 if main() is True else 1)
