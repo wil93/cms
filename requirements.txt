@@ -1,0 +1,6 @@
+sqlalchemy>=0.7
+pycrypto>=2.3
+pyyaml>=3.10
+psutil>=0.6
+six>=1.1
+gevent>=1.0

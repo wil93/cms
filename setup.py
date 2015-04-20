@@ -273,10 +273,10 @@ def install():
     old_umask = os.umask(0000)
 
     print("creating user and group cmsuser.")
-    os.system("useradd cmsuser -c 'CMS default user' -M -r -s /bin/false -U")
-    cmsuser = pwd.getpwnam("cmsuser")
+#    os.system("useradd cmsuser -c 'CMS default user' -M -r -s /bin/false -U")
+    cmsuser = pwd.getpwnam("travis")
     root = pwd.getpwnam("root")
-    cmsuser_grp = grp.getgrnam("cmsuser")
+    cmsuser_grp = grp.getgrnam("travis")
 
     print("copying isolate to /usr/local/bin/.")
     makedir(os.path.join(USR_ROOT, "bin"), root, 0755)
