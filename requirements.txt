@@ -11,7 +11,7 @@ requests==2.7
 gevent==1.0.2
 werkzeug==0.10.4
 patool==1.7
-eve==0.5.3
+-e git://github.com/nicolaiarocci/eve.git#egg=eve
 eve-sqlalchemy==0.3.2
 
 # Only for some importers:
