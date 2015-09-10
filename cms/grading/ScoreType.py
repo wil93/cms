@@ -161,7 +161,7 @@ class ScoreTypeGroup(ScoreTypeAlone):
 {% from cms.server import format_size %}
 {% for st in details %}
     {% if "score" in st and "max_score" in st %}
-        {% if st["score"] >= st["max_score"] %}
+        {% if st["score"] >= st["max_score"] and st["actual_score"] >= st["actual_max_score"] %}
 <div class="subtask correct">
         {% elif st["score"] <= 0.0 %}
 <div class="subtask notcorrect">
@@ -275,6 +275,8 @@ class ScoreTypeGroup(ScoreTypeAlone):
 
         for st_idx, parameter in enumerate(self.parameters):
             tc_end = tc_start + parameter[1]
+            st_actual_score = sum([float(evaluations[idx].outcome)
+                                   for idx in indices[tc_start:tc_end]])
             st_score = self.reduce([float(evaluations[idx].outcome)
                                     for idx in indices[tc_start:tc_end]],
                                    parameter) * parameter[0]
@@ -303,7 +305,9 @@ class ScoreTypeGroup(ScoreTypeAlone):
             subtasks.append({
                 "idx": st_idx + 1,
                 "score": st_score,
+                "actual_score": st_actual_score,
                 "max_score": parameter[0],
+                "actual_max_score": parameter[1],
                 "testcases": testcases,
                 })
             if st_public:
