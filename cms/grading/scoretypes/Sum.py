@@ -107,7 +107,7 @@ class Sum(ScoreTypeAlone):
         """See ScoreType.compute_score."""
         # Actually, this means it didn't even compile!
         if not submission_result.evaluated():
-            return 0.0, "[]", 0.0, "[]", json.dumps([])
+            return 0.0, 0.0, "[]", 0.0, 0.0, "[]", json.dumps([])
 
         # XXX Lexicographical order by codename
         indices = sorted(self.public_testcases.keys())
@@ -135,8 +135,14 @@ class Sum(ScoreTypeAlone):
             else:
                 public_testcases.append({"idx": idx})
 
-        return score, json.dumps(testcases), \
-            public_score, json.dumps(public_testcases), \
+        # Compute penalty. Currently equal to: the number of seconds elapsed
+        # since the start of the contest.
+        s = submission_result.submission
+        penalty = (s.timestamp - s.participation.contest.start).total_seconds()
+        public_penalty = penalty
+
+        return score, penalty, json.dumps(testcases), \
+            public_score, public_penalty, json.dumps(public_testcases), \
             json.dumps([])
 
     def get_public_outcome(self, outcome):

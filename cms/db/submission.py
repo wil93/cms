@@ -8,6 +8,7 @@
 # Copyright © 2012-2015 Luca Wehrstedt <luca.wehrstedt@gmail.com>
 # Copyright © 2013 Bernard Blackham <bernard@largestprime.net>
 # Copyright © 2014 Fabian Gundlach <320pointsguy@gmail.com>
+# Copyright © 2015 William Di Luigi <williamdiluigi@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -342,6 +343,11 @@ class SubmissionResult(Base):
         Float,
         nullable=True)
 
+    # Penalty as computed by ScoringService. Null means not yet scored.
+    penalty = Column(
+        Float,
+        nullable=True)
+
     # Score details. It's a JSON-encoded string containing information
     # that is given to ScoreType.get_html_details to generate an HTML
     # snippet that is shown on AWS and, if the user used a token, on
@@ -354,6 +360,9 @@ class SubmissionResult(Base):
     # The same as the last two fields, but from the point of view of
     # the user (when he/she did not play a token).
     public_score = Column(
+        Float,
+        nullable=True)
+    public_penalty = Column(
         Float,
         nullable=True)
     public_score_details = Column(

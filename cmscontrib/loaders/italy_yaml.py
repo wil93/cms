@@ -536,12 +536,14 @@ class YamlLoader(ContestLoader, TaskLoader, UserLoader):
         else:
             evaluation_param = "diff"
 
+        # Total number of testcases
+        testcases = 0
+
         # Detect subtasks by checking GEN
         gen_filename = os.path.join(self.path, 'gen', 'GEN')
         try:
             with io.open(gen_filename, "rt", encoding="utf-8") as gen_file:
                 subtasks = []
-                testcases = 0
                 points = None
                 for line in gen_file:
                     line = line.strip()
@@ -588,42 +590,41 @@ class YamlLoader(ContestLoader, TaskLoader, UserLoader):
                 # Close last subtask (if no subtasks were defined, just
                 # fallback to Sum)
                 if points is None:
-                    args["score_type"] = "Sum"
                     total_value = float(conf.get("total_value", 100.0))
                     input_value = 0.0
-                    n_input = testcases
-                    if n_input != 0:
-                        input_value = total_value / n_input
+                    if testcases != 0:
+                        input_value = total_value / testcases
+                    args["score_type"] = "Sum"
                     args["score_type_parameters"] = "%s" % input_value
                 else:
                     subtasks.append([points, testcases])
                     assert(100 == sum([int(st[0]) for st in subtasks]))
-                    n_input = sum([int(st[1]) for st in subtasks])
+                    testcases = sum([int(st[1]) for st in subtasks])
                     args["score_type"] = "GroupMin"
                     args["score_type_parameters"] = "%s" % subtasks
 
                 if "n_input" in conf:
-                    assert int(conf['n_input']) == n_input
+                    assert int(conf["n_input"]) == testcases
 
         # If gen/GEN doesn't exist, just fallback to Sum
         except IOError:
-            args["score_type"] = "Sum"
             total_value = float(conf.get("total_value", 100.0))
             input_value = 0.0
-            n_input = int(conf['n_input'])
-            if n_input != 0:
-                input_value = total_value / n_input
+            testcases = int(conf["n_input"])
+            if testcases != 0:
+                input_value = total_value / testcases
+            args["score_type"] = "Sum"
             args["score_type_parameters"] = "%s" % input_value
 
         # If output_only is set, then the task type is OutputOnly
-        if conf.get('output_only', False):
+        if conf.get("output_only", False):
             args["task_type"] = "OutputOnly"
             args["time_limit"] = None
             args["memory_limit"] = None
             args["task_type_parameters"] = '["%s"]' % evaluation_param
             task.submission_format = [
                 SubmissionFormatElement("output_%03d.txt" % i)
-                for i in xrange(n_input)]
+                for i in xrange(testcases)]
 
         # If there is check/manager (or equivalent), then the task
         # type is Communication
@@ -671,8 +672,14 @@ class YamlLoader(ContestLoader, TaskLoader, UserLoader):
                     (compilation_param, infile_param, outfile_param,
                      evaluation_param)
 
+            # If the icpc_style boolean parameter is set to True, there is only one
+            # subtask worth a total of 1 point. Set this manually.
+            if conf.get("icpc_style", False):
+                args["score_type"] = "ICPC"
+                args["score_type_parameters"] = "[[1, %d]]" % testcases
+
         args["testcases"] = []
-        for i in xrange(n_input):
+        for i in xrange(testcases):
             input_digest = self.file_cacher.put_file_from_path(
                 os.path.join(self.path, "input", "input%d.txt" % i),
                 "Input %d for task %s" % (i, name))

@@ -57,30 +57,42 @@
     {% raw col1 %}
     <td class="status">
         {{ _("Evaluated") }}
+        {% if type(score_type) != ICPC %}
         <a class="details">{{ _("details") }}</a>
+        {% end %}
     </td>
 
-    {% if score_type is not None and score_type.max_public_score != 0 %}
-    <td class="public_score {{ get_score_class(sr.public_score, score_type.max_public_score) }}">
-            {{ "%g" % round(sr.public_score, task.score_precision) }} / {{ "%g" % round(score_type.max_public_score, task.score_precision) }}
-    </td>
-    {% end %}
-
-    {% if score_type is not None and score_type.max_public_score != score_type.max_score %}
-        {% if s.token is not None %}
-            {% if score_type.max_score != 0 %}
-    <td class="total_score {{ get_score_class(sr.score, score_type.max_score) }}">
-        {{ "%g" % round(sr.score, task.score_precision) }} / {{ "%g" % round(score_type.max_score, task.score_precision) }}
-    </td>
+    {% if type(score_type) == ICPC %}
+        <td class="total_score {{ get_score_class(sr.score, score_type.max_score) }}">
+            {% if sr.score > 0.5 %}
+                {{ _("AC") }}
             {% else %}
-    <td class="total_score">
-        {{ "%g" % round(sr.score, task.score_precision) }}
-    </td>
+                {{ _("WA / TLE / ...") }}
             {% end %}
-        {% else %}
-    <td class="total_score undefined">
-        {{ _("N/A") }}
-    </td>
+        </td>
+    {% else %}
+        {% if score_type is not None and score_type.max_public_score != 0 %}
+        <td class="public_score {{ get_score_class(sr.public_score, score_type.max_public_score) }}">
+            {{ "%g" % round(sr.public_score, task.score_precision) }} / {{ "%g" % round(score_type.max_public_score, task.score_precision) }}
+        </td>
+        {% end %}
+
+        {% if score_type is not None and score_type.max_public_score != score_type.max_score %}
+            {% if s.token is not None %}
+                {% if score_type.max_score != 0 %}
+        <td class="total_score {{ get_score_class(sr.score, score_type.max_score) }}">
+            {{ "%g" % round(sr.score, task.score_precision) }} / {{ "%g" % round(score_type.max_score, task.score_precision) }}
+        </td>
+                {% else %}
+        <td class="total_score">
+            {{ "%g" % round(sr.score, task.score_precision) }}
+        </td>
+                {% end %}
+            {% else %}
+        <td class="total_score undefined">
+            {{ _("N/A") }}
+        </td>
+            {% end %}
         {% end %}
     {% end %}
 {% end %}
@@ -126,7 +138,7 @@
         {% end %}
     </td>
 {% end %}
-{% if tokens_contest != 0 and tokens_tasks != 0 %}
+{% if type(score_type) != ICPC and tokens_contest != 0 and tokens_tasks != 0 %}
     <td class="token">
         {% if s.token is not None %}
         <a class="btn disabled">{{ _("Played") }}</a>

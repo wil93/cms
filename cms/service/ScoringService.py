@@ -21,7 +21,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""A service that assigns a score to submission results.
+"""A service that assigns a score and a penalty to submission results.
 
 """
 
@@ -112,8 +112,10 @@ class ScoringExecutor(Executor):
 
             # Compute score and fill it in the database.
             submission_result.score, \
+                submission_result.penalty, \
                 submission_result.score_details, \
                 submission_result.public_score, \
+                submission_result.public_penalty, \
                 submission_result.public_score_details, \
                 submission_result.ranking_score_details = \
                 score_type.compute_score(submission_result)

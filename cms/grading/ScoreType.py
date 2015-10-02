@@ -6,6 +6,7 @@
 # Copyright © 2010-2013 Stefano Maggiolo <s.maggiolo@gmail.com>
 # Copyright © 2010-2012 Matteo Boscariol <boscarim@hotmail.com>
 # Copyright © 2013-2015 Luca Wehrstedt <luca.wehrstedt@gmail.com>
+# Copyright © 2015 William Di Luigi <williamdiluigi@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -116,11 +117,11 @@ class ScoreType(object):
         unused_submission_result (SubmissionResult): the submission
             result of which we want the score
 
-        returns (float, str, float, str, [str]): respectively: the
-            score, the HTML string with additional information (e.g.
-            testcases' and subtasks' score), and the same information
-            from the point of view of a user that did not play a
-            token, the list of strings to send to RWS.
+        returns (float, float, str, float, float, str, [str]): respectively, the
+            score, the penalty, the HTML string with additional information
+            (e.g. testcases' and subtasks' score), and the same information from
+            the point of view of a user that did not play a token, the list of
+            strings to send to RWS.
 
         """
         logger.error("Unimplemented method compute_score.")
@@ -260,7 +261,7 @@ class ScoreTypeGroup(ScoreTypeAlone):
         """See ScoreType.compute_score."""
         # Actually, this means it didn't even compile!
         if not submission_result.evaluated():
-            return 0.0, "[]", 0.0, "[]", \
+            return 0.0, 0.0, "[]", 0.0, 0.0, "[]", \
                 json.dumps(["%lg" % 0.0 for _ in self.parameters])
 
         # XXX Lexicographical order by codename
@@ -323,8 +324,14 @@ class ScoreTypeGroup(ScoreTypeAlone):
                            for st in public_subtasks
                            if "score" in st)
 
-        return score, json.dumps(subtasks), \
-            public_score, json.dumps(public_subtasks), \
+        # Compute penalty. Currently equal to: the number of seconds elapsed
+        # since the start of the contest.
+        s = submission_result.submission
+        penalty = (s.timestamp - s.participation.contest.start).total_seconds()
+        public_penalty = penalty
+
+        return score, penalty, json.dumps(subtasks), \
+            public_score, public_penalty, json.dumps(public_subtasks), \
             json.dumps(ranking_details)
 
     def get_public_outcome(self, unused_outcome, unused_parameter):
