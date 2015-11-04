@@ -170,9 +170,9 @@ var Scoreboard = new function () {
 <tr> \
     <th class=\"sel\"></th> \
     <th class=\"rank\">Rank</th> \
-    <th colspan=\"10\" class=\"f_name\">First Name</th> \
-    <th colspan=\"10\" class=\"l_name\">Last Name</th> \
-    <th class=\"team\">Team</th>";
+    <th colspan=\"10\" class=\"f_name\">Team</th> \
+    <th colspan=\"10\" class=\"l_name\">School</th> \
+    <th class=\"team\">Region</th>";
 
         var contests = DataStore.contest_list;
         for (var i in contests) {
