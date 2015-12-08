@@ -119,6 +119,7 @@ setup(
              "scripts/cmsDropDB"],
     entry_points={
         "console_scripts": [
+            "cmsAdminWebServer2=cms.server.admin.server2:main",
             "cmsRunTests=cmstestsuite.RunTests:main",
             "cmsReplayContest=cmstestsuite.ReplayContest:main",
             "cmsAdaptContest=cmstestsuite.AdaptContest:main",
