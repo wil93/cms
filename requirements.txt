@@ -16,6 +16,7 @@ chardet==2.3
 flask
 flask-sqlalchemy
 flask-admin
+flask-security
 
 # Only for some importers:
 pyyaml==3.11

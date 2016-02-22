@@ -31,25 +31,10 @@ from sqlalchemy.orm.exc import ObjectDeletedError
 from sqlalchemy.orm.session import object_session
 from sqlalchemy.orm import \
     class_mapper, object_mapper, ColumnProperty, RelationshipProperty
-from sqlalchemy.types import \
-    Boolean, Integer, Float, String, Unicode, DateTime, Interval, Enum
 
 import six
 
 from . import RepeatedUnicode, engine
-
-
-_TYPE_MAP = {
-    Boolean: bool,
-    Integer: six.integer_types,
-    Float: float,
-    String: six.string_types,  # TODO Use six.binary_type.
-    Unicode: six.string_types,  # TODO Use six.text_type.
-    DateTime: datetime,
-    Interval: timedelta,
-    Enum: six.string_types,  # TODO Use six.text_type.
-    RepeatedUnicode: list,  # TODO Use a type that checks also the content.
-}
 
 
 class Base(object):
@@ -101,12 +86,6 @@ class Base(object):
                 if col.primary_key or col.foreign_keys:
                     continue
 
-                # Check that we understand the type
-                if col_type not in _TYPE_MAP:
-                    raise RuntimeError(
-                        "Unknown SQLAlchemy column type for ColumnProperty "
-                        "%s of %s: %s" % (prp.key, cls.__name__, col_type))
-
                 cls._col_props.append(prp)
             elif isinstance(prp, RelationshipProperty):
                 cls._rel_props.append(prp)
@@ -157,6 +136,13 @@ class Base(object):
         """
         cls = type(self)
 
+        # see: http://stackoverflow.com/a/17256424/747654
+        #
+        # flask-admin doesn't use __init__(), it just creates an instance x
+        # and then populates it with x.field = value
+        if len(args) == 0:
+            return
+
         # Check the number of positional argument
         if len(args) > len(self._col_props):
             raise TypeError(
@@ -201,15 +187,14 @@ class Base(object):
                             " which is not nullable" % (cls.__name__, prp.key))
                     setattr(self, prp.key, val)
                 else:
-                    # TODO col_type.python_type contains the type that
-                    # SQLAlchemy thinks is more appropriate. We could
-                    # use that and drop _TYPE_MAP...
-                    if not isinstance(val, _TYPE_MAP[col_type]):
+                    # The col_type.python_type field contains the type that
+                    # SQLAlchemy thinks is more appropriate.
+                    if not isinstance(val, col_type.python_type):
                         raise TypeError(
                             "%s.__init__() got a '%s' for keyword argument "
                             "'%s', which requires a '%s'" %
                             (cls.__name__, type(val), prp.key,
-                             _TYPE_MAP[col_type]))
+                             col_type.python_type))
                     setattr(self, prp.key, val)
 
         for prp in self._rel_props:
@@ -310,14 +295,13 @@ class Base(object):
                             " which is not nullable" % prp.key)
                     setattr(self, prp.key, val)
                 else:
-                    # TODO col_type.python_type contains the type that
-                    # SQLAlchemy thinks is more appropriate. We could
-                    # use that and drop _TYPE_MAP...
-                    if not isinstance(val, _TYPE_MAP[col_type]):
+                    # The col_type.python_type field contains the type that
+                    # SQLAlchemy thinks is more appropriate.
+                    if not isinstance(val, col_type.python_type):
                         raise TypeError(
                             "set_attrs() got a '%s' for keyword argument "
                             "'%s', which requires a '%s'" %
-                            (type(val), prp.key, _TYPE_MAP[col_type]))
+                            (type(val), prp.key, col_type.python_type))
                     setattr(self, prp.key, val)
 
         for prp in self._rel_props:
