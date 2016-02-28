@@ -770,7 +770,7 @@ class IsolateSandbox(SandboxBase):
         # improper use! Avoid it!
         if file_cacher is not None and file_cacher.service is not None:
             box_id = ((file_cacher.service.shard + 1) * 10
-                      + (IsolateSandbox.next_id % 10)) % 100
+                      + (IsolateSandbox.next_id % 10)) % 1000
         else:
             box_id = IsolateSandbox.next_id % 10
         IsolateSandbox.next_id += 1
