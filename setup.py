@@ -120,6 +120,7 @@ setup(
             "cmsReplayContest=cmstestsuite.ReplayContest:main",
             "cmsAdaptContest=cmstestsuite.AdaptContest:main",
             "cmsTestFileCacher=cmstestsuite.TestFileCacher:main",
+            "cmsAuthServer=cmscontrib.AuthServer:main",
             "cmsAddUser=cmscontrib.AddUser:main",
             "cmsAddTeam=cmscontrib.AddTeam:main",
             "cmsAddParticipation=cmscontrib.AddParticipation:main",
