@@ -11,6 +11,10 @@ sudo: required
 #python:
 #  - 2.7
 
+cache:
+  directories:
+    - /usr/local/lib/python2.7
+
 env:
   - TEST_SUITE=functionaltests
 
