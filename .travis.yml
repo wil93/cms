@@ -25,9 +25,7 @@ install:
 
   - sudo pip install -r requirements.txt
   - sudo pip install -r dev-requirements.txt
-  - ls -l /usr/local/lib/python2.7
-  - ls -l /usr/local/lib/python2.7/site-packages
-  - ls -l /usr/local/lib/python2.7/dist-packages
+  - sudo du -shx /usr/local/lib/python2.7/dist-packages
   - sudo python setup.py install
 
   - sudo -u postgres psql -c "CREATE USER cmsuser WITH PASSWORD 'password';"
