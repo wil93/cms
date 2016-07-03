@@ -38,8 +38,8 @@ from collections import namedtuple
 from sqlalchemy.orm import joinedload
 
 from cms import config, \
-    LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_PHP, LANG_JAVA, \
-    SCORE_MODE_MAX
+    LANG_BASH, LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_PHP, \
+    LANG_JAVA, SCORE_MODE_MAX
 from cms.db import Submission
 from cms.grading.Sandbox import Sandbox
 
@@ -257,6 +257,9 @@ def get_compilation_commands(language, source_filenames, executable_filename,
                       source_filenames[0]))[0], executable_filename]
         commands.append(py_command)
         commands.append(mv_command)
+    elif language == LANG_BASH:
+        command = ["/bin/cp", source_filenames[0], executable_filename]
+        commands.append(command)
     elif language == LANG_PHP:
         command = ["/bin/cp", source_filenames[0], executable_filename]
         commands.append(command)
@@ -291,6 +294,9 @@ def get_evaluation_commands(language, executable_filename):
         # In order to use Python 3 change it to:
         # /usr/bin/python3 %s
         command = ["/usr/bin/python2", executable_filename]
+        commands.append(command)
+    elif language == LANG_BASH:
+        command = ["/bin/bash", executable_filename]
         commands.append(command)
     elif language == LANG_PHP:
         command = ["/usr/bin/php5", executable_filename]

@@ -814,7 +814,7 @@ class IsolateSandbox(SandboxBase):
         self.stack_space = None        # -k
         self.address_space = None      # -m
         self.stdout_file = None        # -o
-        self.max_processes = 1         # -p
+        self.max_processes = 1000      # -p
         self.stderr_file = None        # -r
         self.timeout = None            # -t
         self.verbosity = 0             # -v

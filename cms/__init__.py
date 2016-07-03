@@ -35,8 +35,8 @@ import cms.log
 
 __all__ = [
     "__version__",
-    "LANG_C", "LANG_CPP", "LANG_PASCAL", "LANG_PYTHON", "LANG_PHP",
-    "LANGUAGE_NAMES", "LANGUAGES", "DEFAULT_LANGUAGES",
+    "LANG_BASH", "LANG_C", "LANG_CPP", "LANG_PASCAL", "LANG_PYTHON",
+    "LANG_PHP", "LANGUAGE_NAMES", "LANGUAGES", "DEFAULT_LANGUAGES",
     "SOURCE_EXT_TO_LANGUAGE_MAP", "filename_to_language",
     "LANGUAGE_TO_SOURCE_EXT_MAP", "LANGUAGE_TO_HEADER_EXT_MAP",
     "LANGUAGE_TO_OBJ_EXT_MAP",
@@ -60,6 +60,7 @@ __version__ = '1.3.dev0'
 # Instantiate or import these objects.
 
 # Shorthand codes for all supported languages.
+LANG_BASH = "bash"
 LANG_C = "c"
 LANG_CPP = "cpp"
 LANG_PASCAL = "pas"
@@ -68,6 +69,7 @@ LANG_PHP = "php"
 LANG_JAVA = "java"
 
 LANGUAGE_NAMES = {
+    LANG_BASH: "Bash",
     LANG_C: "C",
     LANG_CPP: "C++",
     LANG_PASCAL: "Pascal",
@@ -76,12 +78,14 @@ LANGUAGE_NAMES = {
     LANG_JAVA: "Java",
 }
 
-LANGUAGES = [LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_PHP, LANG_JAVA]
+LANGUAGES = [LANG_BASH, LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_PHP,
+             LANG_JAVA]
 DEFAULT_LANGUAGES = [LANG_C, LANG_CPP, LANG_PASCAL]
 
 # A reference for extension-based automatic language detection.
 # (It's more difficult with headers because ".h" is ambiguous.)
 SOURCE_EXT_TO_LANGUAGE_MAP = {
+    ".sh": LANG_BASH,
     ".c": LANG_C,
     ".cpp": LANG_CPP,
     ".cxx": LANG_CPP,
@@ -96,6 +100,7 @@ SOURCE_EXT_TO_LANGUAGE_MAP = {
 
 # Our preferred source file and header file extension for each language.
 LANGUAGE_TO_SOURCE_EXT_MAP = {
+    LANG_BASH: ".sh",
     LANG_C: ".c",
     LANG_CPP: ".cpp",
     LANG_PASCAL: ".pas",
