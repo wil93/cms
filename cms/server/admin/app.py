@@ -26,6 +26,7 @@ from flask import Flask
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form.upload import FileUploadField
+from flask_admin.consts import ICON_TYPE_FONT_AWESOME
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -38,7 +39,6 @@ class ListUsersView(ModelView):
     column_select_related_list = ('user', 'city')
 
 class UserAdminView(ModelView):
-
     def picture_validation(self, field):
         __import__("pdb").set_trace()
         if field.data:
@@ -82,19 +82,19 @@ def main():
     app.config.from_pyfile('config.py')
     db = SQLAlchemy(app)
 
-    admin = Admin(app, name='Addmin', template_mode='bootstrap3')
-    admin.add_view(ModelView(Contest, db.session, menu_icon_type='fa', menu_icon_value='fa-trophy fa-lg'))
-    admin.add_view(ModelView(Task, db.session, menu_icon_type='fa', menu_icon_value='fa-list fa-lg'))
-    admin.add_view(UserAdminView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-user fa-lg'))
+    admin = Admin(app, name='Admin', template_mode='bootstrap3', base_template='admin/new_base.html')
+    admin.add_view(ModelView(Contest, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-trophy fa-lg'))
+    admin.add_view(ModelView(Task, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-list fa-lg'))
+    admin.add_view(UserAdminView(User, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-user fa-lg'))
     #admin.add_view(ModelView(Participation, db.session, ))
-    admin.add_view(ModelView(Team, db.session, menu_icon_type='fa',
+    admin.add_view(ModelView(Team, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME,
         menu_icon_value='fa-users fa-lg'))
 
     @app.route('/')
     def index():
         return '<a href="/admin/">Click me to get to Admin!</a>'
 
-    app.run()
+    app.run(debug=True)
 
 if __name__ == "__main__":
     main()
