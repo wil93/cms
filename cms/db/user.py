@@ -79,9 +79,9 @@ class User(Base):
         nullable=True)
 
     # Picture of the user (e.g. for the ranking)
-    face = Column(
-        LargeBinary,
-        nullable=True)
+    #face = Column(
+    #    LargeBinary,
+    #    nullable=True)
 
     # Timezone for the user. All timestamps in CWS will be shown using
     # the timezone associated to the logged-in user or (if it's None

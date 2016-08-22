@@ -46,18 +46,23 @@ logger = logging.getLogger(__name__)
 
 def add_admin(username, password=None):
     logger.info("Creating the admin on the database.")
+    
     if password is None:
         password = generate_random_password()
-    admin = Admin(username=username,
-                  authentication=hash_password(password.encode("utf-8")),
-                  name=username,
-                  permission_all=True)
+
+    admin = Admin()
+
+    admin.username = username
+    admin.authentication = hash_password(password.encode("utf-8"))
+    admin.name = username
+    admin.permission_all = True
+
     try:
         with SessionGen() as session:
             session.add(admin)
             session.commit()
     except IntegrityError:
-        logger.error("An admin with the given username already exists.")
+        logger.exception("An admin with the given username already exists.")
         return False
 
     logger.info("Admin with complete access added. "

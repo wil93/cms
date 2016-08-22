@@ -32,11 +32,57 @@ from flask_sqlalchemy import SQLAlchemy
 
 from jinja2 import Markup
 
+from pytz import all_timezones
+
 from cms.db import Contest, Participation, Task, Team, User
 
 
 class ListUsersView(ModelView):
-    column_select_related_list = ('user', 'city')
+    can_view_details = True
+    column_searchable_list = ('username', 'first_name', 'last_name', 'email')
+
+    # column_select_related_list = ('user', 'city')
+
+    form_choices = {
+        'timezone': zip(all_timezones, all_timezones)
+    }
+
+    column_descriptions = dict(
+        username='This username will be required to login',
+        password='The default password (caution: stored in plain text!)',
+        face='The profile picture (that will be seen in the ranking)',
+        timezone='Timezone of the contestant, used to display start, end '
+                 'times and the current server time in local time. Example: '
+                 '\'Europe/Rome\', \'America/New_York\', ...',
+        preferred_languages='JSON-encoded list of language codes, from the '
+                            'most to the least preferred. Example: \'["en", '
+                            '"ja"]\'',
+    )
+
+class ListContestsView(ModelView):
+    can_view_details = True
+    column_list = ('name', 'description', 'start', 'stop', 'timezone',
+        'per_user_time')
+    column_searchable_list = ('name', 'description')
+
+    # column_select_related_list = ('user', 'city')
+
+    form_choices = {
+        'timezone': zip(all_timezones, all_timezones)
+    }
+
+class ListTasksView(ModelView):
+    can_view_details = True
+    column_list = ('name', 'title', 'active_dataset', 'contest',
+        'primary_statements')
+    column_searchable_list = ('name', 'title')
+
+    # column_select_related_list = ('user', 'city')
+
+class ListTeamsView(ModelView):
+    can_view_details = True
+    column_list = ('code', 'name')
+    column_searchable_list = ('code', 'name')
 
 class UserAdminView(ModelView):
     def picture_validation(self, field):
@@ -83,11 +129,11 @@ def main():
     db = SQLAlchemy(app)
 
     admin = Admin(app, name='Admin', template_mode='bootstrap3', base_template='admin/new_base.html')
-    admin.add_view(ModelView(Contest, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-trophy fa-lg'))
-    admin.add_view(ModelView(Task, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-list fa-lg'))
-    admin.add_view(UserAdminView(User, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-user fa-lg'))
+    admin.add_view(ListContestsView(Contest, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-trophy fa-lg'))
+    admin.add_view(ListTasksView(Task, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-list fa-lg'))
+    admin.add_view(ListUsersView(User, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-user fa-lg'))
     #admin.add_view(ModelView(Participation, db.session, ))
-    admin.add_view(ModelView(Team, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME,
+    admin.add_view(ListTeamsView(Team, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME,
         menu_icon_value='fa-users fa-lg'))
 
     @app.route('/')

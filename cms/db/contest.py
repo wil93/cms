@@ -54,6 +54,9 @@ class Contest(Base):
         CheckConstraint("token_gen_initial <= token_gen_max"),
     )
 
+    def __repr__(self):
+        return self.name
+
     # Auto increment primary key.
     id = Column(
         Integer,
