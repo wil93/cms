@@ -32,6 +32,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import hashlib
 import json
 import logging
 import os
@@ -105,7 +106,17 @@ class LoginHandler(ContestHandler):
         filtered_user = filter_ascii(username)
         filtered_pass = filter_ascii(password)
 
-        if password != correct_password:
+        def hash(string, algo='sha256'):
+            if string is None:
+                string = ''
+            sha = getattr(hashlib, algo)()
+            sha.update(string)
+            return sha.hexdigest()
+
+        def hashpw(pw):
+            return hash(pw + config.secret_key)
+
+        if hashpw(password) != correct_password:
             logger.info("Login error: user=%s pass=%s remote_ip=%s." %
                         (filtered_user, filtered_pass, self.request.remote_ip))
             self.redirect(fallback_page + "?login_error=true")
