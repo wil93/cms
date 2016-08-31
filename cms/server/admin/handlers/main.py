@@ -96,7 +96,7 @@ class LogoutHandler(BaseHandler):
 
 
 class ResourcesHandler(BaseHandler):
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, shard=None, contest_id=None):
         if contest_id is not None:
             self.contest = self.safe_get_item(Contest, contest_id)
@@ -132,7 +132,7 @@ class NotificationsHandler(BaseHandler):
     """Displays notifications.
 
     """
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self):
         res = []
         last_notification = make_datetime(

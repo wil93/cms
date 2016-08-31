@@ -43,7 +43,7 @@ class SubmissionHandler(BaseHandler):
     compile please check'.
 
     """
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, submission_id, dataset_id=None):
         submission = self.safe_get_item(Submission, submission_id)
         task = submission.task
@@ -71,7 +71,7 @@ class SubmissionFileHandler(FileHandler):
 
     """
     # FIXME: Replace with FileFromDigestHandler?
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, file_id):
         sub_file = self.safe_get_item(File, file_id)
         submission = sub_file.submission
@@ -114,7 +114,7 @@ class SubmissionCommentHandler(BaseHandler):
 
 class FileFromDigestHandler(FileHandler):
 
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, digest, filename):
         # TODO: Accept a MIME type
         self.sql_session.close()

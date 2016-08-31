@@ -48,7 +48,7 @@ logger = logging.getLogger(__name__)
 class ContestUsersHandler(BaseHandler):
     REMOVE_FROM_CONTEST = "Remove from contest"
 
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, contest_id):
         self.contest = self.safe_get_item(Contest, contest_id)
 
@@ -134,7 +134,7 @@ class ParticipationHandler(BaseHandler):
     questions, messages (and allows to send the latters).
 
     """
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, contest_id, user_id):
         self.contest = self.safe_get_item(Contest, contest_id)
         participation = self.sql_session.query(Participation)\

@@ -38,7 +38,7 @@ from .base import BaseHandler, SimpleHandler, require_permission
 
 
 class UserHandler(BaseHandler):
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, user_id):
         user = self.safe_get_item(User, user_id)
 

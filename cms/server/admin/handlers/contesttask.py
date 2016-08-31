@@ -41,7 +41,7 @@ class ContestTasksHandler(BaseHandler):
     MOVE_UP = "Move up"
     MOVE_DOWN = "Move down"
 
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, contest_id):
         self.contest = self.safe_get_item(Contest, contest_id)
 

@@ -161,7 +161,7 @@ def require_permission(permission="authenticated", self_allowed=False):
             """Check if the permission is present before calling the function.
 
             """
-            if permission == BaseHandler.AUTHENTICATED:
+            if permission == BaseHandler.PERMISSION_ALL:
                 return func(self, *args, **kwargs)
 
             user = self.current_user
@@ -541,7 +541,7 @@ def SimpleHandler(page, authenticated=True, permission_all=False):
                 self.render(page, **self.r_params)
     elif authenticated:
         class Cls(BaseHandler):
-            @require_permission(BaseHandler.AUTHENTICATED)
+            @require_permission(BaseHandler.PERMISSION_ALL)
             def get(self):
                 self.r_params = self.render_params()
                 self.render(page, **self.r_params)
@@ -555,7 +555,7 @@ def SimpleHandler(page, authenticated=True, permission_all=False):
 
 def SimpleContestHandler(page):
     class Cls(BaseHandler):
-        @require_permission(BaseHandler.AUTHENTICATED)
+        @require_permission(BaseHandler.PERMISSION_ALL)
         def get(self, contest_id):
             self.contest = self.safe_get_item(Contest, contest_id)
 

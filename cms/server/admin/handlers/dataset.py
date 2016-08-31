@@ -59,7 +59,7 @@ class DatasetSubmissionsHandler(BaseHandler):
     view the results under different datasets.
 
     """
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, dataset_id):
         dataset = self.safe_get_item(Dataset, dataset_id)
         task = dataset.task
@@ -660,7 +660,7 @@ class DownloadTestcasesHandler(FileHandler):
     """Download all testcases in a zip file.
 
     """
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, dataset_id):
         dataset = self.safe_get_item(Dataset, dataset_id)
         task = dataset.task
@@ -670,7 +670,7 @@ class DownloadTestcasesHandler(FileHandler):
         self.r_params["dataset"] = dataset
         self.render("download_testcases.html", **self.r_params)
 
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def post(self, dataset_id):
         fallback_page = "/dataset/%s/testcases/download" % dataset_id
 

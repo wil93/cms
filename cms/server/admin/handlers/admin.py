@@ -98,7 +98,7 @@ class AdminsHandler(BaseHandler):
     """Page to see all admins.
 
     """
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self):
         self.r_params = self.render_params()
         self.r_params["admins"] = self.sql_session.query(Admin)\
@@ -120,7 +120,7 @@ class AdminHandler(BaseHandler):
         "authentication",
     ]
 
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, admin_id):
         admin = self.safe_get_item(Admin, admin_id)
 

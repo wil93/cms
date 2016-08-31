@@ -107,7 +107,7 @@ class TaskHandler(BaseHandler):
     """Task handler, with a POST method to edit the task.
 
     """
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, task_id):
         task = self.safe_get_item(Task, task_id)
         self.contest = task.contest

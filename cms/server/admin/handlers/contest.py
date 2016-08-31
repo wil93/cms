@@ -145,7 +145,7 @@ class OverviewHandler(BaseHandler):
     """Home page handler, with queue and workers statuses.
 
     """
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, contest_id=None):
         if contest_id is not None:
             self.contest = self.safe_get_item(Contest, contest_id)
@@ -155,7 +155,7 @@ class OverviewHandler(BaseHandler):
 
 
 class ResourcesListHandler(BaseHandler):
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, contest_id=None):
         if contest_id is not None:
             self.contest = self.safe_get_item(Contest, contest_id)

@@ -47,7 +47,7 @@ class RankingHandler(BaseHandler):
     """Shows the ranking for a contest.
 
     """
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, contest_id, format="online"):
         # This validates the contest id.
         self.safe_get_item(Contest, contest_id)

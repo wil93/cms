@@ -39,7 +39,7 @@ class ContestSubmissionsHandler(BaseHandler):
     """Shows all submissions for this contest.
 
     """
-    @require_permission(BaseHandler.AUTHENTICATED)
+    @require_permission(BaseHandler.PERMISSION_ALL)
     def get(self, contest_id):
         contest = self.safe_get_item(Contest, contest_id)
         self.contest = contest
