@@ -241,6 +241,10 @@ class Participation(Base):
                         cascade="all, delete-orphan",
                         passive_deletes=True))
 
+    def __str__(self):
+        return "Participation of %s in %s" % (self.user.username,
+                                              self.contest.name)
+
     # Follows the description of the fields automatically added by
     # SQLAlchemy.
     # messages (list of Message objects)

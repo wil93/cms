@@ -50,6 +50,7 @@ PACKAGE_DATA = {
         os.path.join("admin", "templates", "*.*"),
         os.path.join("admin", "templates", "fragments", "*.*"),
         os.path.join("admin", "templates", "views", "*.*"),
+        os.path.join("admin2", "templates", "*.*"),
         os.path.join("contest", "static", "*.*"),
         os.path.join("contest", "static", "css", "*.*"),
         os.path.join("contest", "static", "img", "*.*"),
@@ -119,7 +120,7 @@ setup(
              "scripts/cmsDropDB"],
     entry_points={
         "console_scripts": [
-            "cmsAdminWebServer2=cms.server.admin.app:main",
+            "cmsAdminWebServer2=cms.server.admin2.app:main",
             "cmsRunTests=cmstestsuite.RunTests:main",
             "cmsReplayContest=cmstestsuite.ReplayContest:main",
             "cmsAdaptContest=cmstestsuite.AdaptContest:main",

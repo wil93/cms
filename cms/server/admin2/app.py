@@ -128,7 +128,7 @@ def main():
     app.config.from_pyfile('config.py')
     db = SQLAlchemy(app)
 
-    admin = Admin(app, name='Admin', template_mode='bootstrap3', base_template='admin/new_base.html')
+    admin = Admin(app, name='Admin', template_mode='bootstrap3', base_template='new_base.html')
     admin.add_view(ListContestsView(Contest, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-trophy fa-lg'))
     admin.add_view(ListTasksView(Task, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-list fa-lg'))
     admin.add_view(ListUsersView(User, db.session, menu_icon_type=ICON_TYPE_FONT_AWESOME, menu_icon_value='fa-user fa-lg'))

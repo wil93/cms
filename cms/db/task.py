@@ -406,6 +406,9 @@ class Dataset(Base):
         String,
         nullable=False)
 
+    def __str__(self):
+        return self.description  # maybe add the creation date?
+
     # Follows the description of the fields automatically added by
     # SQLAlchemy.
     # managers (dict of Manager objects indexed by filename)
