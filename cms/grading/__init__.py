@@ -577,6 +577,9 @@ def evaluation_step_before_run(sandbox, command,
             writable_files.append(name)
     sandbox.allow_writing_only(writable_files)
 
+    # Allow writing on input.txt (because of Pascal)
+    os.chmod(os.path.join(sandbox.path, "input.txt"), 0777)
+
     # Actually run the evaluation command.
     logger.debug("Starting execution step.")
     return sandbox.execute_without_std(command, wait=wait)
