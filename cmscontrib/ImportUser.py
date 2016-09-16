@@ -92,10 +92,9 @@ class UserImporter(object):
                               .filter(User.username == user.username) \
                               .first()
             if old_user is not None:
-                logger.critical("The user already exists.")
-                return
-
-            session.add(user)
+                logger.warning("The user already exists, ignoring.")
+            else:
+                session.add(user)
 
             if self.contest_id is not None:
                 logger.info("Creating participation of user %s in contest %s.",
