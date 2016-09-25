@@ -18,7 +18,7 @@ install:
   - sudo apt-get install -y python-dev libpq-dev libcups2-dev libyaml-dev
 
   - PYPY=pypy2-v5.4.1-linux64
-  - curl -O https://bitbucket.org/pypy/pypy/downloads/$PYPY.tar.bz2
+  - curl -L -O https://bitbucket.org/pypy/pypy/downloads/$PYPY.tar.bz2
   - tar xvf $PYPY.tar.bz2
   - sudo mv $PYPY /opt/
   - sudo rm $PYPY.tar.bz2
@@ -33,7 +33,7 @@ install:
 
   - sudo pypy -m pip install -r requirements.txt
   - sudo pypy -m pip install -r dev-requirements.txt
-  - sudo python setup.py install
+  - sudo pypy setup.py install
 
   - psql --username=postgres --command="CREATE USER cmsuser WITH PASSWORD 'your_password_here';"
 
