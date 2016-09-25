@@ -14,14 +14,17 @@ sudo: required
 install:
   - sudo apt-get update -qq
   - sudo apt-get install -y build-essential fpc php5-cli gcj-jdk haskell-platform
-  - sudo apt-get install -y postgresql-client gettext python2.7 iso-codes shared-mime-info stl-manual cgroup-lite
+  - sudo apt-get install -y postgresql-client gettext pypy iso-codes shared-mime-info stl-manual cgroup-lite
   - sudo apt-get install -y python-dev libpq-dev libcups2-dev libyaml-dev
+
+  - curl -O https://bootstrap.pypa.io/get-pip.py
+  - sudo pypy get-pip.py
 
   - cp ./config/cms.conf.sample ./config/cms.conf
   - sudo ./prerequisites.py install -y
 
-  - sudo pip install -r requirements.txt
-  - sudo pip install -r dev-requirements.txt
+  - sudo pypy -m pip install -r requirements.txt
+  - sudo pypy -m pip install -r dev-requirements.txt
   - sudo python setup.py install
 
   - psql --username=postgres --command="CREATE USER cmsuser WITH PASSWORD 'your_password_here';"

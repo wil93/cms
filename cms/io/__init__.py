@@ -22,6 +22,9 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
+from psycopg2cffi import compat
+compat.register()
+
 
 # Define what this package will provide.
 
