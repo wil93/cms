@@ -30,10 +30,12 @@ import base64
 import bcrypt
 import binascii
 import random
+import os
 
 from string import ascii_lowercase
 
-from Crypto.Cipher import AES
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
 
 
 __all__ = [
@@ -50,17 +52,9 @@ __all__ = [
     ]
 
 
-# Some older versions of pycrypto don't provide a Random module
-# If that's the case, fallback to weak standard library PRG
-try:
-    from Crypto import Random
-    get_random_bits = Random.new().read
-    is_random_secure = True
-except ImportError:
-    get_random_bits = lambda x: binascii.unhexlify("%032x" %
-                                                   random.getrandbits(x * 8))
-    is_random_secure = False
-
+# Use the OS's PRNG
+get_random_bytes = os.urandom
+is_random_secure = True
 
 def _get_secret_key_unhex():
     # Only import this if we need it. Otherwise, we would prefer to
@@ -73,7 +67,7 @@ def get_random_key():
     """Generate 16 random bytes, safe to be used as AES key.
 
     """
-    return get_random_bits(16)
+    return get_random_bytes(16)
 
 
 def get_hex_random_key():
@@ -108,8 +102,10 @@ def encrypt_string(pt, key=None):
     # different ciphertexts.
     iv = get_random_key()
     # Initialize the AES cipher with the given key and IV.
-    aes = AES.new(key, AES.MODE_CBC, iv)
-    ct = aes.encrypt(pt_pad)
+    backend = default_backend()
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
+    encryptor = cipher.encryptor()
+    ct = encryptor.update(pt_pad) + encryptor.finalize()
     # Convert the ciphertext in a URL-safe base64 encoding
     ct_b64 = base64.urlsafe_b64encode(iv + ct).replace(b'=', b'.')
     return ct_b64
@@ -129,9 +125,11 @@ def decrypt_string(ct_b64, key=None):
         # bytestring, which contains both the IV (the first 16 bytes) as well
         # as the encrypted padded plaintext.
         iv_ct = base64.urlsafe_b64decode(bytes(ct_b64).replace(b'.', b'='))
-        aes = AES.new(key, AES.MODE_CBC, iv_ct[:16])
+        backend = default_backend()
         # Get the padded plaintext.
-        pt_pad = aes.decrypt(iv_ct[16:])
+        cipher = Cipher(algorithms.AES(key), modes.CBC(iv_ct[:16]), backend=backend)
+        decryptor = cipher.decryptor()
+        pt_pad = decryptor.update(iv_ct[16:]) + decryptor.finalize()
         # Remove the padding.
         # TODO check that the padding is correct, i.e. that it contains at most
         # 15 bytes 0x00 preceded by a byte 0x01.
