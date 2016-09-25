@@ -14,8 +14,16 @@ sudo: required
 install:
   - sudo apt-get update -qq
   - sudo apt-get install -y build-essential fpc php5-cli gcj-jdk haskell-platform
-  - sudo apt-get install -y postgresql-client gettext pypy iso-codes shared-mime-info stl-manual cgroup-lite
+  - sudo apt-get install -y postgresql-client gettext iso-codes shared-mime-info stl-manual cgroup-lite
   - sudo apt-get install -y python-dev libpq-dev libcups2-dev libyaml-dev
+
+  - PYPY=pypy2-v5.4.1-linux64
+  - curl -O https://bitbucket.org/pypy/pypy/downloads/$PYPY.tar.bz2
+  - tar xvf $PYPY.tar.bz2
+  - sudo mv $PYPY /opt/
+  - sudo rm $PYPY.tar.bz2
+  - echo "export PATH=\"\$PATH:/opt/$PYPY/bin\"" >> ~/.bashrc
+  - source ~/.bashrc
 
   - curl -O https://bootstrap.pypa.io/get-pip.py
   - sudo pypy get-pip.py
