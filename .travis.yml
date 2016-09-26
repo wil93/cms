@@ -53,10 +53,10 @@ install:
   - ls -al /usr/local/bin/isolate /usr/local/etc/cms.conf
   - groups
 
-  - sudo cmsInitDB
+  - sudo /opt/$PYPY/bin/cmsInitDB
 
 script:
-  - sudo cmsRunTests -v
+  - sudo /opt/$PYPY/bin/cmsRunTests -v
 
 notifications:
   email: no
