@@ -11,14 +11,6 @@ sudo: required
 #python:
 #  - 2.7
 
-before_install:
-  - export PYPY=pypy2-v5.4.1-linux64
-  - curl -L -O https://bitbucket.org/pypy/pypy/downloads/$PYPY.tar.bz2
-  - tar -xvf $PYPY.tar.bz2
-  - sudo mv $PYPY /opt/
-  - sudo rm $PYPY.tar.bz2
-  - export PATH="$PATH:/opt/$PYPY/bin"
-
 install:
   - sudo apt-get update -qq
   - sudo apt-get install -y build-essential fpc php5-cli gcj-jdk haskell-platform
@@ -30,6 +22,13 @@ install:
 
   - cp ./config/cms.conf.sample ./config/cms.conf
   - sudo ./prerequisites.py install -y
+
+  - export PYPY=pypy2-v5.4.1-linux64
+  - curl -L -O https://bitbucket.org/pypy/pypy/downloads/$PYPY.tar.bz2
+  - tar -xvf $PYPY.tar.bz2
+  - sudo mv $PYPY /opt/
+  - sudo rm $PYPY.tar.bz2
+  - export PATH="$PATH:/opt/$PYPY/bin"
 
   - sudo pypy -m pip install -r requirements.txt
   - sudo pypy -m pip install -r dev-requirements.txt
