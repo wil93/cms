@@ -26,13 +26,14 @@ install:
   - sudo mv $PYPY /opt/
   - sudo rm $PYPY.tar.bz2
   - export PATH="$PATH:/opt/$PYPY/bin"
+  - echo $PATH
 
   - curl -O https://bootstrap.pypa.io/get-pip.py
-  - sudo pypy get-pip.py
+  - sudo $PYPY/pypy get-pip.py
 
-  - sudo pypy -m pip install -r requirements.txt
-  - sudo pypy -m pip install -r dev-requirements.txt
-  - sudo pypy setup.py install
+  - sudo $PYPY/pypy -m pip install -r requirements.txt
+  - sudo $PYPY/pypy -m pip install -r dev-requirements.txt
+  - sudo $PYPY/pypy setup.py install
 
   - psql --username=postgres --command="CREATE USER cmsuser WITH PASSWORD 'your_password_here';"
 
