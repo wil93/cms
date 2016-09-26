@@ -17,9 +17,6 @@ install:
   - sudo apt-get install -y postgresql-client gettext iso-codes shared-mime-info stl-manual cgroup-lite
   - sudo apt-get install -y python-dev libpq-dev libcups2-dev libyaml-dev
 
-  - curl -O https://bootstrap.pypa.io/get-pip.py
-  - sudo pypy get-pip.py
-
   - cp ./config/cms.conf.sample ./config/cms.conf
   - sudo ./prerequisites.py install -y
 
@@ -29,6 +26,9 @@ install:
   - sudo mv $PYPY /opt/
   - sudo rm $PYPY.tar.bz2
   - export PATH="$PATH:/opt/$PYPY/bin"
+
+  - curl -O https://bootstrap.pypa.io/get-pip.py
+  - sudo pypy get-pip.py
 
   - sudo pypy -m pip install -r requirements.txt
   - sudo pypy -m pip install -r dev-requirements.txt
