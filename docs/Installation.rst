@@ -215,9 +215,9 @@ To install CMS python dependencies on Ubuntu, you can issue:
 
     sudo apt-get install python-setuptools python-tornado python-psycopg2 \
          python-sqlalchemy python-psutil python-netifaces python-crypto \
-         python-tz python-six python-beautifulsoup python-mechanize \
-         python-coverage python-mock python-requests python-werkzeug \
-         python-gevent python-bcrypt python-chardet patool
+         python-tz python-six python-beautifulsoup python-coverage \
+         python-mock python-requests python-werkzeug python-gevent \
+         python-bcrypt python-chardet patool
 
     # Optional.
     # sudo apt-get install python-yaml python-sphinx python-cups python-pypdf2
@@ -235,9 +235,9 @@ To install CMS python dependencies on Arch Linux (again: assuming you did not us
 
     sudo pacman -S python2-setuptools python2-tornado python2-psycopg2 \
          python2-sqlalchemy python2-psutil python2-netifaces python2-crypto \
-         python2-pytz python2-six python2-beautifulsoup3 python2-mechanize \
-         python2-coverage python2-mock python2-requests python2-werkzeug \
-         python2-gevent python2-bcrypt python2-chardet
+         python2-pytz python2-six python2-beautifulsoup3 python2-coverage \
+         python2-mock python2-requests python2-werkzeug python2-gevent \
+         python2-bcrypt python2-chardet
 
     # Install the following from AUR.
     # https://aur.archlinux.org/packages/patool/
