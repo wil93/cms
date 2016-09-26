@@ -52,9 +52,9 @@ def main():
     test_suite = get_test_suite()
     try:
         if test_suite == UNITTESTS or test_suite == "":
-            sh(["pypy ./cmstestsuite/RunUnitTests.py"] + sys.argv[1:])
+            sh(["./cmstestsuite/RunUnitTests.py"] + sys.argv[1:])
         if test_suite == FUNCTIONALTESTS or test_suite == "":
-            sh(["pypy ./cmstestsuite/RunFunctionalTests.py"] + sys.argv[1:])
+            sh(["./cmstestsuite/RunFunctionalTests.py"] + sys.argv[1:])
     except FrameworkException:
         if os.path.exists("./log/cms/last.log"):
             print("\n\n===== START OF LOG DUMP =====\n\n")
