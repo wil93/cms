@@ -111,7 +111,7 @@ class Program(object):
         if CONFIG["TEST_DIR"] is None:
             executable = "cms%s" % self.service_name
 
-        args = [executable]
+        args = ["/opt/pypy2-v5.4.1-linux64/bin/pypy", executable]
         if self.shard is not None:
             args.append("%s" % self.shard)
         if self.contest is not None:

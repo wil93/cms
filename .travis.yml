@@ -57,7 +57,7 @@ install:
 
 script:
   - sudo /opt/$PYPY/bin/pypy ./cmstestsuite/RunUnitTests.py -v
-  - sudo env python2=/opt/$PYPY/bin/pypy ./cmstestsuite/RunFunctionalTests.py -v
+  - sudo /opt/$PYPY/bin/pypy ./cmstestsuite/RunFunctionalTests.py -v
 
 notifications:
   email: no
