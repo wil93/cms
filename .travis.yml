@@ -28,6 +28,7 @@ install:
 
   - export PATH="$PATH:/opt/$PYPY/bin"
   - echo $PATH
+  - sudo rm -f /usr/bin/python{,2,2.7}
   - echo '#!/bin/sh' | sudo tee /usr/bin/python
   - echo "/opt/$PYPY/bin/pypy \"\$@\"" | sudo tee -a /usr/bin/python
   - sudo chmod 755 /usr/bin/python
