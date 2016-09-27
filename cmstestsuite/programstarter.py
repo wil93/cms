@@ -107,7 +107,7 @@ class Program(object):
         """Start a CMS service."""
         logger.info("Starting %s.", self.service_name)
         executable = os.path.join(
-            "/opt/pypy2-v5.4.1-linux64/bin", "cms%s" % (self.service_name))
+            ".", "scripts", "cms%s" % (self.service_name))
         if CONFIG["TEST_DIR"] is None:
             executable = "cms%s" % self.service_name
 
