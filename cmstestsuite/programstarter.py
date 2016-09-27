@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 
 
 # Maximum number of attempts to check if a service becomes healthy.
-_MAX_ATTEMPTS = 20
+_MAX_ATTEMPTS = 120
 
 
 class RemoteService(object):

@@ -67,6 +67,7 @@ install:
 script:
   - sudo /opt/$PYPY/bin/pypy ./cmstestsuite/RunUnitTests.py -v
   - sudo /opt/$PYPY/bin/pypy ./cmstestsuite/RunFunctionalTests.py -v
+#  - sudo /opt/$PYPY/bin/cmsRunTests -v
 
 notifications:
   email: no
