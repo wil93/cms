@@ -65,7 +65,8 @@ install:
   - sudo /opt/$PYPY/bin/cmsInitDB
 
 script:
-  - sudo /opt/$PYPY/bin/cmsRunTests -v
+  - sudo /opt/$PYPY/bin/pypy ./cmstestsuite/RunUnitTests.py -v
+  - sudo /opt/$PYPY/bin/pypy ./cmstestsuite/RunFunctionalTests.py -v
 
 notifications:
   email: no
