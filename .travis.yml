@@ -26,8 +26,9 @@ install:
   - sudo mv $PYPY /opt/
   - sudo rm $PYPY.tar.bz2
 
-  - export PATH="$PATH:/opt/$PYPY/bin"
+  - export PATH="/opt/$PYPY/bin:$PATH"
   - echo $PATH
+  - pypy -c 'print(42)'
   - sudo rm -f /usr/bin/python{,2,2.7}
   - echo '#!/bin/sh' | sudo tee /usr/bin/python
   - echo "/opt/$PYPY/bin/pypy \"\$@\"" | sudo tee -a /usr/bin/python
