@@ -107,11 +107,11 @@ class Program(object):
         """Start a CMS service."""
         logger.info("Starting %s.", self.service_name)
         executable = os.path.join(
-            ".", "scripts", "cms%s" % (self.service_name))
+            "/opt/pypy2-v5.4.1-linux64/bin", "cms%s" % (self.service_name))
         if CONFIG["TEST_DIR"] is None:
             executable = "cms%s" % self.service_name
 
-        args = ["/opt/pypy2-v5.4.1-linux64/bin/pypy", executable]
+        args = [executable]
         if self.shard is not None:
             args.append("%s" % self.shard)
         if self.contest is not None:
