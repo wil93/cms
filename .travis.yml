@@ -26,23 +26,19 @@ install:
   - sudo mv $PYPY /opt/
   - sudo rm $PYPY.tar.bz2
 
-  - export PATH="/opt/$PYPY/bin:$PATH"
-  - echo $PATH
-  - pypy -c 'print(42)'
-  - sudo rm -f /usr/bin/python{,2,2.7}
-  - echo '#!/bin/sh' | sudo tee /usr/bin/python
-  - echo "/opt/$PYPY/bin/pypy \"\$@\"" | sudo tee -a /usr/bin/python
-  - sudo chmod 755 /usr/bin/python
-  - sudo cp /usr/bin/python{,2}
-  - sudo cp /usr/bin/python{,2.7}
-  - sudo cp /usr/bin/{python,pypy}
+  - export PATH="/opt/$PYPY/bin:/home/travis:$PATH"
+  - echo '#!/bin/sh' | sudo tee ~/python
+  - echo "/opt/$PYPY/bin/pypy \"\$@\"" | sudo tee -a ~/python
+  - sudo chmod 755 ~/python
+  - sudo cp ~/python{,2}
+  - sudo cp ~/python{,2.7}
 
   - curl -O https://bootstrap.pypa.io/get-pip.py
-  - sudo /opt/$PYPY/bin/pypy get-pip.py
+  - sudo pypy get-pip.py
 
-  - sudo /opt/$PYPY/bin/pypy -m pip install -r requirements.txt
-  - sudo /opt/$PYPY/bin/pypy -m pip install -r dev-requirements.txt
-  - sudo /opt/$PYPY/bin/pypy setup.py install
+  - sudo pypy -m pip install -r requirements.txt
+  - sudo pypy -m pip install -r dev-requirements.txt
+  - sudo pypy setup.py install
 
   - psql --username=postgres --command="CREATE USER cmsuser WITH PASSWORD 'your_password_here';"
 
@@ -62,12 +58,12 @@ install:
   - ls -al /usr/local/bin/isolate /usr/local/etc/cms.conf
   - groups
 
-  - sudo /opt/$PYPY/bin/cmsInitDB
+  - sudo cmsInitDB
 
 script:
-  - sudo /opt/$PYPY/bin/pypy ./cmstestsuite/RunUnitTests.py -v
-  - sudo /opt/$PYPY/bin/pypy ./cmstestsuite/RunFunctionalTests.py -v
-#  - sudo /opt/$PYPY/bin/cmsRunTests -v
+  - sudo pypy ./cmstestsuite/RunUnitTests.py -v
+  - sudo pypy ./cmstestsuite/RunFunctionalTests.py -v
+#  - sudo cmsRunTests -v
 
 notifications:
   email: no

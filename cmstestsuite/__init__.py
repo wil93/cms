@@ -168,7 +168,7 @@ def configure_cms(options):
 
 def combine_coverage():
     logger.info("Combining coverage results.")
-    sh("/opt/pypy2-v5.4.1-linux64/bin/pypy -m coverage combine")
+    sh("python -m coverage combine")
 
 
 def initialize_aws(rand):
