@@ -205,7 +205,7 @@ def main():
 
     # Clear out any old coverage data.
     logging.info("Clearing old coverage data.")
-    sh("python -m coverage erase")
+    sh("/opt/pypy2-v5.4.1-linux64/bin/pypy -m coverage erase")
 
     # Startup the test runner.
     runner = TestRunner(test_list, contest_id=args.contest, workers=4)
