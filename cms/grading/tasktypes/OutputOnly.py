@@ -108,7 +108,8 @@ class OutputOnly(TaskType):
 
         # Since we allow partial submission, if the file is not
         # present we report that the outcome is 0.
-        if "output_%s.txt" % job.testcase_codename not in job.files:
+        if "output_%s.txt" % job.operation["testcase_codename"] \
+                not in job.files:
             job.success = True
             job.outcome = "0.0"
             job.text = [N_("File not submitted")]
@@ -116,7 +117,7 @@ class OutputOnly(TaskType):
 
         # First and only one step: diffing (manual or with manager).
         output_digest = job.files["output_%s.txt" %
-                                  job.testcase_codename].digest
+                                  job.operation["testcase_codename"]].digest
 
         # Put the files into the sandbox
         sandbox.create_file_from_storage(
@@ -136,7 +137,7 @@ class OutputOnly(TaskType):
         elif self.parameters[0] == "comparator":
             # Manager present: wonderful, he'll do all the job.
             manager_filename = "checker"
-            if not manager_filename in job.managers:
+            if manager_filename not in job.managers:
                 logger.error("Configuration error: missing or "
                              "invalid comparator (it must be "
                              "named `checker')", extra={"operation": job.info})

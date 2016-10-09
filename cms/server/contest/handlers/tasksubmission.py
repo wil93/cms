@@ -3,7 +3,7 @@
 
 # Contest Management System - http://cms-dev.github.io/
 # Copyright © 2010-2014 Giovanni Mascellani <mascellani@poisson.phc.unipi.it>
-# Copyright © 2010-2015 Stefano Maggiolo <s.maggiolo@gmail.com>
+# Copyright © 2010-2016 Stefano Maggiolo <s.maggiolo@gmail.com>
 # Copyright © 2010-2012 Matteo Boscariol <boscarim@hotmail.com>
 # Copyright © 2012-2016 Luca Wehrstedt <luca.wehrstedt@gmail.com>
 # Copyright © 2013 Bernard Blackham <bernard@largestprime.net>
@@ -44,6 +44,7 @@ from urllib import quote
 import tornado.web
 
 from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 
 from cms import config, filename_to_language
 from cms.db import File, Submission, SubmissionResult, Task, Token
@@ -386,6 +387,8 @@ class TaskSubmissionsHandler(BaseHandler):
         submissions = self.sql_session.query(Submission)\
             .filter(Submission.participation == participation)\
             .filter(Submission.task == task)\
+            .options(joinedload(Submission.token))\
+            .options(joinedload(Submission.results))\
             .all()
 
         submissions_left_contest = None
@@ -611,9 +614,7 @@ class UseTokenHandler(BaseHandler):
         # Don't trust the user, check again if (s)he can really play
         # the token.
         tokens_available = self.contest.tokens_available(
-            participation.user.username,
-            task.name,
-            self.timestamp)
+            participation, task, self.timestamp)
         if tokens_available[0] == 0 or tokens_available[2] is not None:
             logger.warning("User %s tried to play a token when they "
                            "shouldn't.", participation.user.username)

@@ -31,6 +31,7 @@ import logging
 import os
 import re
 import subprocess
+import sys
 import time
 
 import requests
@@ -168,7 +169,7 @@ def configure_cms(options):
 
 def combine_coverage():
     logger.info("Combining coverage results.")
-    sh("/opt/pypy2-v5.4.1-linux64/bin/pypy -m coverage combine")
+    sh(sys.executable + " -m coverage combine")
 
 
 def initialize_aws(rand):
@@ -180,7 +181,7 @@ def initialize_aws(rand):
     logger.info("Creating admin...")
     admin_info["username"] = "admin%s" % rand
     admin_info["password"] = "adminpwd"
-    sh("python cmscontrib/AddAdmin.py %(username)s -p %(password)s"
+    sh(sys.executable + " cmscontrib/AddAdmin.py %(username)s -p %(password)s"
        % admin_info)
 
 
