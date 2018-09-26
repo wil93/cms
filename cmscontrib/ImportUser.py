@@ -48,10 +48,9 @@ import os
 import sys
 
 from cms import utf8_decoder
-from cms.db import Participation, SessionGen, User
+from cms.db import Participation, SessionGen, User, Contest
 from cms.db.filecacher import FileCacher
 
-from cmscontrib.importing import ImportDataError, contest_from_db
 from cmscontrib.loaders import choose_loader, build_epilog
 
 
@@ -60,13 +59,14 @@ logger = logging.getLogger(__name__)
 
 class UserImporter(object):
 
-    """This script creates a user
+    """This script imports a new user, using some loader
 
     """
 
-    def __init__(self, path, contest_id, loader_class):
+    def __init__(self, path, contest_id, loader_class, contest_name=None):
         self.file_cacher = FileCacher()
         self.contest_id = contest_id
+        self.contest_name = contest_name
         self.loader = loader_class(os.path.abspath(path), self.file_cacher)
 
     def do_import(self):
@@ -81,9 +81,10 @@ class UserImporter(object):
         logger.info("Creating user %s on the database.", user.username)
         with SessionGen() as session:
             try:
-                contest = contest_from_db(self.contest_id, session)
+                contest = Contest.find(session, contest_id=self.contest_id,
+                                       contest_name=self.contest_name)
                 user = self._user_to_db(session, user)
-            except ImportDataError as e:
+            except ValueError as e:
                 logger.error(str(e))
                 logger.info("Error while importing, no changes were made.")
                 return False
@@ -110,6 +111,7 @@ class UserImporter(object):
             importer = UserImporter(
                 path=user_path,
                 contest_id=self.contest_id,
+                contest_name=self.contest_name,
                 loader_class=get_loader(user_path)
             )
             importer.do_import()
@@ -127,7 +129,7 @@ class UserImporter(object):
         old_user = session.query(User)\
             .filter(User.username == user.username).first()
         if old_user is not None:
-            raise ImportDataError(
+            raise ValueError(
                 "User \"%s\" already exists." % user.username)
         session.add(user)
         return user
@@ -165,6 +167,11 @@ def main():
         action="store", type=int,
         help="id of the contest the users will be attached to"
     )
+    parser.add_argument(
+        "--contest-name",
+        action="store", type=utf8_decoder,
+        help="name of the contest the users will be attached to"
+    )
 
     args = parser.parse_args()
 
@@ -174,6 +181,7 @@ def main():
     importer = UserImporter(
         path=args.target,
         contest_id=args.contest_id,
+        contest_name=args.contest_name,
         loader_class=get_loader(args.target)
     )
 

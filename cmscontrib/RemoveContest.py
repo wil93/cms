@@ -3,6 +3,7 @@
 
 # Contest Management System - http://cms-dev.github.io/
 # Copyright © 2016 Stefano Maggiolo <s.maggiolo@gmail.com>
+# Copyright © 2018 William Di Luigi <williamdiluigi@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -29,9 +30,14 @@ from future.builtins.disabled import *  # noqa
 from future.builtins import *  # noqa
 
 import argparse
+import logging
 import sys
 
+from cms import utf8_decoder
 from cms.db import Contest, SessionGen, ask_for_contest
+
+
+logger = logging.getLogger(__name__)
 
 
 def ask(contest):
@@ -41,13 +47,14 @@ def ask(contest):
     return ans in ["y", "yes"]
 
 
-def remove_contest(contest_id):
+def remove_contest(contest_id=None, contest_name=None):
     with SessionGen() as session:
-        contest = session.query(Contest)\
-            .filter(Contest.id == contest_id).first()
-        if not contest:
-            print("No contest with id %s found." % contest_id)
+        try:
+            contest = Contest.find(session, contest_id, contest_name)
+        except ValueError as e:
+            logger.error(repr(e))
             return False
+
         contest_name = contest.name
         if not ask(contest):
             print("Not removing contest `%s'." % contest_name)
@@ -67,12 +74,15 @@ def main():
         description="Remove a contest from CMS.")
     parser.add_argument("-c", "--contest-id", action="store", type=int,
                         help="id of the contest")
+    parser.add_argument("--contest-name", action="store", type=utf8_decoder,
+                        help="id of the contest")
     args = parser.parse_args()
 
     if args.contest_id is None:
         args.contest_id = ask_for_contest()
 
-    success = remove_contest(contest_id=args.contest_id)
+    success = remove_contest(contest_id=args.contest_id,
+                             contest_name=args.contest_name)
     return 0 if success is True else 1
 
 

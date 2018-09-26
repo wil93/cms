@@ -5,6 +5,7 @@
 # Copyright © 2010-2013 Giovanni Mascellani <mascellani@poisson.phc.unipi.it>
 # Copyright © 2010-2018 Stefano Maggiolo <s.maggiolo@gmail.com>
 # Copyright © 2010-2012 Matteo Boscariol <boscarim@hotmail.com>
+# Copyright © 2018 William Di Luigi <williamdiluigi@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -35,53 +36,8 @@ from cms.db import Contest, Dataset, Task
 
 
 __all__ = [
-    "contest_from_db", "task_from_db",
     "update_contest", "update_task"
 ]
-
-
-class ImportDataError(Exception):
-    pass
-
-
-def contest_from_db(contest_id, session):
-    """Return the contest object with the given id
-
-    contest_id (int|None): the id of the contest, or None to return None.
-    session (Session): SQLAlchemy session to use.
-
-    return (Contest|None): None if contest_id is None, or the contest.
-    raise (ImportDataError): if there is no contest with the given id.
-
-    """
-    if contest_id is None:
-        return None
-
-    contest = Contest.get_from_id(contest_id, session)
-    if contest is None:
-        raise ImportDataError(
-            "The specified contest (id %s) does not exist." % contest_id)
-    return contest
-
-
-def task_from_db(task_name, session):
-    """Return the task object with the given name
-
-    task_name (string|None): the name of the task, or None to return None.
-    session (Session): SQLAlchemy session to use.
-
-    return (Task|None): None if task_name is None, or the task.
-    raise (ImportDataError): if there is no task with the given name.
-
-    """
-    if task_name is None:
-        return None
-
-    task = session.query(Task).filter(Task.name == task_name).first()
-    if task is None:
-        raise ImportDataError(
-            "The specified task (name %s) does not exist." % task_name)
-    return task
 
 
 def _update_columns(old_object, new_object, spec=None):

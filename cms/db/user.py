@@ -35,6 +35,7 @@ from future.builtins import *  # noqa
 
 from datetime import timedelta
 
+from sqlalchemy.orm.exc import MultipleResultsFound
 from sqlalchemy.schema import Column, ForeignKey, CheckConstraint, \
     UniqueConstraint
 from sqlalchemy.types import Boolean, Integer, String, Unicode, DateTime, \
@@ -111,6 +112,32 @@ class User(Base):
         cascade="all, delete-orphan",
         passive_deletes=True,
         back_populates="user")
+
+    @staticmethod
+    def find(session, username):
+        """Return the user object with the given parameters
+
+        session (Session): SQLAlchemy session to use.
+        username (str|None): the name of the user, or None.
+
+        return (User): the user.
+        raise (ValueError): if no user is found.
+
+        """
+        if username is None:
+            raise ValueError("No parameter specified")
+
+        user = session.query(User).filter(User.username == username)
+
+        try:
+            user = user.one_or_none()
+        except MultipleResultsFound:
+            raise ValueError("Multiple users found with the given parameters")
+
+        if user is None:
+            raise ValueError("User %s does not exist.", username)
+        else:
+            return user
 
 
 class Team(Base):

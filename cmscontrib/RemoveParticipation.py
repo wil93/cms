@@ -4,6 +4,7 @@
 # Contest Management System - http://cms-dev.github.io/
 # Copyright © 2016 Myungwoo Chun <mc.tamaki@gmail.com>
 # Copyright © 2016 Stefano Maggiolo <s.maggiolo@gmail.com>
+# Copyright © 2018 William Di Luigi <williamdiluigi@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -40,27 +41,24 @@ from cms.db import SessionGen, Contest, User, Participation, ask_for_contest
 logger = logging.getLogger(__name__)
 
 
-def remove_participation(contest_id, username):
+def remove_participation(contest_id=None, username=None, contest_name=None):
     with SessionGen() as session:
-        user = session.query(User)\
-            .filter(User.username == username).first()
-        if user is None:
-            logger.error("User %s does not exist.", username)
-            return False
-
-        contest = session.query(Contest)\
-            .filter(Contest.id == contest_id).first()
-        if contest is None:
-            logger.error("Contest id %d does not exist.", contest_id)
+        try:
+            user = User.find(username=username)
+            contest = Contest.find(contest_id=contest_id, contest_name=contest_name)
+        except ValueError as e:
+            logger.error(repr(e))
             return False
 
         participation = session.query(Participation)\
-            .filter(Participation.contest_id == contest_id)\
-            .filter(Participation.user == user).first()
+            .filter(Participation.contest == contest)\
+            .filter(Participation.user == user).one_or_none()
+
         if participation is None:
             logger.error("Participation of %s in contest %d does not exists.",
                          username, contest_id)
             return False
+
         session.delete(participation)
         session.commit()
 
@@ -77,13 +75,16 @@ def main():
                         help="username of the user")
     parser.add_argument("-c", "--contest-id", action="store", type=int,
                         help="id of contest the user is in")
+    parser.add_argument("--contest-name", action="store", type=utf8_decoder,
+                        help="name of contest the user is in")
     args = parser.parse_args()
 
-    if args.contest_id is None:
+    if args.contest_id is None and args.contest_name is None:
         args.contest_id = ask_for_contest()
 
     success = remove_participation(contest_id=args.contest_id,
-                                   username=args.username)
+                                   username=args.username,
+                                   contest_name=args.contest_name)
     return 0 if success is True else 1
 
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Contest Management System - http://cms-dev.github.io/
-# Copyright © 2016 William Di Luigi <williamdiluigi@gmail.com>
+# Copyright © 2018 William Di Luigi <williamdiluigi@gmail.com>
 # Copyright © 2016-2018 Stefano Maggiolo <s.maggiolo@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -42,10 +42,9 @@ import os
 import sys
 
 from cms import utf8_decoder
-from cms.db import Dataset, SessionGen
+from cms.db import Dataset, SessionGen, Task
 from cms.db.filecacher import FileCacher
 
-from cmscontrib.importing import ImportDataError, task_from_db
 from cmscontrib.loaders import choose_loader, build_epilog
 
 
@@ -53,10 +52,13 @@ logger = logging.getLogger(__name__)
 
 
 class DatasetImporter(object):
-    def __init__(self, path, description, loader_class):
+    def __init__(self, path, description, loader_class, task_id=None,
+                 contest_name=None):
         self.file_cacher = FileCacher()
         self.description = description
         self.loader = loader_class(os.path.abspath(path), self.file_cacher)
+        self.task_id = task_id
+        self.contest_name = contest_name
 
     def do_import(self):
         """Get the task from the TaskLoader, but store *just* its dataset."""
@@ -80,9 +82,10 @@ class DatasetImporter(object):
 
         with SessionGen() as session:
             try:
-                task = task_from_db(task_name, session)
+                task = Task.find(session, task_name, self.task_id,
+                                 self.contest_name)
                 self._dataset_to_db(session, dataset, task)
-            except ImportDataError as e:
+            except ValueError as e:
                 logger.error(str(e))
                 logger.info("Error while importing, no changes were made.")
                 return False
@@ -99,8 +102,8 @@ class DatasetImporter(object):
             .filter(Dataset.task_id == task.id)\
             .filter(Dataset.description == dataset.description).first()
         if old_dataset is not None:
-            raise ImportDataError("Dataset \"%s\" already exists."
-                                  % dataset.description)
+            raise ValueError("Dataset \"%s\" already exists."
+                             % dataset.description)
         dataset.task = task
         session.add(dataset)
         return dataset
@@ -126,6 +129,10 @@ def main():
         action="store", type=utf8_decoder,
         help="target file/directory from where to import the dataset"
     )
+    parser.add_argument("--contest-name", action="store", type=utf8_decoder,
+                        help="optional task ID used for disambiguation")
+    parser.add_argument("-t", "--task-id", action="store", type=int,
+                        help="optional task ID used for disambiguation")
 
     args = parser.parse_args()
 
@@ -139,7 +146,9 @@ def main():
 
     importer = DatasetImporter(path=args.target,
                                description=args.description,
-                               loader_class=loader_class)
+                               loader_class=loader_class,
+                               task_id=args.task_id,
+                               contest_name=args.contest_name)
     success = importer.do_import()
     return 0 if success is True else 1
 

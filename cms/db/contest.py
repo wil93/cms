@@ -37,6 +37,7 @@ from future.builtins import *  # noqa
 from datetime import datetime, timedelta
 
 from sqlalchemy.ext.orderinglist import ordering_list
+from sqlalchemy.orm.exc import MultipleResultsFound
 from sqlalchemy.schema import Column, ForeignKey, CheckConstraint
 from sqlalchemy.types import Integer, Unicode, DateTime, Interval, Enum, \
     Boolean, String
@@ -307,6 +308,40 @@ class Contest(Base):
             elif timestamp <= self.analysis_stop:
                 return 2
         return 3
+
+    @staticmethod
+    def find(session, contest_id=None, contest_name=None):
+        """Return the contest object with the given parameters
+
+        contest_id (int|None): the id of the contest, or None.
+        contest_name (str|None): the name of the contest, or None.
+        session (Session): SQLAlchemy session to use.
+
+        return (Contest): returns the contest.
+        raise:
+
+        """
+        if contest_id is None and contest_name is None:
+            raise ImportError("No parameter was specified")
+
+        contest = session.query(Contest)
+
+        if contest_id is not None:
+            contest = contest.filter(Contest.id == contest_id)
+
+        if contest_name is not None:
+            contest = contest.filter(Contest.name == contest_name)
+
+        try:
+            contest = contest.one_or_none()
+        except MultipleResultsFound:
+            raise ValueError("Multiple contests found with the given "\
+                             "parameters")
+
+        if contest is None:
+            raise ValueError("No contest found")
+        else:
+            return contest
 
 
 class Announcement(Base):

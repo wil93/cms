@@ -99,8 +99,7 @@ class Task(Base):
     # Short name and long human readable title of the task.
     name = Column(
         Codename,
-        nullable=False,
-        unique=True)
+        nullable=False)
     title = Column(
         Unicode,
         nullable=False)
@@ -271,6 +270,53 @@ class Task(Base):
         cascade="all, delete-orphan",
         passive_deletes=True,
         back_populates="task")
+
+    @staticmethod
+    def find(session, task_name=None, task_id=None, contest_name=None):
+        """Return the task object with the given parameters
+
+        session (Session): SQLAlchemy session to use.
+        task_name (str|None): the name of the task, or None.
+        task_id (int|None): the ID of the task, or None.
+        contest_name (str|None): the name of the contest to which the task is
+                                 attached, or None.
+
+        return (Task): the task.
+        raise (ValueError): if the task name is ambiguous or if no task is
+                            found.
+
+        """
+        if task_name is None and task_id is None and contest_name is None:
+            raise ValueError("No parameter was specified")
+
+        tasks = session.query(Task)
+
+        if task_name is not None:
+            tasks = tasks.filter(Task.name == task_name)
+
+        if task_id is not None:
+            tasks = tasks.filter(Task.id == task_id)
+
+        if contest_name is not None:
+            tasks = tasks.filter(Task.contest.name == contest_name)
+
+        tasks = tasks.all()
+
+        if len(tasks) == 0:
+            raise ValueError("No task found")
+        elif len(tasks) > 1:
+            message = "Task name is ambiguous, please specify the --contest-name " \
+                      "or the --task-id"
+
+            for t in tasks:
+                message += "\n ID = %3d | %s (%s) | %s" % (
+                    t.id, t.name, t.title, "<no contest>"
+                    if t.contest is None else t.contest.name)
+
+            raise ValueError(message)
+        else:
+            # Only one task is found
+            return tasks[0]
 
 
 class Statement(Base):
