@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 
 
 def add_statement(task_name, language_code, statement_file,
-                  overwrite, task_id=None):
+                  overwrite, task_id=None, contest_name=None):
     logger.info("Adding the statement(language: %s) of task %s "
                 "in the database.", language_code, task_name)
 
@@ -56,7 +56,7 @@ def add_statement(task_name, language_code, statement_file,
         raise ValueError("Statement file should be a pdf file.")
 
     with SessionGen() as session:
-        task = Task.find(session, task_name, task_id)
+        task = Task.find(session, task_name, task_id, contest_name)
 
         try:
             file_cacher = FileCacher()
@@ -99,6 +99,8 @@ def main():
                         help="absolute/relative path of statement file")
     parser.add_argument("-t", "--task-id", action="store", type=int,
                         help="optional task ID used for disambiguation")
+    parser.add_argument("--contest-name", action="store", type=utf8_decoder,
+                        help="name of the contest")
     parser.add_argument("-o", "--overwrite", dest="overwrite",
                         action="store_true",
                         help="overwrite existing statement")
@@ -109,7 +111,8 @@ def main():
     try:
         add_statement(
             args.task_name, args.language_code,
-            args.statement_file, args.overwrite, args.task_id)
+            args.statement_file, args.overwrite, args.task_id,
+            args.contest_name)
     except ValueError as e:
         logger.error(str(e))
         logger.info("Error while importing, no changes were made.")
