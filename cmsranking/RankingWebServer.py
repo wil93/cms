@@ -356,6 +356,9 @@ class HistoryHandler:
 class ScoreHandler:
 
     def __init__(self, stores):
+        self.user_store = stores["user"]
+        self.task_store = stores["task"]
+        self.contest_store = stores["contest"]
         self.scoring_store = stores["scoring"]
 
     def __call__(self, environ, start_response):
@@ -368,11 +371,60 @@ class ScoreHandler:
         if request.accept_mimetypes.quality("application/json") <= 0:
             raise NotAcceptable()
 
+        earliest = dict()
+        for task_id in self.task_store._store.keys():
+            earliest[task_id] = float('inf')
+
         result = dict()
-        for u_id, tasks in self.scoring_store._scores.items():
-            for t_id, score in tasks.items():
-                if score.get_score() > 0.0:
-                    result.setdefault(u_id, dict())[t_id] = score.get_score()
+
+        for user_id in self.user_store._store.keys():
+            result[user_id] = dict()
+
+            for task_id in self.task_store._store.keys():
+                r = dict()
+
+                subs = list(self.scoring_store.get_submissions(user_id,
+                                                               task_id)
+                                              .values())
+                subs.sort(key=lambda x: x.time)
+
+                r["solved"] = 0
+                r["wrongs"] = 0
+                r["time"] = 0
+                r["penalty"] = 0
+                for s in subs:
+                    max_score = self.task_store._store[task_id].max_score
+                    contest = self.contest_store._store[self.task_store
+                                                            ._store[task_id]
+                                                            .contest]
+
+                    if abs(s.score - max_score) < 1e-5:
+                        r["solved"] = 1
+                        r["time"] = (s.time - contest.begin) // 60
+                        break
+
+                    r["wrongs"] += 1
+
+                result[user_id][task_id] = r
+
+                if r["solved"]:
+                    earliest[task_id] = min(earliest[task_id], r["time"])
+
+        for user_id in self.user_store._store.keys():
+            for task_id in self.task_store._store.keys():
+                if result[user_id][task_id]["solved"]:
+                    result[user_id][task_id]["first"] = (
+                        earliest[task_id] == result[user_id][task_id]["time"]
+                    )
+
+                if not result[user_id][task_id]["solved"]:
+                    continue
+
+                # seconds to minutes
+                result[user_id][task_id]["penalty"] = (
+                    result[user_id][task_id]["time"]
+                    + 20 * result[user_id][task_id]["wrongs"]
+                )
 
         response = Response()
         response.status_code = 200

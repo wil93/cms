@@ -612,31 +612,34 @@ var DataStore = new function () {
         var contest = self.contests[c_id];
 
         // Task
-        new_t_score = round(new_t_score, task["score_precision"]);
         var old_t_score = user["t_" + t_id];
         user["t_" + t_id] = new_t_score;
 
         // Contest
-        var new_c_score = 0.0;  // = max(user's score on t for t in contest.tasks)
+        var new_c_score = {
+            solved: 0.0,
+            penalty: 0.0
+        };
         for (var i = 0; i < contest.tasks.length; i += 1) {
-            new_c_score += user["t_" + contest.tasks[i].key];
+            new_c_score.solved += user["t_" + contest.tasks[i].key].solved;
+            new_c_score.penalty += user["t_" + contest.tasks[i].key].penalty;
         }
-        new_c_score = round(new_c_score, contest["score_precision"]);
         var old_c_score = user["c_" + c_id];
         user["c_" + c_id] = new_c_score;
 
         // Global
-        var new_g_score = 0.0;  // = max(user's score on c for c in self.contest_list)
+        var new_g_score = {
+            solved: 0.0,
+            penalty: 0.0
+        };
         for (var i = 0; i < self.contest_list.length; i += 1) {
-            new_g_score += user["c_" + self.contest_list[i].key];
+            new_g_score.solved += user["c_" + self.contest_list[i].key].solved;
+            new_g_score.penalty += user["c_" + self.contest_list[i].key].penalty;
         }
-        new_g_score = round(new_g_score, self.global_score_precision);
         var old_g_score = user["global"];
         user["global"] = new_g_score;
 
-        console.info("Changed score for user " + u_id + " and task " + t_id + ": " + old_t_score + " -> " + new_t_score);
-
-        self.score_events.fire(u_id, user, t_id, task, new_g_score - old_g_score);
+        self.score_events.fire(u_id, user, t_id, task, new_g_score.solved - old_g_score.solved);
     };
 
     self.get_score_t = function (u_id, t_id) {
@@ -654,6 +657,18 @@ var DataStore = new function () {
 
     ////// Rank
 
+    self.less_than = function(a, b) {
+        return a.solved < b.solved || (a.solved === b.solved && a.penalty > b.penalty);
+    }
+
+    self.equal = function(a, b) {
+        return a.solved === b.solved && a.penalty === b.penalty;
+    }
+
+    self.less_than_equal = function(a, b) {
+        return self.less_than(a, b) || self.equal(a, b);
+    }
+
     self.init_ranks = function () {
         // Make a list of all users
         var list = new Array();
@@ -662,9 +677,14 @@ var DataStore = new function () {
             list.push(self.users[u_id]);
         }
 
-        // Sort it by decreasing score
-        list.sort(function (a, b) {
-            return b["global"] - a["global"];
+        // Sort it by decreasing score, and increasing penalty
+        list.sort(function(a, b) {
+            if (self.less_than(a["global"], b["global"]))
+                return +1;
+            else if (self.less_than(b["global"], a["global"]))
+                return -1;
+            else
+                return 0;
         });
 
         // Assign ranks
@@ -676,7 +696,7 @@ var DataStore = new function () {
             user = list[i];
             score = user["global"];
 
-            if (score === prev_score) {
+            if (prev_score !== null && self.equal(score, prev_score)) {
                 equal += 1;
             } else {
                 prev_score = score;
@@ -699,7 +719,7 @@ var DataStore = new function () {
             var new_rank = 1;
 
             for (var u_id in self.users) {
-                if (self.users[u_id]["global"] > user["global"]) {
+                if (self.less_than(user["global"], self.users[u_id]["global"])) {
                     new_rank += 1;
                 }
             }
@@ -752,16 +772,16 @@ var DataStore = new function () {
             var user2 = self.users[u2_id];
             // this condition is equivalent to
             //     old_score <= user2["global"] < new_score
-            if (old_rank >= user2["rank"] && user2["global"] < new_score) {
+            if (old_rank >= user2["rank"] && self.less_than(user2["global"], new_score)) {
                 user2["rank"] += 1;
                 self.rank_events.fire(u2_id, user2, +1);
             // this condition is equivalent to
             //     new_score <= user2["global"] < old_score
-            } else if (new_score <= user2["global"] && user2["rank"] > old_rank) {
+            } else if (self.less_than_equal(new_score, user2["global"]) && user2["rank"] > old_rank) {
                 user2["rank"] -= 1;
                 self.rank_events.fire(u2_id, user2, -1);
             }
-            if (user2["global"] > new_score) {
+            if (self.less_than(new_score, user2["global"])) {
                 new_rank += 1;
             }
         }
