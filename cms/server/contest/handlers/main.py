@@ -30,11 +30,13 @@
 import ipaddress
 import json
 import logging
+import random
+import string
 
 import tornado.web
 
 from cms import config
-from cms.db import PrintJob
+from cms.db import PrintJob, User, Participation, Team
 from cms.grading.steps import COMPILATION_MESSAGES, EVALUATION_MESSAGES
 from cms.server import multi_contest
 from cms.server.contest.authentication import validate_login
@@ -61,6 +63,59 @@ class MainHandler(ContestHandler):
     @multi_contest
     def get(self):
         self.render("overview.html", **self.r_params)
+
+
+class RegisterHandler(ContestHandler):
+    """Register handler.
+    """
+    @multi_contest
+    def post(self):
+        try:
+            team_name = self.get_argument("team_name")
+            team_member1 = self.get_argument("team_member1").title()
+            team_member2 = self.get_argument("team_member2", "").title()
+            team_member3 = self.get_argument("team_member3", "").title()
+            institute = self.get_argument("institute")
+        except Exception:
+            raise
+            # self.redirect("/register")
+
+        team = self.sql_session.query(Team)\
+                   .filter(Team.code == institute)\
+                   .one()
+
+        first_name = team_name
+        last_name = team_member1
+        if len(team_member2) > 0:
+            last_name += ", " + team_member2
+        if len(team_member3) > 0:
+            last_name += ", " + team_member3
+
+        tot_users = self.sql_session.query(User).count()
+
+        # Random username / password
+        username = "team" + str(tot_users + 1)
+        password = "".join(random.choice(string.ascii_lowercase)
+                           for i in range(8))
+
+        user = User(first_name, last_name, username,
+                    password="plaintext:" + password)
+        self.sql_session.add(user)
+
+        participation = Participation(user=user, contest=self.contest,
+                                      team=team)
+        self.sql_session.add(participation)
+
+        self.sql_session.commit()
+
+        self.r_params["username"] = username
+        self.r_params["password"] = password
+
+        self.render("register.html", **self.r_params)
+
+    @multi_contest
+    def get(self):
+        self.render("register.html", **self.r_params)
 
 
 class LoginHandler(ContestHandler):
