@@ -41,10 +41,6 @@ var Scoreboard = new function () {
         self.thead_el = $('#Scoreboard_head');
         self.tbody_el = $('#Scoreboard_body');
 
-        self.tcols_el.html("");
-        self.thead_el.html("");
-        self.tbody_el.html("");
-
         self.generate();
 
         DataStore.user_create.add(self.create_user);
@@ -56,8 +52,8 @@ var Scoreboard = new function () {
         DataStore.select_events.add(self.select_handler);
 
         setTimeout(function() {
-            self.init();
-        }, 5000);
+            location.reload();
+        }, 30000);
     };
 
 
