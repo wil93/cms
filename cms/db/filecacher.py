@@ -27,7 +27,7 @@
 import atexit
 import io
 import logging
-import os
+import os.path
 import tempfile
 from abc import ABCMeta, abstractmethod
 
@@ -538,7 +538,8 @@ class FileCacher:
     @staticmethod
     def _create_directory_or_die(directory):
         """Create directory and ensure it exists, or raise a RuntimeError."""
-        if not mkdir(directory):
+        os.makedirs(directory, exist_ok=True)
+        if not os.path.exists(directory):
             msg = "Cannot create required directory '%s'." % directory
             logger.error(msg)
             raise RuntimeError(msg)

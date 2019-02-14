@@ -125,6 +125,7 @@ class Service:
         log_filename = time.strftime("%Y-%m-%d-%H-%M-%S.log")
 
         # Install a file handler.
+        os.makedirs(log_dir, exist_ok=True)
         file_handler = FileHandler(os.path.join(log_dir, log_filename),
                                    mode='w', encoding='utf-8')
         if config.file_log_debug:
