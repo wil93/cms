@@ -20,6 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import functools
+import ipaddress
 import json
 import logging
 import socket
@@ -478,7 +479,9 @@ class RemoteServiceClient(RemoteServiceBase):
 
         """
         try:
-            sock = gevent.socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            info = socket.getaddrinfo(self.remote_address.ip, self.remote_address.port)
+            info = info[0]
+            sock = gevent.socket.socket(info[0], socket.SOCK_STREAM)
             sock.connect(self.remote_address)
         except OSError as error:
             logger.debug("Couldn't connect to %s: %s.",

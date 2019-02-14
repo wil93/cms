@@ -26,6 +26,7 @@ using gevent and JSON encoding.
 
 import errno
 import functools
+import ipaddress
 import logging
 import os
 import pwd
@@ -97,7 +98,8 @@ class Service:
                               "Is it specified in core_services in cms.conf?" %
                               (self._my_coord,))
 
-        self.rpc_server = StreamServer(address, self._connection_handler)
+        info = socket.getaddrinfo(address.ip, address.port)
+        self.rpc_server = StreamServer(info[0][-1][:2], self._connection_handler)
         self.backdoor = None
 
     def initialize_logging(self):
@@ -158,8 +160,7 @@ class Service:
 
         """
         try:
-            ipaddr, port = address
-            ipaddr = gevent.socket.gethostbyname(ipaddr)
+            ipaddr, port = address[:2]
             address = Address(ipaddr, port)
         except OSError:
             logger.warning("Unexpected error.", exc_info=True)
