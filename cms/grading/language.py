@@ -35,7 +35,7 @@ class Language(metaclass=ABCMeta):
         """Returns the name of the language.
 
         Should be uniquely describing the language and the
-        version/compiler used, for example "C++11 / g++" better than "C++",
+        version/compiler used, for example "C++14 / g++" better than "C++",
         or "Java 1.5 / JDK", "Java 1.4 / gcj" better than "Java".
 
         return (str): the name
