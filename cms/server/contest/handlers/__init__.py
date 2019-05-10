@@ -37,7 +37,8 @@ from .main import \
 from .task import \
     TaskDescriptionHandler, \
     TaskStatementViewHandler, \
-    TaskAttachmentViewHandler
+    TaskAttachmentViewHandler, \
+    TaskAssetViewHandler
 from .tasksubmission import \
     SubmitHandler, \
     TaskSubmissionsHandler, \
@@ -69,8 +70,9 @@ HANDLERS = [
     # Tasks
 
     (r"/tasks/(.*)/description", TaskDescriptionHandler),
-    (r"/tasks/(.*)/statements/(.*)", TaskStatementViewHandler),
+    (r"/tasks/(.*)/statements/(.*)/(.*)", TaskStatementViewHandler),
     (r"/tasks/(.*)/attachments/(.*)", TaskAttachmentViewHandler),
+    (r"/tasks/(.*)/assets/(.*)", TaskAssetViewHandler),
 
     # Task submissions
 
