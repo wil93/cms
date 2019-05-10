@@ -66,6 +66,10 @@ var Config = new function () {
         return "scores";
     };
 
+    self.get_substat_url = function () {
+        return "substat/";
+    };
+
     self.get_event_url = function (last_event_id) {
         return "events?last_event_id=" + last_event_id;
     };

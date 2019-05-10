@@ -24,9 +24,9 @@ a {
     outline: none;
 }
 
-abbr {
+/* abbr {
     border-bottom: 1px dotted black;
-}
+} */
 
 /******************************************************************************\
 |                                                                              |
@@ -374,7 +374,7 @@ abbr {
 #Scoreboard {
     width: 100%;
     table-layout: fixed;
-    margin: 3em 0;
+    /* margin: 3em 0; */
 }
 
 #Scoreboard_cols col.sel {
@@ -421,9 +421,9 @@ abbr {
 #Scoreboard_body tr td.team img {
     display: block;
     max-width: 40px;
-    max-height: 20px;
+    max-height: 40px;
     margin: 0 auto;
-    box-shadow: 0 0 2px 0 gray;
+    /* box-shadow: 0 0 2px 0 gray; */
 }
 
 #Scoreboard_head tr th,
@@ -861,6 +861,21 @@ abbr {
     /*background-image: linear-gradient(rgb(115, 210, 22), rgb(78, 154, 5));*/
 }
 
+.score_ac {
+    background-color: rgb(201, 255, 151);
+}
+
+.first_ac {
+    background-color: rgb(122, 196, 53);
+}
+
+.score_ac strong {
+    color: rgb(45, 88, 4);
+}
+
+td.score {
+    border: 1px solid #a2a2a2;
+}
 
 /******************************************************************************\
 |                                                                              |
@@ -926,14 +941,19 @@ abbr {
 
 #UserDetail_f_name {
     top: 0;
+    font-weight: bold;
+    left: 80px;
 }
 
 #UserDetail_l_name {
-    top: 1.5em;
+    top: 4em;
+    font-size: larger;
+    left: 0;
 }
 
 #UserDetail_team {
     bottom: 100px;
+    display: none;
 }
 
 #UserDetail_flag {
@@ -950,7 +970,10 @@ abbr {
 
 #UserDetail_flag {
     margin: -1px;
-    border: 1px solid gray;
+    left: 0;
+    top: 0;
+    max-width: 60px;
+    /* border: 1px solid gray; */
 }
 
 #UserDetail_flag.hidden {

@@ -50,6 +50,10 @@ var Scoreboard = new function () {
         DataStore.score_events.add(self.score_handler);
         DataStore.rank_events.add(self.rank_handler);
         DataStore.select_events.add(self.select_handler);
+
+        setTimeout(function() {
+            location.reload();
+        }, 30000);
     };
 
 
@@ -153,14 +157,19 @@ var Scoreboard = new function () {
         var result = " \
 <col class=\"sel\"/> \
 <col class=\"rank\"/> \
-<col class=\"f_name\"/> <col/><col/><col/><col/><col/><col/><col/><col/><col/> \
-<col class=\"l_name\"/> <col/><col/><col/><col/><col/><col/><col/><col/><col/> \
-<col class=\"team\"/>";
+<col class=\"team\"/> \
+<col class=\"f_name\"/> <col/><col/><col/><col/><col/><col/><col/><col/><col/>";
 
         var contests = DataStore.contest_list;
         for (var i in contests) {
             var contest = contests[i];
             var c_id = contest["key"];
+
+            result += " \
+<col class=\"score contest\" data-contest=\"" + c_id + "\" data-sort_key=\"c_" + c_id + "\"/> <col/><col/><col/>";
+
+            result += " \
+<col class=\"penalty contest\" data-contest=\"" + c_id + "\" data-sort_key=\"c_" + c_id + "\"/> <col/><col/><col/>";
 
             var tasks = contest["tasks"];
             for (var j in tasks) {
@@ -170,13 +179,10 @@ var Scoreboard = new function () {
                 result += " \
 <col class=\"score task\" data-task=\"" + t_id + "\" data-sort_key=\"t_" + t_id + "\"/> <col/><col/>";
             }
-
-            result += " \
-<col class=\"score contest\" data-contest=\"" + c_id + "\" data-sort_key=\"c_" + c_id + "\"/> <col/><col/><col/>";
         }
 
-        result += " \
-<col class=\"score global\" data-sort_key=\"global\"/> <col/><col/><col/><col/>";
+        /* result += " \
+<col class=\"score global\" data-sort_key=\"global\"/> <col/><col/><col/><col/>"; */
 
         return result;
     };
@@ -188,14 +194,19 @@ var Scoreboard = new function () {
 <tr> \
     <th class=\"sel\"></th> \
     <th class=\"rank\">Rank</th> \
-    <th colspan=\"10\" class=\"f_name\">First Name</th> \
-    <th colspan=\"10\" class=\"l_name\">Last Name</th> \
-    <th class=\"team\">Team</th>";
+    <th class=\"team\">🏰</th> \
+    <th colspan=\"20\" class=\"f_name\">Name</th>";
 
         var contests = DataStore.contest_list;
         for (var i in contests) {
             var contest = contests[i];
             var c_id = contest["key"];
+
+            result += " \
+    <th colspan=\"4\" class=\"score contest\" data-contest=\"" + c_id + "\" data-sort_key=\"c_" + c_id + "\">Score</th>";
+
+    result += " \
+    <th colspan=\"5\" class=\"penalty contest\" data-contest=\"" + c_id + "\" data-sort_key=\"c_" + c_id + "\">Penalty</th>";
 
             var tasks = contest["tasks"];
             for (var j in tasks) {
@@ -205,14 +216,13 @@ var Scoreboard = new function () {
                 result += " \
     <th colspan=\"3\" class=\"score task\" data-task=\"" + t_id + "\" data-sort_key=\"t_" + t_id + "\"><abbr title=\"" + escapeHTML(task["name"]) + "\">" + escapeHTML(task["short_name"]) + "</abbr></th>";
             }
-
-            result += " \
-    <th colspan=\"4\" class=\"score contest\" data-contest=\"" + c_id + "\" data-sort_key=\"c_" + c_id + "\"><abbr title=\"" + escapeHTML(contest["name"]) + "\">" + escapeHTML(contest["name"]) + "</abbr></th>";
         }
 
-        result += " \
+        /*result += " \
     <th colspan=\"5\" class=\"score global\" data-sort_key=\"global\">Global</th> \
-</tr>";
+</tr>";*/
+
+        result += "</tr>";
 
         return result;
     };
@@ -234,9 +244,7 @@ var Scoreboard = new function () {
         var result = " \
 <tr class=\"user" + (user["selected"] > 0 ? " selected color" + user["selected"] : "") + "\" data-user=\"" + user["key"] + "\"> \
     <td class=\"sel\"></td> \
-    <td class=\"rank\">" + user["rank"] + "</td> \
-    <td colspan=\"10\" class=\"f_name\">" + escapeHTML(user["f_name"]) + "</td> \
-    <td colspan=\"10\" class=\"l_name\">" + escapeHTML(user["l_name"]) + "</td>";
+    <td class=\"rank\">" + user["rank"] + "</td>";
 
         if (user['team']) {
             result += " \
@@ -246,30 +254,67 @@ var Scoreboard = new function () {
     <td class=\"team\"></td>";
         }
 
+        result += "\
+    <td colspan=\"20\" class=\"f_name\">" + escapeHTML(user["f_name"]) + "</td>";
+    // <td colspan=\"10\" class=\"l_name\">" + escapeHTML(user["l_name"]) + "</td>";
+
+
+        console.log(DataStore);
         var contests = DataStore.contest_list;
         for (var i in contests) {
             var contest = contests[i];
             var c_id = contest["key"];
+
+            result += " \
+    <td colspan=\"4\" class=\"team contest " + score_class + "\" data-contest=\"" + c_id + "\" data-sort_key=\"c_" + c_id + "\"><strong style=\"font-size:x-large;\">" + user["c_" + c_id].solved + "</strong></td>";
+
+            result += " \
+    <td colspan=\"5\" class=\"team contest\">" + user["c_" + c_id].penalty + "</td>";
 
             var tasks = contest["tasks"];
             for (var j in tasks) {
                 var task = tasks[j];
                 var t_id = task["key"];
 
-                var score_class = self.get_score_class(user["t_" + t_id], task["max_score"]);
-                result += " \
-    <td colspan=\"3\" class=\"score task " + score_class + "\" data-task=\"" + t_id + "\" data-sort_key=\"t_" + t_id + "\">" + round_to_str(user["t_" + t_id], task["score_precision"]) + "</td>";
-            }
+                var thescore = 0;
+                var score_class = "";
 
-            var score_class = self.get_score_class(user["c_" + c_id], contest["max_score"]);
-            result += " \
-    <td colspan=\"4\" class=\"score contest " + score_class + "\" data-contest=\"" + c_id + "\" data-sort_key=\"c_" + c_id + "\">" + round_to_str(user["c_" + c_id], contest["score_precision"]) + "</td>";
+                thescore = "<strong>";
+                if (user["t_" + t_id].wrongs > 0)
+                    thescore += user["t_" + t_id].wrongs;
+                else
+                    thescore += "–";
+                thescore += "</strong>";
+
+                if (user["t_" + t_id]["solved"]) {
+                    // var minutes = Math.floor(user["t_" + t_id].time / 60);
+                    var minutes = +user["t_" + t_id].time;
+
+                    thescore += "<br><small>"
+                        + Math.floor(minutes / 60)
+                        + ":"
+                        + ((minutes % 60 < 10) ? "0" : "")
+                        + (minutes % 60)
+                        + "</small>";
+
+                    score_class = "score_ac";
+                    if (user["t_" + t_id].first)
+                        score_class += " first_ac";
+                } else {
+                    score_class = "score_wa";
+                }
+
+                result += " \
+    <td colspan=\"3\" class=\"score task " + score_class + "\" data-task=\"" + t_id + "\" data-sort_key=\"t_" + t_id + "\">" + thescore + "</td>";
+            }
         }
 
         var score_class = self.get_score_class(user["global"], DataStore.global_max_score);
-        result += " \
+        /* result += " \
     <td colspan=\"5\" class=\"score global " + score_class + "\" data-sort_key=\"global\">" + round_to_str(user["global"], DataStore.global_score_precision) + "</td> \
-</tr>";
+</tr>"; */
+
+        result += "</tr>";
 
         return result;
     };
@@ -296,16 +341,34 @@ var Scoreboard = new function () {
     // - the key
     self.user_list = new Array();
 
+    self.less_than = function(a, b) {
+        if (typeof a === "object")
+            return a.solved < b.solved || (a.solved === b.solved && a.penalty > b.penalty);
+        else
+            return a < b;
+    }
+
+    self.equal = function(a, b) {
+        if (typeof a === "object")
+            return a.solved === b.solved && a.penalty === b.penalty;
+        else
+            return a === b;
+    }
+
+    self.less_than_equal = function(a, b) {
+        return self.less_than(a, b) || self.equal(a, b);
+    }
 
     // Compare two users. Returns -1 if "a < b" or +1 if "a >= b"
     // (where a < b means that a shoud go above b in the scoreboard)
     self.compare_users = function (a, b) {
         var sort_key = self.sort_key;
-        if ((a[sort_key] > b[sort_key]) || ((a[sort_key] == b[sort_key]) &&
-           ((a["global"] > b["global"]) || ((a["global"] == b["global"]) &&
-           ((a["l_name"] < b["l_name"]) || ((a["l_name"] == b["l_name"]) &&
-           ((a["f_name"] < b["f_name"]) || ((a["f_name"] == b["f_name"]) &&
-           (a["key"] <= b["key"]))))))))) {
+
+        if (self.less_than(b[sort_key], a[sort_key]) || (self.equal(a[sort_key], b[sort_key]) &&
+           (self.less_than(b["global"], a["global"]) || ((self.equal(a["global"], b["global"])) &&
+           (self.less_than(a["l_name"], b["l_name"]) || (self.equal(a["l_name"], b["l_name"]) &&
+           (self.less_than(a["f_name"], b["f_name"]) || (self.equal(a["f_name"], b["f_name"]) &&
+           self.less_than_equal(a["key"], b["key"]))))))))) {
             return -1;
         } else {
             return +1;
