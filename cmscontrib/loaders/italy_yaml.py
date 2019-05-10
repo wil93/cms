@@ -612,7 +612,7 @@ class YamlLoader(ContestLoader, TaskLoader, UserLoader, TeamLoader):
                     args["score_type_parameters"] = input_value
                 else:
                     subtasks.append([points, testcases])
-                    assert(100 == sum([int(st[0]) for st in subtasks]))
+                    #assert(100 == sum([int(st[0]) for st in subtasks]))
                     n_input = sum([int(st[1]) for st in subtasks])
                     args["score_type"] = "GroupMin"
                     args["score_type_parameters"] = subtasks

@@ -637,16 +637,7 @@ td.token_rules p:last-child {
 }
 
 #submission_detail .subtask-head {
-    font-size: 16px;
-    line-height: 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #E0E0E0;
-    cursor: pointer;
-    height: 20px;
-    padding: 4px;
-    margin-bottom: 10px;
-    box-shadow: 0 0 2px 2px #D0D0D0 inset;
+    display: none;
 }
 
 #submission_detail .subtask.open .subtask-head {
@@ -688,7 +679,7 @@ td.token_rules p:last-child {
 }
 
 #submission_detail .subtask:not(.open) .subtask-body {
-    display: none;
+    display: block;
 }
 
 #submission_detail table.testcase-list {
