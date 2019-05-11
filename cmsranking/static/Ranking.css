@@ -961,11 +961,7 @@ td.score {
 }
 
 #UserDetail_face {
-    position: absolute;
-    top: 0;
-    left: 0;
-    max-width: 160px;
-    max-height: 240px;
+    display: none;
 }
 
 #UserDetail_flag {
