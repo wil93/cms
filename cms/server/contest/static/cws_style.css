@@ -418,9 +418,7 @@ td.token_rules p:last-child {
 /*** Task score */
 
 .task_score_container {
-    display: flex;
-    justify-content: space-evenly;
-    font-weight: bold;
+    display: none;
 }
 
 .task_score {

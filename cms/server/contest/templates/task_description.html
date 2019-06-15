@@ -8,6 +8,9 @@
 
 <div class="page-header">
     <h1>{% trans name=task.title, short_name=task.name %}{{ short_name }} — {{ name }} <small>description</small>{% endtrans %}</h1>
+	<br>
+    Time Limit: <strong>{{ task.active_dataset.time_limit|format_duration(length="long") }}</strong><br>
+    Memory Limit: <strong>{{ task.active_dataset.memory_limit|format_size }}</strong>
 </div>
 
 {% if task.statements|length == 0 %}

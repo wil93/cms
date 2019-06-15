@@ -131,6 +131,8 @@ class TaskHandler(BaseHandler):
             # primary_statement_XX, where XX is the language code.
             primary_statements = {}
             for statement in task.statements:
+                if isinstance(statement, tuple):
+                    statement = "_".join(statement)
                 self.get_bool(primary_statements,
                               "primary_statement_%s" % statement)
             attrs["primary_statements"] = list(sorted([

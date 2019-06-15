@@ -47,7 +47,7 @@ $(document).ready(function () {
 {% endblock js %}
 
 {% block body %}
-        <div id="navigation_bar" class="navbar navbar-fixed-top">
+        <div id="navigation_bar" class="navbar navbar-fixed-top" style="position: initial; margin-bottom: -20px;">
             <div class="navbar-inner">
                 <div class="container">
                     <a class="brand" href="{{ contest_url() }}">{{ contest.description }}</a>
@@ -122,6 +122,9 @@ $(document).ready(function () {
                     {% trans %}Don't have an account?{% endtrans %} <a href="{{ contest_url('register') }}">{% trans %}Register{% endtrans %}</a>
                 </p>
                 {% endif %}
+                <p style="margin: 9px 0 0;">
+                    You will receive your team's username and password via email, a few hours before the start of the contest.
+                </p>
             </div>
         </div>
 {% else %}

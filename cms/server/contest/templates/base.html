@@ -11,6 +11,109 @@
         <link rel="stylesheet" href="{{ url("static", "cws_style.css") }}">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
 
+	<style>
+    .itacpc-nav {
+      height: 52px;
+      width: 100%;
+      background-color: #ffffff;
+      position: relative;
+    }
+
+    .itacpc-nav > .itacpc-nav-header {
+      display: inline;
+    }
+
+    .itacpc-nav > .itacpc-nav-header > .itacpc-nav-title {
+      display: inline-block;
+      font-size: 22px;
+      color: rgb(33, 33, 33);
+      padding: 10px 10px 10px 10px;
+      font-family: Montserrat;
+    }
+
+    .itacpc-nav > .itacpc-nav-btn {
+      display: none;
+    }
+
+    .itacpc-nav > .itacpc-nav-links {
+      display: inline;
+      float: right;
+      font-size: 18px;
+      font-family: Bitter;
+    }
+
+    .itacpc-nav > .itacpc-nav-links > a {
+      display: inline-block;
+      padding: 13px 10px 13px 10px;
+      text-decoration: none;
+      color: rgb(33, 33, 33);
+      border-bottom: 8px solid transparent;
+    }
+
+    .itacpc-nav > .itacpc-nav-links > a:hover {
+      opacity: 0.6;
+    }
+
+    .itacpc-nav > .itacpc-nav-links > a.active {
+      border-bottom: 8px solid rgba(0,123,191,1);
+    }
+
+    .itacpc-nav > #itacpc-nav-check {
+      display: none;
+    }
+
+    @media (max-width:600px) {
+      .itacpc-nav > .itacpc-nav-btn {
+        display: inline-block;
+        position: absolute;
+        right: 0px;
+        top: 0px;
+      }
+      .itacpc-nav > .itacpc-nav-btn > label {
+        display: inline-block;
+        width: 50px;
+        height: 29px;
+        padding: 13px;
+      }
+      .itacpc-nav > .itacpc-nav-btn > label:hover,.itacpc-nav  #itacpc-nav-check:checked ~ .itacpc-nav-btn > label {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+      .itacpc-nav > .itacpc-nav-btn > label > span {
+        display: block;
+        width: 25px;
+        height: 10px;
+        border-top: 2px solid #eee;
+      }
+      .itacpc-nav > .itacpc-nav-links {
+        position: absolute;
+        display: block;
+        width: 100%;
+        background-color: #333;
+        height: 0px;
+        transition: all 0.3s ease-in;
+        overflow-y: hidden;
+        top: 55px;
+        left: 0px;
+      }
+      .itacpc-nav > .itacpc-nav-links > a {
+        display: block;
+        width: 100%;
+        background: white;
+      }
+      .itacpc-nav > .itacpc-nav-links > a.active {
+        border-bottom-color: transparent;
+      }
+      .itacpc-nav > #itacpc-nav-check:not(:checked) ~ .itacpc-nav-links {
+        height: 0px;
+      }
+      .itacpc-nav > #itacpc-nav-check:checked ~ .itacpc-nav-links {
+        height: calc(100vh - 55px);
+        overflow-y: auto;
+      }
+    }
+	</style>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter">
+
         <script src="{{ url("static", "jq", "jquery-1.7.1.min.js") }}"></script>
         <script src="{{ url("static", "js", "bootstrap.js") }}"></script>
         <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
@@ -22,6 +125,33 @@
         {% block js %}{% endblock js %}
     </head>
     <body>
+
+<div class="itacpc-nav">
+  <input type="checkbox" id="itacpc-nav-check">
+  <div class="itacpc-nav-header">
+    <div class="itacpc-nav-title">
+      <a href="https://www.itacpc.it/home"><img style="width: 105px;margin-left: 20px;" src="https://teams.itacpc.it/static/logo.png"></img></a>
+    </div>
+  </div>
+  <div class="itacpc-nav-btn">
+    <label for="itacpc-nav-check">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+  </div>
+
+  <div class="itacpc-nav-links">
+    <a href="https://www.itacpc.it/home">Home</a>
+    <a href="https://www.itacpc.it/contest-information">About</a>
+    <a href="https://www.itacpc.it/contest-rules">Rules</a>
+    <a href="https://teams.itacpc.it">Team Registration</a>
+    <a class="active" href="https://judge.itacpc.it/">Judge System</a>
+    <a href="https://www.itacpc.it/university-hubs">Hubs</a>
+    <a href="https://www.itacpc.it/contact-us">Contact Us</a>
+  </div>
+</div>
+    
         {% block body %}{% endblock body %}
     </body>
 </html>
