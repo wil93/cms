@@ -51,6 +51,7 @@ PACKAGE_DATA = {
         "contest/static/img/mimetypes/*.*",
         "contest/static/js/*.*",
         "contest/templates/*.*",
+        "contest/templates/macro/*.*",
     ],
     "cms.service": [
         "templates/printing/*.*",
@@ -150,7 +151,6 @@ setup(
             "cmsAddTestcases=cmscontrib.AddTestcases:main",
             "cmsAddUser=cmscontrib.AddUser:main",
             "cmsCleanFiles=cmscontrib.CleanFiles:main",
-            "cmsComputeComplexity=cmscontrib.ComputeComplexity:main",
             "cmsDumpExporter=cmscontrib.DumpExporter:main",
             "cmsDumpImporter=cmscontrib.DumpImporter:main",
             "cmsDumpUpdater=cmscontrib.DumpUpdater:main",
