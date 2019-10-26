@@ -97,7 +97,7 @@ class Contest(Base):
     allow_user_tests = Column(
         Boolean,
         nullable=False,
-        default=True)
+        default=False)
 
     # Whether to prevent hidden participations to log in.
     block_hidden_participations = Column(
