@@ -192,6 +192,7 @@ setup(
             "Pascal / fpc=cms.grading.languages.pascal_fpc:PascalFpc",
             "PHP=cms.grading.languages.php:Php",
             "Python 2 / CPython=cms.grading.languages.python2_cpython:Python2CPython",
+            "Python 3 / pypy3=cms.grading.languages.python3_pypy3:Python3Pypy3",
             "Python 3 / CPython=cms.grading.languages.python3_cpython:Python3CPython",
             "Rust=cms.grading.languages.rust:Rust",
         ],
