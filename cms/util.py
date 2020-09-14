@@ -56,8 +56,8 @@ def mkdir(path):
     else:
         try:
             os.chmod(path, 0o770)
-            cmsuser_gid = grp.getgrnam(config.cmsuser).gr_gid
-            os.chown(path, -1, cmsuser_gid)
+            # cmsuser_gid = grp.getgrnam(config.cmsuser).gr_gid
+            # os.chown(path, -1, cmsuser_gid)
         except OSError:
             os.rmdir(path)
             return False
