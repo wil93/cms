@@ -113,13 +113,7 @@ class Worker(Service):
                     job.shard = self.shard
 
                     if self._fake_worker_time is None:
-                        task_type = get_task_type(job.task_type,
-                                                  job.task_type_parameters)
-                        try:
-                            task_type.execute_job(job, self.file_cacher)
-                        except TombstoneError:
-                            job.success = False
-                            job.plus = {"tombstone": True}
+                        self._perform_job(job)
                     else:
                         self._fake_work(job)
 
@@ -146,6 +140,43 @@ class Worker(Service):
             logger.warning(err_msg)
             self._finalize(start_time)
             raise JobException(err_msg)
+
+    def _perform_job(self, job):
+        task_type = get_task_type(job.task_type, job.task_type_parameters)
+
+        tries = 0
+        MAX_TRIES = 5
+
+        while tries < MAX_TRIES:
+            try:
+                task_type.execute_job(job, self.file_cacher)
+            except TombstoneError:
+                job.success = False
+                job.plus = {"tombstone": True}
+                return
+
+            if not isinstance(job, EvaluationJob):
+                return
+            if job.plus is None:
+                return
+
+            execution_time = job.plus['execution_time']
+
+            if job.text[0] != 'Execution timed out':
+                if tries > 0:
+                    logger.info("Took: %s (TL: %s)", execution_time, job.time_limit, extra={"operation": job.info})
+                    logger.info("Not a TLE anymore.", extra={"operation": job.info})
+
+                return
+
+            logger.info("Took: %s (TL: %s)", execution_time, job.time_limit, extra={"operation": job.info})
+
+            if execution_time > 1.3 * job.time_limit:
+                logger.info("Significant TLE. Not retrying.", extra={"operation": job.info})
+                return
+
+            tries += 1
+            logger.info("Slight TLE. Retrying (%s of %s)", tries, MAX_TRIES, extra={"operation": job.info})
 
     def _fake_work(self, job):
         """Fill the job with fake success data after waiting for some time."""

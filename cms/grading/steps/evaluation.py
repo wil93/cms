@@ -179,6 +179,8 @@ def evaluation_step_before_run(sandbox, command,
     # Set sandbox parameters suitable for evaluation.
     if time_limit is not None:
         sandbox.timeout = time_limit
+        # Run the submission for an extra 40% of the Time Limit, to detect if it would be Accepted within the 30% extra
+        sandbox.extra_timeout = time_limit * 1.4
         sandbox.wallclock_timeout = 2 * time_limit + 1
     else:
         sandbox.timeout = None
