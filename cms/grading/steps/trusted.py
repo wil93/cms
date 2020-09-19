@@ -98,6 +98,7 @@ def extract_outcome_and_text(sandbox):
     with sandbox.get_file_text(sandbox.stderr_file) as stderr_file:
         try:
             text = _filter_ansi_escape(stderr_file.readline().strip())
+            secondary_text = _filter_ansi_escape(stderr_file.readline().strip())
         except UnicodeDecodeError as error:
             logger.error("Manager stderr (text) is not valid UTF-8. %r", error)
             raise ValueError("Cannot decode the text.")
@@ -118,6 +119,9 @@ def extract_outcome_and_text(sandbox):
             remaining = remaining[:15]  # to avoid logging lots of text
             logger.warning("Manager asked to translate text, but string "
                            "'%s' is not recognized." % remaining)
+
+    if secondary_text:
+        text += " -- " + secondary_text
 
     return outcome, [text]
 
