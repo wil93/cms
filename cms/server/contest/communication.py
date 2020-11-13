@@ -29,6 +29,10 @@
 
 import logging
 
+import gevent
+import requests
+
+from cms import config
 from cms.db import Question, Announcement, Message
 from cmscommon.datetime import make_timestamp
 
@@ -55,6 +59,35 @@ class UnacceptableQuestion(Exception):
         self.subject = subject
         self.text = text
         self.text_params = text_params
+
+
+def send_telegram_message(content):
+    api_url = "https://api.telegram.org/bot{}/sendMessage" \
+        .format(config.telegram_bot_token)
+    body = {"chat_id": config.telegram_bot_chat_id,
+            "text": content,
+            "parse_mode": "HTML"}
+    res = requests.post(api_url, data=body)
+    if res.status_code != 200:
+        logger.warn("Failed to send Telegram notification: %s", res.json())
+    else:
+        logger.info("Telegram notification sent for the question")
+
+
+def send_telegram_question_notification(question):
+    if not config.telegram_bot_token or not config.telegram_bot_chat_id:
+        return
+    escape = lambda t: t.replace("<", "&lt;").replace(">", "&gt;")
+    message = """<b>New question</b>
+From: <code>{username}</code>
+Subject: <i>{subject}</i>
+
+{text}
+""".format(
+        username=escape(question.participation.user.username),
+        subject=escape(question.subject),
+        text=escape(question.text))
+    gevent.spawn(send_telegram_message, message)
 
 
 def accept_question(sql_session, participation, timestamp, subject, text):
@@ -99,6 +132,11 @@ def accept_question(sql_session, participation, timestamp, subject, text):
     sql_session.add(question)
 
     logger.info("Question submitted by user %s.", participation.user.username)
+
+    try:
+        send_telegram_question_notification(question)
+    except Exception as e:
+        logger.exception("Error occurred while sending Telegram notification")
 
     return question
 
