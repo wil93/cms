@@ -255,6 +255,11 @@ def main():
     """Parse arguments and launch process."""
     parser = argparse.ArgumentParser(description="Prometheus exporter.")
     parser.add_argument(
+        "--host",
+        help="IP address to bind",
+        default="0.0.0.0",
+    )
+    parser.add_argument(
         "--port",
         help="Port to use",
         default=8811,
@@ -290,8 +295,8 @@ def main():
 
     service = PrometheusExporter(args)
     REGISTRY.register(service)
-    start_http_server(args.port)
-    print("Started at http://0.0.0.0:%s/metric" % args.port)
+    start_http_server(args.port, addr=args.host)
+    print("Started at http://%s:%s/metric" % (args.host, args.port))
     Service.run(service)
 
 
