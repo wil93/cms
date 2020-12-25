@@ -140,27 +140,22 @@ def get_safe_shard(service, provided_shard):
     raise (ValueError): if no safe shard can be returned.
 
     """
-    # Try to assign the shard using ephemeral workers first
-    if provided_shard is None and config.workers_subnet is not None \
-        service == "Worker":
-        subnet = ipaddress.ip_network(config.workers_subnet)
-        addrs = _find_local_addresses()
+    addrs = _find_local_addresses()
+    # Try to assign an ephemeral shard first. This needs to be done before
+    # autodetecting the shared using the ip since here we cannot detect if
+    # the service is already running on that port.
+    if provided_shard is None and service in config.async_config.ephemeral_services:
+        ephemeral_config = config.async_config.ephemeral_services[service]
         for addr in addrs:
             addr = ipaddress.ip_address(addr[1])
-            if addr in subnet:
-                break
-        else:
-            raise ValueError("No IP found inside the worker subnet: %s" % subnet)
-        minport, maxport = config.workers_port_range
-        if maxport < minport:
-            raise ValueError("Invalid worker port range")
-        port = find_open_port(str(addr), minport, maxport)
-        hostid = int(addr) & int(subnet.hostmask)
-        shard = hostid * (maxport - minport + 1) + (port - minport)
-        return shard
-
+            if addr in ephemeral_config.subnet:
+                port = find_open_port(
+                    str(addr),
+                    ephemeral_config.min_port,
+                    ephemeral_config.max_port)
+                shard = ephemeral_config.get_shard(addr, port)
+                return shard
     if provided_shard is None:
-        addrs = _find_local_addresses()
         computed_shard = _get_shard_from_addresses(service, addrs)
         if computed_shard is None:
             logger.critical("Couldn't autodetect shard number and "
@@ -201,23 +196,13 @@ def get_service_address(key):
     returns (Address): listening address of key.
 
     """
+    service, shard = key
     if key in async_config.core_services:
         return async_config.core_services[key]
     elif key in async_config.other_services:
         return async_config.other_services[key]
-    elif config.workers_subnet is not None:
-        service, shard = key
-        if service == "Worker":
-            minport, maxport = config.workers_port_range
-            subnet = ipaddress.ip_network(config.workers_subnet)
-            num_ports = maxport - minport + 1
-            port_offset = shard % num_ports
-            hostid = (shard - port_offset) // num_ports
-
-            port = minport + port_offset
-            addr = str(subnet.network_address + hostid)
-            return Address(addr, port)
-        raise KeyError("Service not found.")
+    elif service in async_config.ephemeral_services:
+        return async_config.ephemeral_services[service].get_address(shard)
     else:
         raise KeyError("Service not found.")
 

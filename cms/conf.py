@@ -22,6 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import errno
+import ipaddress
 import json
 import logging
 import os
@@ -53,6 +54,54 @@ class ConfigError(Exception):
     pass
 
 
+class EphemeralServiceConfig:
+    """Configuration of an ephemeral service. An ephemeral service is a
+    normal service whose shard is chosen depending on its address and
+    port. The port is assigned inside a range and the address must be
+    inside the subnet.
+    """
+
+    def __init__(self, subnet, min_port, max_port):
+        self.subnet = ipaddress.ip_network(subnet)
+        self.min_port = min_port
+        self.max_port = max_port
+        if min_port > max_port:
+            raise ConfigError("Invalid port range: [%s, %s]" \
+                % (min_port, max_port))
+
+    def get_shard(self, address, port):
+        """Get the ephemeral shard for a service given its address and port.
+
+        address (IPv4Address|IPv6Address): address of the service.
+        port (int): port of the service.
+
+        return (int): shard of the service
+        """
+        if address not in self.subnet:
+            raise ValueError("The address is not inside the subnet")
+        host_id = int(address) & int(self.subnet.hostmask)
+        num_ports = self.max_port - self.min_port + 1
+        shard = host_id * num_ports + (port - self.min_port)
+        return shard
+
+    def get_address(self, shard):
+        """Get the address and port of a service given its shard.
+
+        shard (int): shard of the service
+
+        return (Address): address and port of the service
+        """
+        num_ports = self.max_port - self.min_port + 1
+        port_offset = shard % num_ports
+        host_id = (shard - port_offset) // num_ports
+
+        port = self.min_port + port_offset
+        addr = self.subnet.network_address + host_id
+        if addr not in self.subnet:
+            raise ValueError("The shard is not valid")
+        return Address(str(addr), port)
+
+
 class AsyncConfig:
     """This class will contain the configuration for the
     services. This needs to be populated at the initilization stage.
@@ -69,6 +118,7 @@ class AsyncConfig:
     """
     core_services = {}
     other_services = {}
+    ephemeral_services = {}  # type: Dict[str, EphemeralServiceConfig]
 
 
 async_config = AsyncConfig()
@@ -95,10 +145,6 @@ class Config:
         self.backdoor = False
         self.file_log_debug = False
         self.stream_log_detailed = False
-
-        # Ephemeral workers
-        self.workers_subnet = None
-        self.workers_port_range = [26100, 26999]
 
         # Database.
         self.database = "postgresql+psycopg2://cmsuser@localhost/cms"
@@ -275,6 +321,18 @@ class Config:
                 coord = ServiceCoord(service, shard_number)
                 self.async_config.other_services[coord] = Address(*shard)
         del data["other_services"]
+
+        for service_name in data["ephemeral_services"]:
+            if service_name.startswith("_"):
+                continue
+            service = data["ephemeral_services"][service_name]
+            self.async_config.ephemeral_services[service_name] = \
+                EphemeralServiceConfig(
+                    service["subnet"],
+                    service["min_port"],
+                    service["max_port"],
+                )
+        del data["ephemeral_services"]
 
         # Put everything else in self.
         for key, value in data.items():
