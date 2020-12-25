@@ -144,8 +144,8 @@ def get_safe_shard(service, provided_shard):
     # Try to assign an ephemeral shard first. This needs to be done before
     # autodetecting the shared using the ip since here we cannot detect if
     # the service is already running on that port.
-    if provided_shard is None and service in config.async_config.ephemeral_services:
-        ephemeral_config = config.async_config.ephemeral_services[service]
+    if provided_shard is None and service in async_config.ephemeral_services:
+        ephemeral_config = async_config.ephemeral_services[service]
         for addr in addrs:
             addr = ipaddress.ip_address(addr[1])
             if addr in ephemeral_config.subnet:
@@ -208,7 +208,7 @@ def get_service_shards(service):
 
     """
     count = 0
-    for services in (config.async_config.core_services, config.async_config.other_services):
+    for services in (async_config.core_services, async_config.other_services):
         count += len([0 for s in services if s.name == service])
     return count
 

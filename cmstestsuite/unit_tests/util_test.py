@@ -37,6 +37,7 @@ class FakeAsyncConfig:
         ServiceCoord("Service", 1): Address("0.0.0.1", 1),
         }
     other_services = {}
+    ephemeral_services = {}
 
 
 def _set_up_async_config(restore=False):
