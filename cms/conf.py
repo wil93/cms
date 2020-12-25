@@ -26,8 +26,10 @@ import ipaddress
 import json
 import logging
 import os
+import socket
 import sys
 from collections import namedtuple
+from contextlib import closing
 
 from .log import set_detailed_logs
 
@@ -60,6 +62,7 @@ class EphemeralServiceConfig:
     port. The port is assigned inside a range and the address must be
     inside the subnet.
     """
+    EPHEMERAL_SHARD_OFFSET = 1000
 
     def __init__(self, subnet, min_port, max_port):
         self.subnet = ipaddress.ip_network(subnet)
@@ -82,7 +85,7 @@ class EphemeralServiceConfig:
         host_id = int(address) & int(self.subnet.hostmask)
         num_ports = self.max_port - self.min_port + 1
         shard = host_id * num_ports + (port - self.min_port)
-        return shard
+        return shard + self.EPHEMERAL_SHARD_OFFSET
 
     def get_address(self, shard):
         """Get the address and port of a service given its shard.
@@ -91,6 +94,7 @@ class EphemeralServiceConfig:
 
         return (Address): address and port of the service
         """
+        shard -= self.EPHEMERAL_SHARD_OFFSET
         num_ports = self.max_port - self.min_port + 1
         port_offset = shard % num_ports
         host_id = (shard - port_offset) // num_ports
@@ -100,6 +104,25 @@ class EphemeralServiceConfig:
         if addr not in self.subnet:
             raise ValueError("The shard is not valid")
         return Address(str(addr), port)
+
+    def find_free_port(self, address):
+        """Find the first open port.
+
+        address (IPv4Address|IPv6Address): local address to bind to
+        """
+        if address.version == 4:
+            family = socket.AF_INET
+        else:
+            family = socket.AF_INET6
+        for port in range(self.min_port, self.max_port+1):
+            with closing(socket.socket(family, socket.SOCK_STREAM)) as sock:
+                try:
+                    sock.bind((str(address), port))
+                    return port
+                except socket.error:
+                    continue
+        raise ValueError("No free port found in range [%s, %s] "
+                        "for address %s" % (minport, maxport, address))
 
 
 class AsyncConfig:
