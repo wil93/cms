@@ -161,6 +161,10 @@ class EvaluationExecutor(Executor):
                         return
             raise
 
+    def add_worker(self, worker_coord):
+        """Add a new worker to the pool.
+        """
+        self.pool.add_worker(worker_coord, ephemeral=True)
 
 def with_post_finish_lock(func):
     """Decorator for locking on self.post_finish_lock.
@@ -342,6 +346,13 @@ class EvaluationService(TriggeredService):
 
         """
         return self.get_executor().pool.get_status()
+
+    @rpc_method
+    def add_worker(self, coord):
+        """Register a new worker to the list of workers.
+        """
+        service, shard = coord
+        self.get_executor().add_worker(ServiceCoord(service, shard))
 
     def check_workers_timeout(self):
         """We ask WorkerPool for the unresponsive workers, and we put

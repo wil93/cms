@@ -96,6 +96,10 @@ class Config:
         self.file_log_debug = False
         self.stream_log_detailed = False
 
+        # Ephemeral workers
+        self.workers_subnet = None
+        self.workers_port_range = [26100, 26999]
+
         # Database.
         self.database = "postgresql+psycopg2://cmsuser@localhost/cms"
         self.database_debug = False

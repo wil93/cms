@@ -22,11 +22,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
+from contextlib import closing
+import errno
 import grp
 import itertools
+import ipaddress
 import logging
 import netifaces
 import os
+import socket
 import stat
 import sys
 
@@ -34,7 +38,7 @@ import chardet
 import gevent
 import gevent.socket
 
-from cms import ServiceCoord, ConfigError, async_config, config
+from cms import Address, ServiceCoord, ConfigError, async_config, config
 
 
 logger = logging.getLogger(__name__)
@@ -136,6 +140,25 @@ def get_safe_shard(service, provided_shard):
     raise (ValueError): if no safe shard can be returned.
 
     """
+    # Try to assign the shard using ephemeral workers first
+    if provided_shard is None and config.workers_subnet is not None \
+        service == "Worker":
+        subnet = ipaddress.ip_network(config.workers_subnet)
+        addrs = _find_local_addresses()
+        for addr in addrs:
+            addr = ipaddress.ip_address(addr[1])
+            if addr in subnet:
+                break
+        else:
+            raise ValueError("No IP found inside the worker subnet: %s" % subnet)
+        minport, maxport = config.workers_port_range
+        if maxport < minport:
+            raise ValueError("Invalid worker port range")
+        port = find_open_port(str(addr), minport, maxport)
+        hostid = int(addr) & int(subnet.hostmask)
+        shard = hostid * (maxport - minport + 1) + (port - minport)
+        return shard
+
     if provided_shard is None:
         addrs = _find_local_addresses()
         computed_shard = _get_shard_from_addresses(service, addrs)
@@ -157,6 +180,20 @@ def get_safe_shard(service, provided_shard):
             return provided_shard
 
 
+def find_open_port(address, minport, maxport):
+    """Find the first open port in the specified range for the address.
+    """
+    for port in range(minport, maxport+1):
+        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
+            try:
+                sock.bind((address, port))
+                return port
+            except socket.error:
+                continue
+    raise ValueError("No free port found in range [%s, %s] "
+                     "for address %s" % (minport, maxport, address))
+
+
 def get_service_address(key):
     """Give the Address of a ServiceCoord.
 
@@ -168,6 +205,19 @@ def get_service_address(key):
         return async_config.core_services[key]
     elif key in async_config.other_services:
         return async_config.other_services[key]
+    elif config.workers_subnet is not None:
+        service, shard = key
+        if service == "Worker":
+            minport, maxport = config.workers_port_range
+            subnet = ipaddress.ip_network(config.workers_subnet)
+            num_ports = maxport - minport + 1
+            port_offset = shard % num_ports
+            hostid = (shard - port_offset) // num_ports
+
+            port = minport + port_offset
+            addr = str(subnet.network_address + hostid)
+            return Address(addr, port)
+        raise KeyError("Service not found.")
     else:
         raise KeyError("Service not found.")
 
@@ -179,11 +229,10 @@ def get_service_shards(service):
     returns (int): the number of shards defined in the configuration.
 
     """
-    for i in itertools.count():
-        try:
-            get_service_address(ServiceCoord(service, i))
-        except KeyError:
-            return i
+    count = 0
+    for services in (config.async_config.core_services, config.async_config.other_services):
+        count += len([0 for s in services if s.name == service])
+    return count
 
 
 def default_argument_parser(description, cls, ask_contest=None):
