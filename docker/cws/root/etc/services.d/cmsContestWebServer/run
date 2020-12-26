@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+
+contest_id=${CMS_CONTEST_ID}
+
+if [ ! -z "$contest_id" ]; then
+    exec cmsContestWebServer -c "$contest_id"
+else
+    echo | exec cmsContestWebServer
+fi

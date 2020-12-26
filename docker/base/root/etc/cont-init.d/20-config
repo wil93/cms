@@ -1,0 +1,21 @@
+#!/usr/bin/with-contenv bash
+
+# create config folders
+mkdir -p /config
+chown $PUID:$PGID /config
+
+if [ ! -f /config/cms.conf ]; then
+    echo "Creating cms.conf and cms.ranking.conf starting from template"
+
+    new_secret_key=$(tr -dc 'a-f0-9' < /dev/urandom | head -c32)
+    new_ranking_password=$(tr -dc 'a-f0-9' < /dev/urandom | head -c32)
+
+    cp /defaults/cms.conf /config/cms.conf
+    sed -i "s/SECRET_KEY/$new_secret_key/g" /config/cms.conf
+    sed -i "s/RANKING_PASSWORD/$new_ranking_password/g" /config/cms.conf
+    chown $PUID:$PGID /config/cms.conf
+
+    cp /defaults/cms.ranking.conf /config/cms.ranking.conf
+    sed -i "s/RANKING_PASSWORD/$new_ranking_password/g" /config/cms.ranking.conf
+    chown $PUID:$PGID /config/cms.ranking.conf
+fi

@@ -1,0 +1,15 @@
+#!/usr/bin/with-contenv bash
+
+# set the parent cgroup to a random one, avoiding collisions between multiple
+# instances of isolate on different containers
+seed=$(tr -dc 'a-f0-9' < /dev/urandom | head -c32)
+conf_file=/usr/local/etc/isolate
+
+# uncomment cg_parent and set it to the seed
+sed -i "/#cg_parent/s/#//" $conf_file
+sed -i "s/^cg_parent.*/cg_parent = $seed/" $conf_file
+# raise the maximum number of boxes
+sed -i "s/^num_boxes.*/num_boxes = 1000000000/" $conf_file
+
+# create the cgroups
+mkdir /sys/fs/cgroup/{cpuacct,memory,cpuset}/$seed

@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+
+if [ -d /config/cms ]; then
+    echo "Found /config/cms, starting override"
+    cp -r /config/cms/* /cms
+    python3 setup.py install
+else
+    echo "/config/cms not found, using bundled one"
+fi

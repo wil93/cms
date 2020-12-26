@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv bash
+
+disabled=${CMS_PROXY_SERVICE_DISABLED:-false}
+contest_id=${CMS_CONTEST_ID}
+
+if [ "$disabled" != "false" ]; then
+    exit 0
+fi
+
+if [ ! -z "$contest_id" ]; then
+    exec cmsProxyService -c "$contest_id"
+else
+    echo | exec cmsProxyService
+fi

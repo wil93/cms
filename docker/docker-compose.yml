@@ -1,0 +1,61 @@
+---
+version: "2.1"
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: cmsuser
+      POSTGRES_DB: cmsdb
+    volumes:
+      - ./volumes/db:/var/lib/postgresql/data
+  core:
+    image: ghcr.io/edomora97/cms-core
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Rome
+      CMS_PROXY_SERVICE_DISABLED: "false"
+    volumes:
+      - ./volumes/config:/config
+    links:
+      - postgres
+      - ranking
+    ports:
+      - 8889:8889
+  cws:
+    image: ghcr.io/edomora97/cms-cws
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Rome
+    volumes:
+      - ./volumes/config:/config
+    links:
+      - postgres
+      - core
+    ports:
+      - 8888:8888
+  worker:
+    image: ghcr.io/edomora97/cms-worker
+    scale: 2
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Rome
+    volumes:
+      - ./volumes/config:/config
+    links:
+      - postgres
+      - core
+    privileged: true
+  ranking:
+    image: ghcr.io/edomora97/cms-rws
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Rome
+    volumes:
+      - ./volumes/config:/config
+    ports:
+      - 8890:8890

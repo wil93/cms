@@ -1,0 +1,30 @@
+#!/usr/bin/with-contenv bash
+
+db="postgres://$(grep -o 'postgresql+psycopg2[^"]*' /config/cms.conf | cut -d/ -f 3-)"
+
+function run_query() {
+    psql "$db" -c "$@;" --csv | tail -n +2
+}
+
+# Check if the database is created
+res=$(run_query "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'admins')")
+if [ "$res" == "f" ]; then
+    echo "Creating the database"
+    cmsInitDB
+fi
+
+# Check if there is at least one admin account
+res=$(run_query "SELECT COUNT(*) FROM admins")
+if [ "$res" == "0" ]; then
+    echo "No admin account found, creating one..."
+    new_admin_password=$(tr -dc 'a-f0-9' < /dev/urandom | head -c32)
+
+    cmsAddAdmin cms-admin -p $new_admin_password
+    echo "
+-------------------------------------
+NEW ADMIN ACCOUNT
+username: cms-admin
+password: $new_admin_password
+-------------------------------------
+"
+fi

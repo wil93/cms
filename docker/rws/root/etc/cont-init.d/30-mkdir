@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+
+# extract the lib_dir from the configuration file
+path=$(python3 -c 'import json, os; print(json.load(open(os.environ["CMS_RANKING_CONFIG"])).get("lib_dir", "/var/local/lib/cms/ranking"))')
+
+mkdir -p "$path"
+chown $PUID:$PGID "$path"
