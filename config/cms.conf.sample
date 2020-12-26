@@ -95,6 +95,9 @@
     "_help": "than this size (expressed in KB; defaults to 1 GB).",
     "max_file_size": 1048576,
 
+    "_help": "Number of boxes supported by isolate, must match the value",
+    "_help": "'num_boxes' inside /usr/local/etc/isolate",
+    "num_boxes": 1000,
 
 
     "_section": "WebServers",

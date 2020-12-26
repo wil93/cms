@@ -182,6 +182,8 @@ class Config:
         # Sandbox.
         # Max size of each writable file during an evaluation step, in KiB.
         self.max_file_size = 1024 * 1024  # 1 GiB
+        # Number of boxes supported by isolate, see /usr/local/etc/isolate
+        self.num_boxes = 1000
         # Max processes, CPU time (s), memory (KiB) for compilation runs.
         self.compilation_sandbox_max_processes = 1000
         self.compilation_sandbox_max_time_s = 10.0
