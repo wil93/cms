@@ -104,9 +104,11 @@ class EvaluationExecutor(Executor):
         the number of workers, with a cap at MAX_OPERATIONS_PER_BATCH.
 
         """
-        # TODO: len(self.pool) is the total number of workers,
-        # included those that are disabled.
-        ratio = len(self._operation_queue) // len(self.pool) + 1
+        num_workers = len(self.pool)
+        if num_workers == 0:
+            logger.warn("No worker in the pool!")
+            return 0
+        ratio = len(self._operation_queue) // num_workers + 1
         ret = min(max(ratio, 1), EvaluationExecutor.MAX_OPERATIONS_PER_BATCH)
         logger.info("Ratio is %d, executing %d operations together.",
                     ratio, ret)

@@ -102,7 +102,8 @@ class WorkerPool:
         self._workers_available_event = Event()
 
     def __len__(self):
-        return len(self._worker)
+        return len([0 for worker in self._operations.values() \
+            if worker != WorkerPool.WORKER_DISABLED])
 
     def __contains__(self, operation):
         return operation in self._operations_reverse
