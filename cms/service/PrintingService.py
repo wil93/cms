@@ -21,6 +21,7 @@
 
 """
 
+import contextlib
 import cups
 import logging
 import os
@@ -129,11 +130,10 @@ class PrintingExecutor(Executor):
                        "--right-footer=",
                        "--center-title=" + filename,
                        "--left-title=" + timestr]
-                ret = subprocess.call(cmd, cwd=directory)
-                if ret != 0:
-                    raise Exception(
-                        "Failed to convert text file to ps with command: %s"
-                        "(error %d)" % (pretty_print_cmdline(cmd), ret))
+                try:
+                    subprocess.check_call(cmd, cwd=directory)
+                except subprocess.CalledProcessError as e:
+                    raise Exception("Failed to convert text file to ps") from e
 
                 if not os.path.exists(source_ps):
                     logger.warning("Unable to convert from text to ps.")
@@ -148,11 +148,10 @@ class PrintingExecutor(Executor):
                 cmd = ["ps2pdf",
                        "-sPAPERSIZE=%s" % config.paper_size.lower(),
                        source_ps]
-                ret = subprocess.call(cmd, cwd=directory)
-                if ret != 0:
-                    raise Exception(
-                        "Failed to convert ps file to pdf with command: %s"
-                        "(error %d)" % (pretty_print_cmdline(cmd), ret))
+                try:
+                    subprocess.check_call(cmd, cwd=directory)
+                except subprocess.CalledProcessError as e:
+                    raise Exception("Failed to convert ps file to pdf") from e
 
             # Find out number of pages
             with open(source_pdf, "rb") as file_:
@@ -183,20 +182,16 @@ class PrintingExecutor(Executor):
                    "-interaction",
                    "nonstopmode",
                    title_tex]
-            ret = subprocess.call(cmd, cwd=directory)
-            if ret != 0:
-                raise Exception(
-                    "Failed to create title page with command: %s"
-                    "(error %d)" % (pretty_print_cmdline(cmd), ret))
+            try:
+                subprocess.check_call(cmd, cwd=directory)
+            except subprocess.CalledProcessError as e:
+                raise Exception("Failed to create title page") from e
 
-            pdfmerger = PdfFileMerger()
-            with open(title_pdf, "rb") as file_:
-                pdfmerger.append(file_)
-            with open(source_pdf, "rb") as file_:
-                pdfmerger.append(file_)
-            result = os.path.join(directory, "document.pdf")
-            with open(result, "wb") as file_:
-                pdfmerger.write(file_)
+            with contextlib.closing(PdfFileMerger()) as pdfmerger:
+                pdfmerger.append(title_pdf)
+                pdfmerger.append(source_pdf)
+                result = os.path.join(directory, "document.pdf")
+                pdfmerger.write(result)
 
             try:
                 printer_connection = cups.Connection()

@@ -31,7 +31,8 @@ from datetime import timedelta
 
 import yaml
 
-from cms import TOKEN_MODE_DISABLED, TOKEN_MODE_FINITE, TOKEN_MODE_INFINITE
+from cms import TOKEN_MODE_DISABLED, TOKEN_MODE_FINITE, TOKEN_MODE_INFINITE, \
+    FEEDBACK_LEVEL_FULL, FEEDBACK_LEVEL_RESTRICTED
 from cms.db import Contest, User, Task, Statement, Attachment, Team, Dataset, \
     Manager, Testcase
 from cms.grading.languagemanager import LANGUAGES, HEADER_EXTS
@@ -218,6 +219,7 @@ class YamlLoader(ContestLoader, TaskLoader, UserLoader, TeamLoader):
 
         tasks = load(conf, None, ["tasks", "problemi"])
         participations = load(conf, None, ["users", "utenti"])
+        participations = [] if participations is None else participations
         for p in participations:
             p["password"] = build_password(p["password"])
 
@@ -376,6 +378,13 @@ class YamlLoader(ContestLoader, TaskLoader, UserLoader, TeamLoader):
             args["primary_statements"] = [primary_language]
 
         args["submission_format"] = ["%s.%%l" % name]
+
+        # Import the feedback level when explicitly set to full
+        # (default behaviour is restricted)
+        if conf.get("feedback_level", None) == FEEDBACK_LEVEL_FULL:
+            args["feedback_level"] = FEEDBACK_LEVEL_FULL
+        elif conf.get("feedback_level", None) == FEEDBACK_LEVEL_RESTRICTED:
+            args["feedback_level"] = FEEDBACK_LEVEL_RESTRICTED
 
         if conf.get("score_mode", None) == SCORE_MODE_MAX:
             args["score_mode"] = SCORE_MODE_MAX
@@ -618,10 +627,17 @@ class YamlLoader(ContestLoader, TaskLoader, UserLoader, TeamLoader):
                     num_processes = load(conf, None, "num_processes")
                     if num_processes is None:
                         num_processes = 1
+                    io_type = load(conf, None, "user_io")
+                    if io_type is not None:
+                        if io_type not in ["std_io", "fifo_io"]:
+                            logger.warning("user_io incorrect. Valid options "
+                                           "are 'std_io' and 'fifo_io'. "
+                                           "Ignored.")
+                            io_type = None
                     logger.info("Task type Communication")
                     args["task_type"] = "Communication"
                     args["task_type_parameters"] = \
-                        [num_processes, "stub", "fifo_io"]
+                        [num_processes, "alone", io_type or "std_io"]
                     digest = self.file_cacher.put_file_from_path(
                         path,
                         "Manager for task %s" % task.name)
@@ -635,6 +651,8 @@ class YamlLoader(ContestLoader, TaskLoader, UserLoader, TeamLoader):
                                 stub_name,
                                 "Stub for task %s and language %s" % (
                                     task.name, lang.name))
+                            args["task_type_parameters"] = \
+                                [num_processes, "stub", io_type or "fifo_io"]
                             args["managers"] += [
                                 Manager(
                                     "stub%s" % lang.source_extension, digest)]

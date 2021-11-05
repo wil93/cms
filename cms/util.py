@@ -22,14 +22,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import argparse
-import errno
-import grp
-import itertools
 import ipaddress
+import itertools
 import logging
 import netifaces
 import os
-import socket
+import pwd
 import stat
 import sys
 
@@ -60,7 +58,7 @@ def mkdir(path):
     else:
         try:
             os.chmod(path, 0o770)
-            cmsuser_gid = grp.getgrnam(config.cmsuser).gr_gid
+            cmsuser_gid = pwd.getpwnam(config.cmsuser).pw_gid
             os.chown(path, -1, cmsuser_gid)
         except OSError:
             os.rmdir(path)
@@ -155,18 +153,24 @@ def get_safe_shard(service, provided_shard):
     if provided_shard is None:
         computed_shard = _get_shard_from_addresses(service, addrs)
         if computed_shard is None:
-            logger.critical("Couldn't autodetect shard number and "
-                            "no shard specified for service %s, "
-                            "quitting.", service)
+            logger.critical(
+                "Couldn't autodetect shard number and "
+                "no shard specified for service %s, "
+                "quitting.",
+                service,
+            )
             raise ValueError("No safe shard found for %s." % service)
         else:
             return computed_shard
     else:
         coord = ServiceCoord(service, provided_shard)
         if coord not in async_config.core_services:
-            logger.critical("The provided shard number for service %s "
-                            "cannot be found in the configuration, "
-                            "quitting.", service)
+            logger.critical(
+                "The provided shard number for service %s "
+                "cannot be found in the configuration, "
+                "quitting.",
+                service,
+            )
             raise ValueError("No safe shard found for %s." % service)
         else:
             return provided_shard
@@ -234,20 +238,24 @@ def default_argument_parser(description, cls, ask_contest=None):
     # We need to allow using the switch "-c" also for services that do
     # not need the contest_id because RS needs to be able to restart
     # everything without knowing which is which.
-    contest_id_help = "id of the contest to automatically load, " \
-                      "or ALL to serve all contests"
+    contest_id_help = (
+        "id of the contest to automatically load, " "or ALL to serve all contests"
+    )
     if ask_contest is None:
         contest_id_help += " (ignored)"
-    parser.add_argument("-c", "--contest-id", action="store",
-                        type=utf8_decoder, help=contest_id_help)
+    parser.add_argument(
+        "-c", "--contest-id", action="store", type=utf8_decoder, help=contest_id_help
+    )
     args = parser.parse_args()
 
     try:
         args.shard = get_safe_shard(cls.__name__, args.shard)
     except ValueError:
-        raise ConfigError("Couldn't autodetect shard number and "
-                          "no shard specified for service %s, "
-                          "quitting." % (cls.__name__,))
+        raise ConfigError(
+            "Couldn't autodetect shard number and "
+            "no shard specified for service %s, "
+            "quitting." % (cls.__name__,)
+        )
 
     if ask_contest is None:
         return cls(args.shard)
@@ -284,9 +292,11 @@ def contest_id_from_args(args_contest_id, ask_contest):
 
     # Test if there is a contest with the given contest id.
     from cms.db import is_contest_id
+
     if not is_contest_id(contest_id):
-        logger.critical("There is no contest with the specified id. "
-                        "Please try again.")
+        logger.critical(
+            "There is no contest with the specified id. " "Please try again."
+        )
         sys.exit(1)
     return contest_id
 
@@ -306,9 +316,10 @@ def _find_local_addresses():
     # /finding-local-ip-addresses-using-pythons-stdlib
     for iface_name in netifaces.interfaces():
         for proto in [netifaces.AF_INET, netifaces.AF_INET6]:
-            addrs += [(proto, i['addr'])
-                      for i in netifaces.ifaddresses(iface_name).
-                      setdefault(proto, [])]
+            addrs += [
+                (proto, i["addr"])
+                for i in netifaces.ifaddresses(iface_name).setdefault(proto, [])
+            ]
     return addrs
 
 
@@ -340,11 +351,14 @@ def _get_shard_from_addresses(service, addrs):
             return None
 
         try:
-            res_ipv4_addrs = set([x[4][0] for x in
-                                  gevent.socket.getaddrinfo(
-                                      host, port,
-                                      gevent.socket.AF_INET,
-                                      gevent.socket.SOCK_STREAM)])
+            res_ipv4_addrs = set(
+                [
+                    x[4][0]
+                    for x in gevent.socket.getaddrinfo(
+                        host, port, gevent.socket.AF_INET, gevent.socket.SOCK_STREAM
+                    )
+                ]
+            )
         except OSError:
             pass
         else:
@@ -352,11 +366,14 @@ def _get_shard_from_addresses(service, addrs):
                 return shard
 
         try:
-            res_ipv6_addrs = set([x[4][0] for x in
-                                  gevent.socket.getaddrinfo(
-                                      host, port,
-                                      gevent.socket.AF_INET6,
-                                      gevent.socket.SOCK_STREAM)])
+            res_ipv6_addrs = set(
+                [
+                    x[4][0]
+                    for x in gevent.socket.getaddrinfo(
+                        host, port, gevent.socket.AF_INET6, gevent.socket.SOCK_STREAM
+                    )
+                ]
+            )
         except OSError:
             pass
         else:
