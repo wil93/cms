@@ -1,16 +1,31 @@
 #!/usr/bin/with-contenv bash
 
+set -o pipefail
+
 db="postgres://$(grep -o 'postgresql+psycopg2[^"]*' /config/cms.conf | cut -d/ -f 3-)"
 
 function run_query() {
     psql "$db" -c "$@;" --csv | tail -n +2
 }
 
+# Wait for the database to come up
+for _ in $(seq 1 20); do
+    if ! run_query "SELECT 1"; then
+        echo "Waiting for postgres to come up..."
+        sleep 1
+    else
+        echo "Postgres is up!"
+        break
+    fi
+done
+
 # Check if the database is created
 res=$(run_query "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'admins')")
-if [ "$res" == "f" ]; then
+if [ "$res" != "t" ]; then
     echo "Creating the database"
     cmsInitDB
+else
+    echo "Database is already initialized"
 fi
 
 # Check if there is at least one admin account

@@ -1,3 +1,9 @@
 #!/usr/bin/with-contenv bash
 
-exec cmsEvaluationService
+contest_id=${CMS_CONTEST_ID}
+
+if [ ! -z "$contest_id" ]; then
+    exec cmsEvaluationService -c "$contest_id"
+else
+    echo | exec cmsEvaluationService
+fi

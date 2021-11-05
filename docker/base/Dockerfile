@@ -1,31 +1,19 @@
-FROM ghcr.io/linuxserver/baseimage-alpine:3.11 as initial
+FROM ghcr.io/linuxserver/baseimage-ubuntu:focal as initial
 
 # Install build dependencies
-RUN apk add --no-cache --virtual=build-dependencies \
-	autoconf \
-	automake \
-	cups-dev \
-	freetype-dev \
-	g++ \
-	gcc \
-	libffi-dev \
-	libcap-dev \
-	linux-headers \
-	make \
-	openssl-dev \
-	postgresql-dev \
-	python3-dev \
-	tiff-dev \
-	zlib-dev
-
-# Install runtime dependencies
-RUN apk add --no-cache \
+RUN apt update
+RUN apt install -yy \
+	build-essential \
 	postgresql-client \
-	libcap \
-	libpq \
-	py3-pip \
-	python3 \
-	zip
+	python3-dev \
+	cgroup-lite \
+	libcap-dev \
+	zip \
+	libpq-dev \
+	libcups2-dev \
+	libyaml-dev \
+	libffi-dev \
+	python3-pip
 
 # Install python dependencies
 COPY requirements.txt /cms/
@@ -59,18 +47,21 @@ COPY scripts /cms/scripts/
 RUN true
 
 # Install cms
+RUN make -C isolate clean
 RUN python3 prerequisites.py --yes --no-conf --as-root install && \
 	python3 setup.py install
 
 # Cleanup
-RUN apk del --purge build-dependencies && \
-	rm -rf /root/.cache /tmp/*
+RUN rm -rf \
+	/var/lib/apt/lists/* \
+	/tmp \
+	/root/.cache
 
 # Copy base configuration files
 COPY docker/base/root /
 
 # Multi-stage build merging all the layers from the previous step
-FROM alpine:3.11
+FROM ghcr.io/linuxserver/baseimage-ubuntu:focal
 LABEL org.opencontainers.image.source https://github.com/edomora97/cms
 LABEL maintainer="Edoardo Morassutto <edoardo.morassutto@gmail.com>"
 

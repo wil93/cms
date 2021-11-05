@@ -3,6 +3,7 @@
 if [ ! -d /config/doc ]; then
     echo "C++ documentation is missing, copying..."
 
+    mkdir -p /config/doc
     cp -r /defaults/doc/reference/* /config/doc
     chown -R $PUID:$PGID /config/doc
 fi
