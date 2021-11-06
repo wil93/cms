@@ -21,30 +21,8 @@ WORKDIR /cms
 RUN pip3 install --no-cache-dir -U pip && \
 	pip3 install --no-cache-dir -r requirements.txt
 
-# Copy all but docker/
-# Dirty hacks waiting for:
-# - https://github.com/moby/moby/issues/15771
-# - https://github.com/moby/moby/issues/37965
-COPY *.py *.txt *.cfg /cms/
-RUN true
-COPY cms /cms/cms/
-RUN true
-COPY cmscommon /cms/cmscommon/
-RUN true
-COPY cmscontrib /cms/cmscontrib/
-RUN true
-COPY cmsranking /cms/cmsranking/
-RUN true
-COPY cmstaskenv /cms/cmstaskenv/
-RUN true
-COPY cmstestsuite /cms/cmstestsuite/
-RUN true
-COPY config /cms/config/
-RUN true
-COPY isolate /cms/isolate/
-RUN true
-COPY scripts /cms/scripts/
-RUN true
+# Copy source files
+COPY . /cms
 
 # Install cms
 RUN make -C isolate clean
