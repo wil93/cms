@@ -20,6 +20,8 @@
 # (for instance, urllib3, used by requests)
 import gevent.monkey
 
+from cms.db.contest import Contest
+
 gevent.monkey.patch_all()  # noqa
 
 import argparse
@@ -201,43 +203,59 @@ class PrometheusExporter(Service):
     def collect_users(self, session):
         metric = GaugeMetricFamily(
             "cms_participations",
-            "Number of participations grouped by category",
-            labels=["category"],
+            "Number of participations grouped by category and contest",
+            labels=["category", "contest"],
         )
         data = (
-            session.query(func.count(Participation.id)).select_from(Participation).all()
+            session.query(Participation.contest_id, func.count(Participation.id))
+            .select_from(Participation)
+            .group_by(Participation.contest_id)
+            .all()
         )
-        metric.add_metric(["total"], data[0][0])
+        for contest_id, count in data:
+            metric.add_metric(["total", str(contest_id)], count)
         data = (
-            session.query(func.count(Participation.id))
+            session.query(Participation.contest_id, func.count(Participation.id))
             .select_from(Participation)
             .filter(Participation.hidden == True)
+            .group_by(Participation.contest_id)
             .all()
         )
-        metric.add_metric(["hidden"], data[0][0])
+        for contest_id, count in data:
+            metric.add_metric(["hidden", str(contest_id)], count)
         data = (
-            session.query(func.count(Participation.id))
+            session.query(Participation.contest_id, func.count(Participation.id))
             .select_from(Participation)
             .filter(Participation.unrestricted == True)
+            .group_by(Participation.contest_id)
             .all()
         )
-        metric.add_metric(["unrestricted"], data[0][0])
+        for contest_id, count in data:
+            metric.add_metric(["unrestricted", str(contest_id)], count)
         data = (
-            session.query(func.count(Participation.id))
+            session.query(Participation.contest_id, func.count(Participation.id))
             .select_from(Participation)
             .filter(Participation.starting_time != None)
+            .group_by(Participation.contest_id)
             .all()
         )
-        metric.add_metric(["started"], data[0][0])
+        for contest_id, count in data:
+            metric.add_metric(["started", str(contest_id)], count)
         data = (
-            session.query(func.count(distinct(Participation.id)))
+            session.query(
+                Participation.contest_id, func.count(distinct(Participation.id))
+            )
             .select_from(Participation)
             .join(Submission)
+            .group_by(Participation.contest_id)
             .all()
         )
-        metric.add_metric(["submitted"], data[0][0])
+        for contest_id, count in data:
+            metric.add_metric(["submitted", str(contest_id)], count)
         data = (
-            session.query(func.count(distinct(Participation.id)))
+            session.query(
+                Participation.contest_id, func.count(distinct(Participation.id))
+            )
             .select_from(Participation)
             .join(Submission)
             .join(SubmissionResult)
@@ -245,9 +263,11 @@ class PrometheusExporter(Service):
             .join(Task, Dataset.task_id == Task.id)
             .filter(Task.active_dataset_id == SubmissionResult.dataset_id)
             .filter(SubmissionResult.score > 0)
+            .group_by(Participation.contest_id)
             .all()
         )
-        metric.add_metric(["non_zero"], data[0][0])
+        for contest_id, count in data:
+            metric.add_metric(["non_zero", str(contest_id)], count)
         yield metric
 
 
