@@ -30,6 +30,7 @@ import socket
 import sys
 from collections import namedtuple
 from contextlib import closing
+from typing import Dict
 
 from .log import set_detailed_logs
 
@@ -122,7 +123,8 @@ class EphemeralServiceConfig:
                 except socket.error:
                     continue
         raise ValueError("No free port found in range [%s, %s] "
-                        "for address %s" % (minport, maxport, address))
+                        "for address %s" % (self.min_port, self.max_port, \
+                        address))
 
 
 class AsyncConfig:
@@ -279,6 +281,9 @@ class Config:
         # Attempt to load a config file.
         self._load(paths)
 
+        # Load from environment variables
+        self._load_from_env()
+
         if bool(self.telegram_bot_token) ^ bool(self.telegram_bot_chat_id):
             raise ConfigError("Both telegram_bot_token and telegram_bot_chat_id "
                               "should be set or left null")
@@ -375,5 +380,22 @@ class Config:
 
         return True
 
+    def _load_from_env(self):
+        variables = [
+            ("CMS_DATABASE", "database"),
+            ("CMS_SECRET_KEY", "secret_key"),
+        ]
+        for variable, key in variables:
+            if variable in os.environ:
+                setattr(self, key, os.environ[variable])
+
+        files = [
+            ("CMS_DATABASE_FILE", "database"),
+            ("CMS_SECRET_KEY_FILE", "secret_key"),
+        ]
+        for variable, key in files:
+            if variable in os.environ:
+                with open(os.environ[variable], "r") as f:
+                    setattr(self, key, f.read().strip())
 
 config = Config()
