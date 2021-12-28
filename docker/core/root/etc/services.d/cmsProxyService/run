@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv bash
 
 disabled=${CMS_PROXY_SERVICE_DISABLED:-false}
-contest_id=${CMS_CONTEST_ID}
+contest_id=${CMS_PROXY_SERVICE_CONTEST_ID:-$CMS_CONTEST_ID}
 
 if [ "$disabled" != "false" ]; then
     exit 0

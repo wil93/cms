@@ -2,10 +2,16 @@
 
 set -o pipefail
 
-db="postgres://$(grep -o 'postgresql+psycopg2[^"]*' /config/cms.conf | cut -d/ -f 3-)"
+if [ -n "$CMS_DATABASE" ]; then
+    db="$CMS_DATABASE"
+elif [ -n "$CMS_DATABASE_FILE" ]; then
+    db=$(cat "$CMS_DATABASE_FILE")
+else
+    db="postgres://$(grep -o 'postgresql+psycopg2[^"]*' /config/cms.conf | cut -d/ -f 3-)"
+fi
 
 function run_query() {
-    psql "$db" -c "$@;" --csv | tail -n +2
+    psql "$db" -c "$1;" --csv | tail -n +2
 }
 
 # Wait for the database to come up
