@@ -1,9 +1,11 @@
 #!/usr/bin/with-contenv bash
 
-if [ ! -d /config/doc ]; then
+CMS_DOC_PATH=${CMS_DOC_PATH:-/config/doc}
+
+if [ ! -d "$CMS_DOC_PATH" ]; then
     echo "C++ documentation is missing, copying..."
 
-    mkdir -p /config/doc
-    cp -r /defaults/doc/reference/* /config/doc
-    chown -R $PUID:$PGID /config/doc
+    mkdir -p "$CMS_DOC_PATH"
+    cp -r /defaults/doc/reference/* "$CMS_DOC_PATH"
+    chown -R "$PUID:$PGID" "$CMS_DOC_PATH"
 fi

@@ -2,8 +2,8 @@
 
 contest_id=${CMS_CONTEST_ID}
 
-if [ ! -z "$contest_id" ]; then
-    exec cmsEvaluationService -c "$contest_id"
+if [ -n "$contest_id" ]; then
+    exec cmsEvaluationService -c "$contest_id" 0
 else
-    echo | exec cmsEvaluationService
+    echo | exec cmsEvaluationService 0
 fi
