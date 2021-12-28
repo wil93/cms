@@ -1,42 +1,41 @@
 #!/usr/bin/env bash
 
+set -e
+
 HERE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 CONTEXT="$HERE/.."
 
-# username of the owner of the images
-ghcr_user=${ghcr_user:-edomora97}
-tag=${tag:-latest}
+ghcr_user="edomora97"
+tag="latest"
 
-set -ex
+usage() {
+    echo "Build and tag the docker images"
+    echo "$0 [-u username] [-t tag]"
+    echo "   -u username   ghcr.io username"
+    echo "   -t tag        tag to use for the images"
+}
 
-cd $CONTEXT
+while getopts "ht:u:" opt; do
+    case "$opt" in
+        t) tag="$OPTARG";;
+        u) ghcr_user="$OPTARG";;
+        *) usage
+           exit 0
+           ;;
+    esac
+done
 
-# Build the base image
-docker build \
-    -t ghcr.io/$ghcr_user/cms-base:$tag \
-    -f docker/base/Dockerfile \
-    .
+cd "$CONTEXT"
 
-# Build the core image
-docker build \
-    -t ghcr.io/$ghcr_user/cms-core:$tag \
-    -f docker/core/Dockerfile \
-    .
+components=(base core cws worker rws)
 
-# Build the cws image
-docker build \
-    -t ghcr.io/$ghcr_user/cms-cws:$tag \
-    -f docker/cws/Dockerfile \
-    .
-
-# Build the worker image
-docker build \
-    -t ghcr.io/$ghcr_user/cms-worker:$tag \
-    -f docker/worker/Dockerfile \
-    .
-
-# Build the rws image
-docker build \
-    -t ghcr.io/$ghcr_user/cms-rws:$tag \
-    -f docker/rws/Dockerfile \
-    .
+for comp in "${components[@]}"; do
+    image="ghcr.io/$ghcr_user/cms-$comp"
+    echo "Building image $image"
+    docker build \
+        -t "$image" \
+        -f "docker/$comp/Dockerfile" \
+        .
+    echo "Tagging $image -> $image:$tag"
+    docker tag "$image" "$image:$tag"
+done

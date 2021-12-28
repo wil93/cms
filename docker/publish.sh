@@ -1,12 +1,30 @@
 #!/usr/bin/env bash
 
-# username of the owner of the images
-ghcr_user=${ghcr_user:-edomora97}
+set -e
 
-set -ex
+ghcr_user="edomora97"
+tag="latest"
 
-docker push ghcr.io/$ghcr_user/cms-base
-docker push ghcr.io/$ghcr_user/cms-core
-docker push ghcr.io/$ghcr_user/cms-cws
-docker push ghcr.io/$ghcr_user/cms-worker
-docker push ghcr.io/$ghcr_user/cms-rws
+usage() {
+    echo "Build and tag the docker images"
+    echo "$0 [-u username] [-t tag]"
+    echo "   -u username   ghcr.io username"
+    echo "   -t tag        tag to use for the images"
+}
+
+while getopts "ht:u:" opt; do
+    case "$opt" in
+        t) tag="$OPTARG";;
+        u) ghcr_user="$OPTARG";;
+        *) usage
+           exit 0
+           ;;
+    esac
+done
+
+components=(base core cws worker rws)
+
+for comp in "${components[@]}"; do
+    image="ghcr.io/$ghcr_user/cms-$comp"
+    docker push "$image:$tag"
+done
