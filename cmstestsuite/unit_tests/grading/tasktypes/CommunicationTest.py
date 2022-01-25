@@ -170,7 +170,7 @@ class TestCompile(TaskTypeTestMixin, unittest.TestCase):
                 COMPILATION_COMMAND_1, ["stub.l1", "foo.l1"], "foo"))
         # Results put in job, executable stored and sandbox deleted.
         self.assertResultsInJob(job, True, True, TEXT, STATS_OK)
-        sandbox.get_file_to_storage.assert_called_once_with("foo", ANY)
+        sandbox.get_file_to_storage.assert_called_once_with("foo", ANY, cache_only=False)
         sandbox.cleanup.assert_called_once_with(delete=True)
 
     def test_one_file_compilation_failure(self):
@@ -230,7 +230,7 @@ class TestCompile(TaskTypeTestMixin, unittest.TestCase):
                 "bar_foo"))
         # Results put in job, executable stored and sandbox deleted.
         self.assertResultsInJob(job, True, True, TEXT, STATS_OK)
-        sandbox.get_file_to_storage.assert_called_once_with("bar_foo", ANY)
+        sandbox.get_file_to_storage.assert_called_once_with("bar_foo", ANY, cache_only=False)
         sandbox.cleanup.assert_called_once_with(delete=True)
 
     def test_no_stub_success(self):
@@ -253,7 +253,7 @@ class TestCompile(TaskTypeTestMixin, unittest.TestCase):
                 COMPILATION_COMMAND_1, ["foo.l1"], "foo"))
         # Results put in job, executable stored and sandbox deleted.
         self.assertResultsInJob(job, True, True, TEXT, STATS_OK)
-        sandbox.get_file_to_storage.assert_called_once_with("foo", ANY)
+        sandbox.get_file_to_storage.assert_called_once_with("foo", ANY, cache_only=False)
         sandbox.cleanup.assert_called_once_with(delete=True)
 
     def test_no_stub_but_stub_given_success(self):
@@ -281,7 +281,7 @@ class TestCompile(TaskTypeTestMixin, unittest.TestCase):
                 COMPILATION_COMMAND_1, ["foo.l1"], "foo"))
         # Results put in job, executable stored and sandbox deleted.
         self.assertResultsInJob(job, True, True, TEXT, STATS_OK)
-        sandbox.get_file_to_storage.assert_called_once_with("foo", ANY)
+        sandbox.get_file_to_storage.assert_called_once_with("foo", ANY, cache_only=False)
         sandbox.cleanup.assert_called_once_with(delete=True)
 
 

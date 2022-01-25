@@ -202,8 +202,8 @@ class TwoSteps(TaskType):
         if box_success and compilation_success:
             digest = sandbox.get_file_to_storage(
                 executable_filename,
-                "Executable %s for %s" %
-                (executable_filename, job.info))
+                "Executable %s for %s" % (executable_filename, job.info),
+                cache_only=not self.store_exe_in_db)
             job.executables[executable_filename] = \
                 Executable(executable_filename, digest)
 

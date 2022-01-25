@@ -32,6 +32,7 @@ compilation and the evaluation are contained in the task type class.
 import re
 from abc import ABCMeta, abstractmethod
 
+from cms import config
 from cms.grading.Job import CompilationJob, EvaluationJob
 
 
@@ -95,6 +96,8 @@ class TaskType(metaclass=ABCMeta):
         """
         self.parameters = parameters
         self.validate_parameters()
+
+        self.store_exe_in_db = config.store_exe_in_db
 
     def validate_parameters(self):
         """Validate the parameters syntactically.

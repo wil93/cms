@@ -432,19 +432,21 @@ class SandboxBase(metaclass=ABCMeta):
             else:
                 return file_.read(maxlen)
 
-    def get_file_to_storage(self, path, description="", trunc_len=None):
+    def get_file_to_storage(self, path, description="", trunc_len=None, cache_only=False):
         """Put a sandbox file in FS and return its digest.
 
         path (str): relative path of the file inside the sandbox.
         description (str): the description for FS.
         trunc_len (int|None): if None, does nothing; otherwise, before
             returning truncate it at the specified length.
+        cache_only (bool): whether to skip writing to the backend and
+            only use the cache.
 
         return (str): the digest of the file.
 
         """
         with self.get_file(path, trunc_len=trunc_len) as file_:
-            return self.file_cacher.put_file_from_fobj(file_, description)
+            return self.file_cacher.put_file_from_fobj(file_, description, cache_only)
 
     def stat_file(self, path):
         """Return the stats of a file in the sandbox.
