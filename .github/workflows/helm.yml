@@ -30,8 +30,8 @@ jobs:
 
     - uses: fregante/setup-git-user@v1
 
-    - name: Commit new changes
-      run: git commit helm -m "Update helm chart"
+    - run: git add helm
 
-    - name: Push changes
-      run: git push origin gh-pages
+    - run: git commit -m "Update helm chart"
+
+    - run: git push origin gh-pages
