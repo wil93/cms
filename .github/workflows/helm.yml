@@ -1,0 +1,35 @@
+name: Update helm repo
+on:
+  push:
+    branches:
+      - docker
+
+jobs:
+  package:
+    name: Update helm repo
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Package helm chart
+      working-directory: docker/helm
+      run: helm package . --destination /tmp/output
+
+    - name: Switch to gh-pages branch
+      uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+
+    - name: Copy packaged file
+      run: cp /tmp/output/* helm/
+
+    - name: Reindex helm repository
+      working-directory: helm
+      run: helm repo index .
+
+    - name: Commit new changes
+      run: git commit helm -m "Update helm chart"
+
+    - name: Push changes
+      run: git push origin gh-pages
