@@ -7,7 +7,7 @@ if [ -n "$CMS_DATABASE" ]; then
 elif [ -n "$CMS_DATABASE_FILE" ]; then
     db=$(cat "$CMS_DATABASE_FILE")
 else
-    db="postgres://$(grep -o 'postgresql+psycopg2[^"]*' /config/cms.conf | cut -d/ -f 3-)"
+    db="postgres://$(grep -E -o 'postgresql(+psycopg2)?[^"]*' /config/cms.conf | cut -d/ -f 3-)"
 fi
 
 function run_query() {
