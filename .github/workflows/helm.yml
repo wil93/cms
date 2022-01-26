@@ -28,6 +28,8 @@ jobs:
       working-directory: helm
       run: helm repo index .
 
+    - uses: fregante/setup-git-user@v1
+
     - name: Commit new changes
       run: git commit helm -m "Update helm chart"
 
