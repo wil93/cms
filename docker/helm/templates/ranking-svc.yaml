@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-ranking
+  annotations:
+    {{- include "cms.annot" .Values.ranking.service.annotations | nindent 4 }}
+  labels:
+    app: {{ .Release.Name }}-ranking
+    {{- include "cms.annot" .Values.ranking.service.labels | nindent 4 }}
+spec:
+  type: {{ .Values.ranking.service.type }}
+  selector:
+    app: {{ .Release.Name }}-ranking
+  ports:
+  - port: {{ .Values.ranking.service.port }}
+    targetPort: 8890
+    {{- if eq .Values.ranking.service.type "NodePort" }}
+    nodePort: {{ .Values.ranking.service.port }}
+    {{- end }}

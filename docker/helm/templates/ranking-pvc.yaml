@@ -1,0 +1,23 @@
+{{ if .Values.ranking.persistance.enabled }}
+{{ if not .Values.ranking.persistance.existingClaim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-ranking-data
+spec:
+  {{- if .Values.ranking.persistance.storageClassName }}
+  storageClassName: {{ .Values.ranking.persistance.storageClassName }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.ranking.persistance.size | quote }}
+  volumeMode: Filesystem
+  accessModes:
+    - {{ .Values.ranking.persistance.accessMode }}
+  {{- if .Values.ranking.persistance.selectorLabels }}
+  selector:
+    matchLabels:
+    {{- toYaml .Values.ranking.persistance.selectorLabels | nindent 6 }}
+  {{- end }}
+{{ end }}
+{{ end }}

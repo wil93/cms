@@ -1,0 +1,7 @@
+{{- $contestId := .Values.cms.contestId }}
+{{- $data := dict "Chart" .Chart "Release" .Release "Values" .Values }}
+{{- $_ := set $data "service" "contest" }}
+{{- $_ := set $data "port" 8888 }}
+{{- $_ := set $data "contestId" $contestId }}
+{{- $data := merge $data .Values.contest }}
+{{ include "cms.deployment" $data }}

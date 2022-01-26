@@ -1,0 +1,10 @@
+apiVersion: v2
+name: cms
+description: Contest Management System
+
+version: 0.0.1
+appVersion: v1
+type: application
+
+# TODO:
+# - Prometheus

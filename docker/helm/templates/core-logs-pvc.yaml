@@ -1,0 +1,23 @@
+{{ if .Values.core.log.persistance.enabled }}
+{{ if not .Values.core.log.persistance.existingClaim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-core-logs
+spec:
+  {{- if .Values.core.log.persistance.storageClassName }}
+  storageClassName: {{ .Values.core.log.persistance.storageClassName }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.core.log.persistance.size | quote }}
+  volumeMode: Filesystem
+  accessModes:
+    - {{ .Values.core.log.persistance.accessMode }}
+  {{- if .Values.core.log.persistance.selectorLabels }}
+  selector:
+    matchLabels:
+    {{- toYaml .Values.core.log.persistance.selectorLabels | nindent 6 }}
+  {{- end }}
+{{ end }}
+{{ end }}

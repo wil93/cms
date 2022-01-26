@@ -1,0 +1,170 @@
+_serviceValues: &_serviceValues
+  annotations: {}
+  labels: {}
+  podAnnotations: {}
+  podLabels: {}
+
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+cms:
+  contestId: ALL
+  timeZone: Europe/Rome
+  uid: 1000
+  gid: 1000
+  additionalConfig: {}
+  secretKey:
+    secretName: ~
+    secretKey: ~
+  numProxyUsed: 1
+
+db:
+  host: ~
+  port: ~
+  username: ~
+  password: ~
+  database: ~
+  url: ~
+  fromSecret: ~
+    # secretName: ~
+    # secretKey: ~
+
+core:
+  <<: *_serviceValues
+
+  image: ghcr.io/edomora97/cms-core
+  tag: ~
+  pullPolicy: Always
+  pullSecrets: []
+
+  proxy:
+    enabled: false
+    contestId: ~
+    rwsUrl: ~
+
+  log:
+    persistance:
+      enabled: true
+      size: 10Gi
+      accessMode: ReadWriteOnce
+      storageClassName: ~
+      selectorLabels: {}
+      subPath: ~
+      existingClaim: ~
+
+  admin:
+    service:
+      type: ClusterIP
+      port: 8889
+      annotations: {}
+      labels: {}
+    ingress:
+      enabled: false
+      traefik: false
+      annotations: {}
+      labels: {}
+      path: /admin
+      pathType: Prefix
+      host: aws.example.com
+      tls: []
+        #  - secretName: example-tls
+        #    hosts:
+        #      - aws.example.com
+
+contest:
+  <<: *_serviceValues
+
+  image: ghcr.io/edomora97/cms-cws
+  tag: ~
+  pullPolicy: Always
+  pullSecrets: []
+
+  replicas: 1
+
+  podsIpRange: 10.0.0.0/8
+
+  service:
+    type: ClusterIP
+    port: 8888
+    annotations: {}
+    labels: {}
+
+  ingress:
+    enabled: false
+    traefik: false
+    annotations: {}
+    labels: {}
+    path: /
+    pathType: Prefix
+    host: cws.example.com
+    tls: []
+      #  - secretName: example-tls
+      #    hosts:
+      #      - cws.example.com
+
+worker:
+  <<: *_serviceValues
+
+  image: ghcr.io/edomora97/cms-worker
+  tag: ~
+  pullPolicy: Always
+  pullSecrets: []
+
+  replicas: 2
+
+  podsIpRange: 10.0.0.0/8
+
+
+ranking:
+  <<: *_serviceValues
+
+  enabled: true
+
+  image: ghcr.io/edomora97/cms-rws
+  tag: ~
+  pullPolicy: Always
+  pullSecrets: []
+
+  username: ranking
+  password: ~
+
+  persistance:
+    enabled: true
+    size: 1Gi
+    accessMode: ReadWriteOnce
+    storageClassName: ~
+    selectorLabels: {}
+    subPath: ~
+    existingClaim: ~
+
+  service:
+    type: ClusterIP
+    port: 8890
+    annotations: {}
+    labels: {}
+
+  ingress:
+    enabled: false
+    traefik: false
+    annotations: {}
+    labels: {}
+    path: /ranking
+    pathType: Prefix
+    host: rws.example.com
+    # basicAuth:
+    # - username: user
+    #   password: pass
+    # - username: user2
+    #   password: pass2
+    tls: []
+      #  - secretName: example-tls
+      #    hosts:
+      #      - rws.example.com

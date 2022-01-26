@@ -1,0 +1,25 @@
+{{- if .Values.core.proxy.enabled }}
+{{- if and (eq .Values.cms.contestId "ALL") (not .Values.core.proxy.contestId) }}
+{{ fail "cmsProxyService cannot run with -c ALL, set core.proxy.contestId" }}
+{{- end }}
+{{- end }}
+{{- $contestId := default .Values.cms.contestId .Values.core.proxy.contestId }}
+{{- $data := dict "Chart" .Chart "Release" .Release "Values" .Values }}
+{{- $_ := set $data "service" "core" }}
+{{- $_ := set $data "kind" "StatefulSet" }}
+{{- $_ := set $data "port" 8889 }}
+{{- $_ := set $data "contestId" $contestId }}
+{{- $_ := set $data "replicas" 1 }}
+{{- $_ := set $data "persistance" .Values.core.log.persistance }}
+{{- $data := merge $data .Values.core }}
+{{ include "cms.deployment" $data }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-core
+spec:
+  type: ClusterIP
+  clusterIP: "None"
+  selector:
+    app: {{ .Release.Name }}-core

@@ -1,0 +1,5 @@
+{{- $data := dict "Chart" .Chart "Release" .Release "Values" .Values }}
+{{- $_ := set $data "service" "admin" }}
+{{- $_ := set $data "port" 8889 }}
+{{- $_ := set $data "ingress" .Values.core.admin.ingress }}
+{{ include "cms.ingress" $data }}

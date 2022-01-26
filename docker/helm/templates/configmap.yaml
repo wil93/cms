@@ -1,0 +1,81 @@
+{{ define "cms.conf" }}
+cmsuser: root
+core_services:
+  LogService:        [[ "{{ .Release.Name }}-core-0.{{ .Release.Name }}-core", 29000 ]]
+  ResourceService:   [[ "{{ .Release.Name }}-core-0.{{ .Release.Name }}-core", 28000 ]]
+  ScoringService:    [[ "{{ .Release.Name }}-core-0.{{ .Release.Name }}-core", 28500 ]]
+  Checker:           [[ "{{ .Release.Name }}-core-0.{{ .Release.Name }}-core", 22000 ]]
+  EvaluationService: [[ "{{ .Release.Name }}-core-0.{{ .Release.Name }}-core", 25000 ]]
+  Worker:            []
+  ContestWebServer:  []
+  AdminWebServer:    [[ "{{ .Release.Name }}-core-0.{{ .Release.Name }}-core", 21100 ]]
+  ProxyService:      [[ "{{ .Release.Name }}-core-0.{{ .Release.Name }}-core", 28600 ]]
+  PrintingService:   [[ "{{ .Release.Name }}-core-0.{{ .Release.Name }}-core", 28600 ]]
+other_services: {}
+ephemeral_services:
+  Worker:
+    subnet: {{ .Values.worker.podsIpRange | quote }}
+    min_port: 26000
+    max_port: 26000
+  ContestWebServer:
+    subnet: {{ .Values.contest.podsIpRange | quote }}
+    min_port: 21000
+    max_port: 21000
+
+# build the database url either from the "url" value, or from the destructured
+# username/password/host/port/database
+{{ if .Values.db.url }}
+database: {{ .Values.db.url | quote }}
+{{ else if .Values.db.host }}
+database: "postgresql://{{ required "missing db.username" .Values.db.username }}{{ if .Values.db.password }}:{{ .Values.db.password }}{{ end }}@{{ required "missing db.host" .Values.db.host }}:{{ default 5432 .Values.db.port }}/{{ required "missing db.database" .Values.db.database }}"
+{{ else if .Values.db.fromSecret }}
+database: ~
+{{ else }}
+{{ fail "Missing db configuration" }}
+{{ end }}
+
+# Worker configuration
+num_boxes: 1000000
+
+# Contest Web Server configuration
+secret_key: ~  # the key is always loaded from a Secret
+contest_listen_address: ["0.0.0.0"]
+contest_listen_port: [8888]
+cookie_duration: 10800
+num_proxies_used: {{ default 1 .Values.cms.numProxyUsed }}
+stl_path: "/defaults/doc/reference/"
+
+# Admin Web Server configuration
+admin_listen_address: "0.0.0.0"
+admin_listen_port: 8889
+admin_cookie_duration: 36000
+
+# Build the Ranking Web Server url
+{{ if .Values.core.proxy.enabled }}
+{{ if .Values.core.proxy.rwsUrl }}
+rankings: [{{ .Values.core.proxy.rwsUrl | quote }}]
+{{ else }}
+rankings: ["http://{{ required "missing .ranking.username" .Values.ranking.username }}:{{ required "missing .ranking.password" .Values.ranking.password }}@{{ .Release.Name }}-ranking:8890/"]
+{{ end }}
+{{ else }}
+rankings: []
+{{ end }}
+
+{{ end }}
+
+{{ define "cms.ranking.conf" }}
+bind_address: "0.0.0.0"
+http_port: 8890
+username: {{ .Values.ranking.username }}
+password: {{ required "missing .ranking.password" .Values.ranking.password }}
+{{ end }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  cms.conf: |
+    {{- include "cms.conf" . | fromYaml | merge .Values.cms.additionalConfig | toPrettyJson | nindent 4 }}
+  cms.ranking.conf: |
+    {{- include "cms.ranking.conf" . | fromYaml | toPrettyJson | nindent 4 }}

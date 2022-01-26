@@ -1,0 +1,9 @@
+{{- if .Values.ranking.enabled }}
+{{- $contestId := .Values.cms.contestId }}
+{{- $data := dict "Chart" .Chart "Release" .Release "Values" .Values }}
+{{- $_ := set $data "service" "ranking" }}
+{{- $_ := set $data "port" 8890 }}
+{{- $_ := set $data "persistance" .Values.ranking.persistance }}
+{{- $data := merge $data .Values.ranking }}
+{{ include "cms.deployment" $data }}
+{{- end }}

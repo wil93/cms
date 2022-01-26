@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-contest
+  annotations:
+    {{- include "cms.annot" .Values.contest.service.annotations | nindent 4 }}
+  labels:
+    app: {{ .Release.Name }}-contest
+    {{- include "cms.annot" .Values.contest.service.labels | nindent 4 }}
+spec:
+  type: {{ .Values.contest.service.type }}
+  selector:
+    app: {{ .Release.Name }}-contest
+  ports:
+  - port: {{ .Values.contest.service.port }}
+    targetPort: 8888
+    {{- if eq .Values.contest.service.type "NodePort" }}
+    nodePort: {{ .Values.contest.service.port }}
+    {{- end }}
