@@ -97,6 +97,9 @@ spec:
           subPath: {{ $persistance.subPath }}
           {{- end }}
         {{- end }}
+        {{- with .additionalVolumeMounts }}
+        {{ . | nindent 8 }}
+        {{- end }}
         {{- if .port }}
         {{- if not (eq .service "worker") }}
         livenessProbe:
@@ -145,6 +148,9 @@ spec:
         {{- else }}
         emptyDir: {}
         {{- end }}
+      {{- end }}
+      {{- with .additionalVolumes }}
+      {{ . | nindent 6 }}
       {{- end }}
 {{- end }}
 
