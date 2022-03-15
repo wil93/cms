@@ -104,7 +104,7 @@ spec:
         {{- if not (eq .service "worker") }}
         livenessProbe:
           httpGet:
-            path: /
+            path: {{ .healthPath | default "/" }}
             port: {{ .port }}
           initialDelaySeconds: 3
           periodSeconds: 15
