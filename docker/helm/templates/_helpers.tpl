@@ -113,7 +113,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ .Release.Name }}-config
+          name: {{ .Release.Name }}-cms-config
           items:
           - key: cms.conf
             path: cms.conf

@@ -73,7 +73,7 @@ password: {{ required "missing .ranking.password" .Values.ranking.password }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-config
+  name: {{ .Release.Name }}-cms-config
 data:
   cms.conf: |
     {{- include "cms.conf" . | fromYaml | merge .Values.cms.additionalConfig | toPrettyJson | nindent 4 }}
