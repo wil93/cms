@@ -43,6 +43,7 @@ contest_listen_address: ["0.0.0.0"]
 contest_listen_port: [8888]
 cookie_duration: 10800
 num_proxies_used: {{ default 1 .Values.cms.numProxyUsed }}
+admin_num_proxies_used: {{ .Values.cms.adminNumProxyUsed | default .Values.cms.numProxyUsed | default 1 }}
 stl_path: "/defaults/doc/reference/"
 
 # Admin Web Server configuration

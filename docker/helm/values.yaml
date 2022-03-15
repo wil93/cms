@@ -25,6 +25,7 @@ cms:
     secretName: ~
     secretKey: ~
   numProxyUsed: 1
+  # adminNumProxyUsed: 1
 
 db:
   host: ~
