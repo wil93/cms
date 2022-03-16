@@ -108,6 +108,12 @@ spec:
             port: {{ .port }}
           initialDelaySeconds: 3
           periodSeconds: 15
+        {{- else }}
+        livenessProbe:
+          tcpSocket:
+            port: {{ .port }}
+          initialDelaySeconds: 3
+          periodSeconds: 15
         {{- end }}
         {{- end }}
       volumes:
