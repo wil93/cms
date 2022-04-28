@@ -2,6 +2,7 @@
 
 # Contest Management System - http://cms-dev.github.io/
 # Copyright © 2016 Stefano Maggiolo <s.maggiolo@gmail.com>
+# Copyright © 2020 Andrey Vihrov <andrey.vihrov@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -16,41 +17,48 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Java programming language definition, compiled."""
-
-import os
+"""C++17 programming language definition."""
 
 from cms.grading import CompiledLanguage
 
 
-__all__ = ["Java14Gcj"]
+__all__ = ["Cpp17Gpp"]
 
 
-class Java14Gcj(CompiledLanguage):
-    """This defines the Java programming language, compiled with gcj (the
-    current version available on the system) using the most recent
-    version supported (1.4 with some features of 1.5).
+class Cpp17Gpp(CompiledLanguage):
+    """This defines the C++ programming language, compiled with g++ (the
+    version available on the system) using the C++17 standard.
 
     """
 
     @property
     def name(self):
         """See Language.name."""
-        return "Java 1.4 / gcj"
+        return "C++17 / g++"
 
     @property
     def source_extensions(self):
         """See Language.source_extensions."""
-        return [".java"]
+        return [".cpp", ".cc", ".cxx", ".c++", ".C"]
+
+    @property
+    def header_extensions(self):
+        """See Language.header_extensions."""
+        return [".h"]
+
+    @property
+    def object_extensions(self):
+        """See Language.object_extensions."""
+        return [".o"]
 
     def get_compilation_commands(self,
                                  source_filenames, executable_filename,
                                  for_evaluation=True):
         """See Language.get_compilation_commands."""
-        class_name = os.path.splitext(source_filenames[0])[0]
-        command = [
-            "/usr/bin/gcj", "--main=%s" % class_name, "-O3",
-            "-o", executable_filename
-        ]
+        command = ["/usr/bin/g++"]
+        if for_evaluation:
+            command += ["-DEVAL"]
+        command += ["-std=gnu++17", "-O2", "-pipe", "-static",
+                    "-s", "-o", executable_filename]
         command += source_filenames
         return [command]

@@ -5,6 +5,7 @@
 # Copyright © 2010-2016 Stefano Maggiolo <s.maggiolo@gmail.com>
 # Copyright © 2010-2012 Matteo Boscariol <boscarim@hotmail.com>
 # Copyright © 2013 Luca Wehrstedt <luca.wehrstedt@gmail.com>
+# Copyright © 2019 Edoardo Morassutto <edoardo.morassutto@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -44,7 +45,6 @@ from cms import ConfigError, config, mkdir, ServiceCoord, Address, \
     get_service_address
 from cms.log import root_logger, shell_handler, ServiceFilter, \
     DetailedFormatter, LogServiceHandler, FileHandler
-from cmscommon.datetime import monotonic_time
 from .rpc import rpc_method, RemoteServiceServer, RemoteServiceClient, \
     FakeRemoteServiceClient
 
@@ -65,14 +65,14 @@ def repeater(func, period):
 
     """
     while True:
-        call = monotonic_time()
+        call = time.monotonic()
 
         try:
             func()
         except Exception:
             logger.error("Unexpected error.", exc_info=True)
 
-        gevent.sleep(max(call + period - monotonic_time(), 0))
+        gevent.sleep(max(call + period - time.monotonic(), 0))
 
 
 class Service:
@@ -160,12 +160,7 @@ class Service:
         connection.
 
         """
-        try:
-            ipaddr, port = address[:2]
-            address = Address(ipaddr, port)
-        except OSError:
-            logger.warning("Unexpected error.", exc_info=True)
-            return
+        address = Address(address[0], address[1])
         remote_service = RemoteServiceServer(self, address)
         remote_service.handle(sock)
 

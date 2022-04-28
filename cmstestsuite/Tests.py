@@ -5,6 +5,7 @@
 # Copyright © 2013-2018 Stefano Maggiolo <s.maggiolo@gmail.com>
 # Copyright © 2014-2015 Giovanni Mascellani <mascellani@poisson.phc.unipi.it>
 # Copyright © 2016 Masaki Hara <ackie.h.gmai@gmail.com>
+# Copyright © 2020 Andrey Vihrov <andrey.vihrov@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -36,26 +37,31 @@ import cmstestsuite.tasks.outputonly_comparator as outputonly_comparator
 import cmstestsuite.tasks.twosteps as twosteps
 import cmstestsuite.tasks.twosteps_comparator as twosteps_comparator
 from cmstestsuite.Test import Test, CheckOverallScore, CheckCompilationFail, \
-    CheckTimeout, CheckTimeoutWall, CheckNonzeroReturn
+    CheckTimeout, CheckTimeoutWall, CheckNonzeroReturn, CheckUserTestEvaluated
 
 
 LANG_CPP = "C++11 / g++"
+LANG_CPP14 = "C++14 / g++"
+LANG_CPP17 = "C++17 / g++"
 LANG_C = "C11 / gcc"
 LANG_HS = "Haskell / ghc"
 LANG_JAVA = "Java / JDK"
 LANG_PASCAL = "Pascal / fpc"
 LANG_PHP = "PHP"
 LANG_PYTHON = "Python 2 / CPython"
+LANG_PYTHON3 = "Python 3 / CPython"
 LANG_RUST = "Rust"
 LANG_C_SHARP = "C# / Mono"
 ALL_LANGUAGES = (
-    LANG_CPP, LANG_C, LANG_HS, LANG_JAVA, LANG_PASCAL, LANG_PHP, LANG_PYTHON,
-    LANG_RUST, LANG_C_SHARP
+    LANG_CPP, LANG_CPP14, LANG_CPP17, LANG_C, LANG_HS, LANG_JAVA, LANG_PASCAL,
+    LANG_PHP, LANG_PYTHON, LANG_PYTHON3, LANG_RUST, LANG_C_SHARP
 )
-NON_INTERPRETED_LANGUAGES = (LANG_C, LANG_CPP, LANG_PASCAL)
+NON_INTERPRETED_LANGUAGES = (
+    LANG_C, LANG_CPP, LANG_CPP14, LANG_CPP17, LANG_PASCAL
+)
 COMPILED_LANGUAGES = (
-    LANG_C, LANG_CPP, LANG_PASCAL, LANG_JAVA, LANG_PYTHON, LANG_HS, LANG_RUST,
-    LANG_C_SHARP
+    LANG_C, LANG_CPP, LANG_CPP14, LANG_CPP17, LANG_PASCAL, LANG_JAVA,
+    LANG_PYTHON, LANG_PYTHON3, LANG_HS, LANG_RUST, LANG_C_SHARP
 )
 
 ALL_TESTS = [
@@ -64,6 +70,10 @@ ALL_TESTS = [
 
     Test('correct-stdio',
          task=batch_stdio, filenames=['correct-stdio.%l'],
+         alt_filenames={
+             LANG_CPP14: ['correct-stdio-cxx14.%l'],
+             LANG_CPP17: ['correct-stdio-cxx17.%l'],
+         },
          languages=ALL_LANGUAGES,
          checks=[CheckOverallScore(100, 100)]),
 
@@ -71,7 +81,8 @@ ALL_TESTS = [
          task=batch_fileio, filenames=['correct-freopen.%l'],
          languages=(LANG_C,),
          checks=[CheckOverallScore(100, 100)],
-         user_tests=True),
+         user_tests=True,
+         user_checks=[CheckUserTestEvaluated()]),
 
     Test('correct-stdio-inner-class',
          task=batch_stdio, filenames=['correct-stdio-inner-class.%l'],
@@ -238,52 +249,54 @@ ALL_TESTS = [
 
     Test('managed-correct',
          task=batch_fileio_managed, filenames=['managed-correct.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA,
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA,
                     LANG_C_SHARP),
-         checks=[CheckOverallScore(100, 100)]),
+         checks=[CheckOverallScore(100, 100)],
+         user_tests=True, user_managers=['grader.%l'],
+         user_checks=[CheckUserTestEvaluated()]),
 
     Test('managed-incorrect',
          task=batch_fileio_managed, filenames=['managed-incorrect.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA,
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA,
                     LANG_C_SHARP),
          checks=[CheckOverallScore(0, 100)]),
 
-    # Communication tasks. Python and PHP are not yet supported.
+    # Communication tasks. PHP is not yet supported.
 
     Test('communication-fifoio-correct',
          task=communication_fifoio_stubbed,
          filenames=['communication-stubbed-correct.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA),
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA),
          checks=[CheckOverallScore(100, 100)]),
 
     Test('communication-fifoio-incorrect',
          task=communication_fifoio_stubbed,
          filenames=['communication-stubbed-incorrect.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA),
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA),
          checks=[CheckOverallScore(0, 100)]),
 
     Test('communication-stdio-correct',
          task=communication_stdio_stubbed,
          filenames=['communication-stubbed-correct.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA),
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA),
          checks=[CheckOverallScore(100, 100)]),
 
     Test('communication-stdio-incorrect',
          task=communication_stdio_stubbed,
          filenames=['communication-stubbed-incorrect.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA),
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA),
          checks=[CheckOverallScore(0, 100)]),
 
     Test('communication-stdio-unstubbed-correct',
          task=communication_stdio,
          filenames=['communication-stdio-correct.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA),
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA),
          checks=[CheckOverallScore(100, 100)]),
 
     Test('communication-stdio-unstubbed-incorrect',
          task=communication_stdio,
          filenames=['communication-stdio-incorrect.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA),
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA),
          checks=[CheckOverallScore(0, 100)]),
 
     # Communication tasks with two processes.
@@ -292,28 +305,28 @@ ALL_TESTS = [
          task=communication_many_fifoio_stubbed,
          filenames=['communication-many-correct-user1.%l',
                     'communication-many-correct-user2.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA),
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA),
          checks=[CheckOverallScore(100, 100)]),
 
     Test('communication-many-fifoio-incorrect',
          task=communication_many_fifoio_stubbed,
          filenames=['communication-many-incorrect-user1.%l',
                     'communication-many-incorrect-user2.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA),
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA),
          checks=[CheckOverallScore(0, 100)]),
 
     Test('communication-many-stdio-correct',
          task=communication_many_stdio_stubbed,
          filenames=['communication-many-correct-user1.%l',
                     'communication-many-correct-user2.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA),
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA),
          checks=[CheckOverallScore(100, 100)]),
 
     Test('communication-many-stdio-incorrect',
          task=communication_many_stdio_stubbed,
          filenames=['communication-many-incorrect-user1.%l',
                     'communication-many-incorrect-user2.%l'],
-         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON, LANG_JAVA),
+         languages=(LANG_C, LANG_CPP, LANG_PASCAL, LANG_PYTHON3, LANG_JAVA),
          checks=[CheckOverallScore(0, 100)]),
 
     # TwoSteps
