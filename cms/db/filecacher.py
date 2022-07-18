@@ -481,7 +481,7 @@ class FileCacher:
     # - The `io' module defines a DEFAULT_BUFFER_SIZE constant, whose
     #   value is 8192.
     # CHUNK_SIZE should be a multiple of these values.
-    CHUNK_SIZE = 16 * 1024  # 16 KiB
+    CHUNK_SIZE = 1024 * 1024  # 1 MiB
 
     def __init__(self, service=None, path=None, null=False):
         """Initialize.
