@@ -79,7 +79,7 @@ class Contest(Base):
     languages = Column(
         ARRAY(String),
         nullable=False,
-        default=["C11 / gcc", "C++11 / g++", "Pascal / fpc"])
+        default=["C++14 / g++"])
 
     # Whether contestants allowed to download their submissions.
     submissions_download_allowed = Column(
@@ -97,7 +97,7 @@ class Contest(Base):
     allow_user_tests = Column(
         Boolean,
         nullable=False,
-        default=True)
+        default=False)
 
     # Whether to prevent hidden participations to log in.
     block_hidden_participations = Column(

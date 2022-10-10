@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Contest Management System - http://cms-dev.github.io/
-# Copyright © 2016 Stefano Maggiolo <s.maggiolo@gmail.com>
+# Copyright © 2016 Stefano Maggiolo ss.maggiolo@gmail.com>
 # Copyright © 2019 Andrey Vihrov <andrey.vihrov@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify

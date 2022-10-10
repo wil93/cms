@@ -25,6 +25,7 @@ try:
     import tornado4.wsgi as tornado_wsgi
 except ImportError:
     import tornado.wsgi as tornado_wsgi
+import tornado.web
 from gevent.pywsgi import WSGIServer
 from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.wsgi import DispatcherMiddleware, SharedDataMiddleware

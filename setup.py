@@ -183,7 +183,6 @@ setup(
             "GroupThreshold=cms.grading.scoretypes.GroupThreshold:GroupThreshold",
         ],
         "cms.grading.languages": [
-            "C++11 / g++=cms.grading.languages.cpp11_gpp:Cpp11Gpp",
             "C++14 / g++=cms.grading.languages.cpp14_gpp:Cpp14Gpp",
             "C++17 / g++=cms.grading.languages.cpp17_gpp:Cpp17Gpp",
             "C11 / gcc=cms.grading.languages.c11_gcc:C11Gcc",

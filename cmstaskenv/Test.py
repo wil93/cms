@@ -47,7 +47,7 @@ def usage():
     print("""%s base_dir executable [assume]"
 base_dir:   directory of the task
 executable: solution to test (relative to the task's directory)
-language:   programming language of the solution, e.g. "C++11 / gcc",
+language:   programming language of the solution, e.g. "C++14 / gcc",
 assume:     if it's y, answer yes to every question
             if it's n, answer no to every question
 """ % sys.argv[0])

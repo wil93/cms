@@ -195,7 +195,7 @@ class Task(Base):
         Enum(FEEDBACK_LEVEL_FULL, FEEDBACK_LEVEL_RESTRICTED,
              name="feedback_level"),
         nullable=False,
-        default=FEEDBACK_LEVEL_RESTRICTED)
+        default=FEEDBACK_LEVEL_FULL)
 
     # The scores for this task will be rounded to this number of
     # decimal places.
@@ -212,7 +212,7 @@ class Task(Base):
              SCORE_MODE_MAX_SUBTASK,
              name="score_mode"),
         nullable=False,
-        default=SCORE_MODE_MAX_TOKENED_LAST)
+        default=SCORE_MODE_MAX_SUBTASK)
 
     # Active Dataset (id and object) currently being used for scoring.
     # The ForeignKeyConstraint for this column is set at table-level.

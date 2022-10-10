@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 LANGUAGE_MAP = {
     "c": "C11 / gcc",
-    "cpp": "C++11 / g++",
+    "cpp": "C++14 / g++",
     "pas": "Pascal / fpc",
     "py": "Python 2 / CPython",
     "php": "PHP",
