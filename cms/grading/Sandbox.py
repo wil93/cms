@@ -1415,10 +1415,10 @@ class IsolateSandbox(SandboxBase):
             + (["--cg"] if self.cgroup else [])
             + ["--box-id=%d" % self.box_id, "--init"])
         try:
-            subprocess.check_call(init_cmd)
+            subprocess.check_output(init_cmd, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
             raise SandboxInterfaceException(
-                "Failed to initialize sandbox") from e
+                "Failed to initialize sandbox. Isolate output: %s" % e.output) from e
 
     def cleanup(self, delete=False):
         """See Sandbox.cleanup()."""
@@ -1443,9 +1443,13 @@ class IsolateSandbox(SandboxBase):
                 stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
         # Tell isolate to cleanup the sandbox.
-        subprocess.check_call(
-            exe + ["--cleanup"],
-            stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        try:
+            subprocess.check_output(
+                exe + ["--cleanup"],
+                stderr=subprocess.STDOUT)
+        except subprocess.CalledProcessError as e:
+            raise SandboxInterfaceException(
+                "Failed to cleanup sandbox. Isolate output: %s" % e.output) from e
 
         if delete:
             logger.debug("Deleting sandbox in %s.", self._outer_dir)
