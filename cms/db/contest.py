@@ -79,7 +79,7 @@ class Contest(Base):
     languages = Column(
         ARRAY(String),
         nullable=False,
-        default=["C++14 / g++"])
+        default=["C++20 / g++", "C11 / gcc", "Java / JDK", "Python 3 / pypy3", "Pascal / fpc", "C# / Mono"])
 
     # Whether contestants allowed to download their submissions.
     submissions_download_allowed = Column(
@@ -148,7 +148,7 @@ class Contest(Base):
         Enum(TOKEN_MODE_DISABLED, TOKEN_MODE_FINITE, TOKEN_MODE_INFINITE,
              name="token_mode"),
         nullable=False,
-        default=TOKEN_MODE_INFINITE)
+        default=TOKEN_MODE_DISABLED)
 
     # The maximum number of tokens a contestant is allowed to use
     # during the whole contest (on all tasks).
@@ -220,7 +220,8 @@ class Contest(Base):
     # "Europe/Rome", "Australia/Sydney", "America/New_York", etc.
     timezone = Column(
         Unicode,
-        nullable=True)
+        nullable=True,
+        default="Europe/Rome")
 
     # Max contest time for each user in seconds.
     per_user_time = Column(
