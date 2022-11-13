@@ -177,7 +177,7 @@ class Config:
         self.twophase_commit = False
 
         # Worker.
-        self.keep_sandbox = True
+        self.keep_sandbox = False
         self.use_cgroups = True
         self.sandbox_implementation = 'isolate'
         self.store_exe_in_db = True
