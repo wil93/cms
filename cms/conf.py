@@ -23,7 +23,7 @@
 
 import errno
 import ipaddress
-import json
+import pyjson5
 import logging
 import os
 import socket
@@ -324,7 +324,7 @@ class Config:
         # Load config file.
         try:
             with open(path, 'rt', encoding='utf-8') as f:
-                data = json.load(f)
+                data = pyjson5.load(f)
         except FileNotFoundError:
             logger.debug("Couldn't find config file %s.", path)
             return False
