@@ -239,7 +239,9 @@ def default_argument_parser(description, cls, ask_contest=None):
     # not need the contest_id because RS needs to be able to restart
     # everything without knowing which is which.
     contest_id_help = (
-        "id of the contest to automatically load, " "or ALL to serve all contests"
+        "id of the contest to automatically load, "
+        "or ALL to serve all contests, "
+        "or CONFIG to use the value in cms.conf"
     )
     if ask_contest is None:
         contest_id_help += " (ignored)"
@@ -281,6 +283,8 @@ def contest_id_from_args(args_contest_id, ask_contest):
 
     if args_contest_id == "ALL":
         return None
+    if args_contest_id == "CONFIG":
+        return config.contest_id
     if args_contest_id is not None:
         try:
             contest_id = int(args_contest_id)

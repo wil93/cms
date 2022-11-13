@@ -11,6 +11,9 @@
     // The user/group that CMS will be run as.
     "cmsuser": "cmsuser",
 
+    // ID of the contest to use if `-c CONFIG` is supplied to a command.
+    "contest_id": 1,
+
 
     // ========================================================================
     // AsyncLibrary
