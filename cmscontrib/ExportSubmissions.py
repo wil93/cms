@@ -26,6 +26,8 @@ import argparse
 import logging
 import os
 import sys
+from functools import partial
+from multiprocessing import Pool
 
 from cms import utf8_decoder
 from cms.db import Dataset, File, FSObject, Participation, SessionGen, \
@@ -88,6 +90,78 @@ def filter_top_scoring(results, unique):
             results.append(value[2])  # the "old" row
 
     return results
+
+session = None
+
+def init_session():
+    global session
+    session = SessionGen().__enter__()
+
+def process(args, row):
+    s_id, s_language, s_timestamp, sr_score, f_filename, f_digest, \
+        u_id, u_name, u_fname, u_lname, t_id, t_name = row
+
+    timef = s_timestamp.strftime('%Y%m%dT%H%M%S')
+
+    ext = languagemanager.get_language(s_language).source_extension \
+        if s_language else '.txt'
+    filename_base, filename_ext = os.path.splitext(
+        f_filename.replace('.%l', ext)
+    )
+
+    # "name" is a deprecated specifier with the same meaning as "file"
+    filename = args.filename.format(id=s_id, file=filename_base,
+                                    name=filename_base,
+                                    ext=filename_ext,
+                                    time=timef, user=u_name,
+                                    task=t_name,
+                                    score=sr_score)
+    filename = os.path.join(args.output_dir, filename)
+    if os.path.exists(filename):
+        logger.warning("Skipping file '%s' because it already exists",
+                        filename)
+        return
+    filedir = os.path.dirname(filename)
+    if not os.path.exists(filedir):
+        os.makedirs(filedir)
+    if not os.path.isdir(filedir):
+        logger.warning("%s is not a directory, skipped.", filedir)
+        return
+
+    fso = FSObject.get_from_digest(f_digest, session)
+    assert fso is not None
+    with fso.get_lobject(mode="rb") as file_obj:
+        data = file_obj.read()
+
+        if args.utf8:
+            try:
+                data = utf8_decoder(data)
+            except TypeError:
+                logger.critical("Could not guess encoding of file "
+                                "'%s'. Aborting.",
+                                filename)
+                sys.exit(1)
+            except Exception as e:
+                print("ops", e)
+                return
+
+            if args.add_info:
+                data = TEMPLATE[ext] % (
+                    u_name,
+                    u_fname,
+                    u_lname,
+                    t_name,
+                    sr_score,
+                    s_timestamp
+                ) + data
+
+            # Print utf8-encoded, possibly altered data
+            with open(filename, "wt", encoding="utf-8") as f_out:
+                f_out.write(data)
+        else:
+            # Print raw, untouched binary data
+            with open(filename, "wb") as f_out:
+                f_out.write(data)
 
 
 def main():
@@ -191,71 +265,10 @@ def main():
             return 0
 
         done = 0
-        for row in results:
-            s_id, s_language, s_timestamp, sr_score, f_filename, f_digest, \
-                u_id, u_name, u_fname, u_lname, t_id, t_name = row
-
-            timef = s_timestamp.strftime('%Y%m%dT%H%M%S')
-
-            ext = languagemanager.get_language(s_language).source_extension \
-                if s_language else '.txt'
-            filename_base, filename_ext = os.path.splitext(
-                f_filename.replace('.%l', ext)
-            )
-
-            # "name" is a deprecated specifier with the same meaning as "file"
-            filename = args.filename.format(id=s_id, file=filename_base,
-                                            name=filename_base,
-                                            ext=filename_ext,
-                                            time=timef, user=u_name,
-                                            task=t_name,
-                                            score=sr_score)
-            filename = os.path.join(args.output_dir, filename)
-            if os.path.exists(filename):
-                logger.warning("Skipping file '%s' because it already exists",
-                               filename)
-                continue
-            filedir = os.path.dirname(filename)
-            if not os.path.exists(filedir):
-                os.makedirs(filedir)
-            if not os.path.isdir(filedir):
-                logger.warning("%s is not a directory, skipped.", filedir)
-                continue
-
-            fso = FSObject.get_from_digest(f_digest, session)
-            assert fso is not None
-            with fso.get_lobject(mode="rb") as file_obj:
-                data = file_obj.read()
-
-                if args.utf8:
-                    try:
-                        data = utf8_decoder(data)
-                    except TypeError:
-                        logger.critical("Could not guess encoding of file "
-                                        "'%s'. Aborting.",
-                                        filename)
-                        sys.exit(1)
-
-                    if args.add_info:
-                        data = TEMPLATE[ext] % (
-                            u_name,
-                            u_fname,
-                            u_lname,
-                            t_name,
-                            sr_score,
-                            s_timestamp
-                        ) + data
-
-                    # Print utf8-encoded, possibly altered data
-                    with open(filename, "wt", encoding="utf-8") as f_out:
-                        f_out.write(data)
-                else:
-                    # Print raw, untouched binary data
-                    with open(filename, "wb") as f_out:
-                        f_out.write(data)
-
-            done += 1
-            print(done, "/", len(results))
+        with Pool(16, initializer=init_session) as pool:
+            for _ in pool.imap_unordered(partial(process, args), results):
+                done += 1
+                print(done, "/", len(results))
 
     return 0
 
