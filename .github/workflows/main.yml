@@ -56,7 +56,10 @@ jobs:
           pip install -r requirements.txt
           pip install -r dev-requirements.txt
 
-          sudo $(which python) prerequisites.py -y --cmsuser=$USER install
+          python --version
+          pip --version
+
+          sudo python prerequisites.py -y --cmsuser=$USER install
           python setup.py install
 
       - name: Set up database
