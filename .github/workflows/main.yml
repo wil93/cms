@@ -26,28 +26,29 @@ jobs:
         with:
           submodules: true
 
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
       - name: Install dependencies
         run: |
           sudo apt-get update -y
           sudo apt-get install -y \
             build-essential \
-            php7.4-cli \
-            haskell-platform \
-            fp-compiler \
-            python2.7 \
-            cppreference-doc-en-html \
             cgroup-lite \
+            cppreference-doc-en-html \
+            fp-compiler \
+            git \
+            haskell-platform \
             libcap-dev \
-            python-dev \
-            libpq-dev \
             libcups2-dev \
+            libpq-dev \
             libyaml-dev \
+            mono-mcs \
+            openjdk-8-jdk-headless \
+            postgresql-client \
+            php7.4-cli \
+            python3-pip \
+            python3.6 \
+            python3.6-dev \
             rustc \
-            mono-mcs
+            zip
 
       - name: Install requirements
         run: |
