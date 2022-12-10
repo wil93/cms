@@ -38,6 +38,7 @@ jobs:
             haskell-platform \
             libcap-dev \
             libcups2-dev \
+            libffi-dev \
             libpq-dev \
             libyaml-dev \
             mono-mcs \
