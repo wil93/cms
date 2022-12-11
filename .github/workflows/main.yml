@@ -60,7 +60,7 @@ jobs:
           pip --version
 
           sudo python prerequisites.py -y --cmsuser=$USER install
-          sudo python setup.py install
+          python setup.py install
 
       - name: Set up database
         env:
@@ -83,4 +83,5 @@ jobs:
 
       - name: Run tests
         run: |
-          cmsRunTests -v --coverage --codecov
+          mount
+          #cmsRunTests -v --coverage --codecov
