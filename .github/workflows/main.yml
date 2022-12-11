@@ -60,26 +60,7 @@ jobs:
           pip --version
 
           sudo python prerequisites.py -y --cmsuser=$USER install
-          sudo python setup.py install
-
-      - name: Set up database
-        env:
-          PGPASSWORD: postgres
-        run: |
-          psql --host=localhost --username=postgres --command="CREATE USER cmsuser WITH PASSWORD 'your_password_here';"
-
-          createdb --host=localhost --username=postgres --owner=cmsuser cmsdb
-          psql --host=localhost --username=postgres --dbname=cmsdb --command='ALTER SCHEMA public OWNER TO cmsuser'
-          psql --host=localhost --username=postgres --dbname=cmsdb --command='GRANT SELECT ON pg_largeobject TO cmsuser'
-
-          createdb --host=localhost --username=postgres --owner=cmsuser cmsdbfortesting
-          psql --host=localhost --username=postgres --dbname=cmsdbfortesting --command='ALTER SCHEMA public OWNER TO cmsuser'
-          psql --host=localhost --username=postgres --dbname=cmsdbfortesting --command='GRANT SELECT ON pg_largeobject TO cmsuser'
-
-          cp ./config/cms.conf.sample ./config/cms.conf
-          sed -e "s/\"cmsuser\": \"cmsuser\"/\"cmsuser\": \"$USER\"/" -i ./config/cms.conf
-
-          cmsInitDB
+        #   python setup.py install
 
       - name: Run tests
         run: |
