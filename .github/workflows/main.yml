@@ -60,7 +60,7 @@ jobs:
           pip --version
 
           sudo python prerequisites.py -y --cmsuser=$USER install
-        #   python setup.py install
+          sudo python setup.py install
 
       - name: Set up database
         env:
