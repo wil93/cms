@@ -8,19 +8,6 @@ jobs:
   test:
     runs-on: ubuntu-20.04
 
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
       - uses: actions/checkout@v2
         with:
@@ -29,38 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y \
-            build-essential \
-            cgroup-lite \
-            cppreference-doc-en-html \
-            fp-compiler \
-            git \
-            haskell-platform \
-            libcap-dev \
-            libcups2-dev \
-            libffi-dev \
-            libpq-dev \
-            libyaml-dev \
-            mono-mcs \
-            openjdk-8-jdk-headless \
-            postgresql-client \
-            php7.4-cli \
-            python3-pip \
-            python3.8 \
-            python3.8-dev \
-            rustc \
-            zip
-
-      - name: Install requirements
-        run: |
-          pip install -r requirements.txt
-          pip install -r dev-requirements.txt
-
-          python --version
-          pip --version
-
-          sudo python prerequisites.py -y --cmsuser=$USER install
-        #   python setup.py install
+          sudo apt-get install -y cgroup-lite
 
       - name: Run tests
         run: |
