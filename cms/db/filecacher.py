@@ -606,14 +606,6 @@ class FileCacher:
                 self.backend.get_file(digest) as fobj:
             copyfileobj(fobj, ftmp, self.CHUNK_SIZE)
 
-        if not cache_only:
-            # We allow anyone to delete files from the cache directory
-            # self.file_dir at any time. Hence, cache_file_path might no
-            # longer exist an instant after we create it. Opening the
-            # temporary file before renaming it circumvents this issue.
-            # (Note that the temporary file may not be manually deleted!)
-            fd = open(temp_file_path, 'rb')
-
         # Then move it to its real location (this operation is atomic
         # by POSIX requirement)
         os.rename(temp_file_path, cache_file_path)
@@ -621,7 +613,7 @@ class FileCacher:
         logger.debug("File %s downloaded.", digest)
 
         if not cache_only:
-            return fd
+            return open(cache_file_path, 'rb')
 
     def cache_file(self, digest):
         """Load a file into the cache.
