@@ -600,15 +600,13 @@ class FileCacher:
         logger.debug("File %s not in cache, downloading "
                      "from database.", digest)
 
-        ftmp_handle, temp_file_path = tempfile.mkstemp(dir=self.temp_dir,
-                                                       text=False)
-        with open(ftmp_handle, 'wb') as ftmp, \
-                self.backend.get_file(digest) as fobj:
-            copyfileobj(fobj, ftmp, self.CHUNK_SIZE)
+        with tempfile.NamedTemporaryFile(dir=self.temp_dir, delete=False) as ftmp:
+            with self.backend.get_file(digest) as fobj:
+                copyfileobj(fobj, ftmp, self.CHUNK_SIZE)
 
-        # Then move it to its real location (this operation is atomic
-        # by POSIX requirement)
-        os.rename(temp_file_path, cache_file_path)
+            # Then move it to its real location (this operation is atomic
+            # by POSIX requirement)
+            os.rename(ftmp.name, cache_file_path)
 
         logger.debug("File %s downloaded.", digest)
 
