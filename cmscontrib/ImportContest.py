@@ -295,7 +295,7 @@ class ContestImporter:
         if "password" in new_p:
             args["password"] = new_p["password"]
         if "delay" in new_p:
-            args["delay"] = new_p["delay"]
+            args["delay_time"] = datetime.timedelta(seconds=new_p["delay"])
 
         new_p = Participation(**args)
         session.add(new_p)
