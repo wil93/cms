@@ -291,6 +291,10 @@ def main():
         action="store_true",
     )
 
+    # unsed, but passed by ResourceService
+    parser.add_argument("shard", default="", help="unused")
+    parser.add_argument("-c", "--contest", default="", help="unused")
+
     args = parser.parse_args()
 
     service = PrometheusExporter(args)
