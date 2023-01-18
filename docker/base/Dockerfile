@@ -1,8 +1,8 @@
 FROM ghcr.io/linuxserver/baseimage-ubuntu:focal as initial
 
 # Install build dependencies
-RUN apt update
-RUN apt install -yy \
+RUN apt update && \
+    apt install -yy \
 	build-essential \
 	postgresql-client \
 	python3-dev \
