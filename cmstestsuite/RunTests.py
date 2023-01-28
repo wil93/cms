@@ -22,34 +22,9 @@ import sys
 from cmstestsuite import TestException, sh
 
 
-UNITTESTS = "unittests"
-FUNCTIONALTESTS = "functionaltests"
-TESTS = set([UNITTESTS, FUNCTIONALTESTS])
-
-
-def get_test_suite():
-    """Return the test suite to run based on the env variable
-
-    return (string): either "functionaltests" or "unittests" or an
-        empty string to mean "run both".
-
-    """
-    test_suite = ""
-    if "TEST_SUITE" in os.environ:
-        test_suite = os.environ["TEST_SUITE"]
-    if test_suite in TESTS:
-        return test_suite
-    else:
-        return ""
-
-
 def main():
-    test_suite = get_test_suite()
     try:
-        if test_suite == UNITTESTS or len(test_suite) == 0:
-            sh(["./cmstestsuite/RunUnitTests.py"] + sys.argv[1:])
-        if test_suite == FUNCTIONALTESTS or len(test_suite) == 0:
-            sh(["./cmstestsuite/RunFunctionalTests.py"] + sys.argv[1:])
+        sh(["./cmstestsuite/RunFunctionalTests.py"] + sys.argv[1:])
     except TestException:
         if os.path.exists("./log/cms/last.log"):
             print("\n\n===== START OF LOG DUMP =====\n\n")

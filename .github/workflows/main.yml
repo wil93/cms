@@ -4,6 +4,12 @@ on:
   - push
   - pull_request
 
+env:
+  # Could be removed in the future, see:
+  # - https://github.com/pytest-dev/pytest/issues/7443
+  # - https://github.com/actions/runner/issues/241
+  PYTEST_ADDOPTS: --color=yes
+
 jobs:
   test:
     runs-on: ubuntu-20.04
@@ -17,9 +23,13 @@ jobs:
         run: |
           mount | grep cgroup
 
+      - name: Build docker image
+        run: |
+          docker-compose -f docker-compose.test.yml build cms_test
+
       - name: Run tests
         run: |
-          docker-compose -f docker-compose.test.yml run cms_test
+          docker-compose -f docker-compose.test.yml run --rm cms_test
 
       - uses: codecov/codecov-action@v3
         with:

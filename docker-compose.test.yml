@@ -21,10 +21,13 @@ services:
     privileged: true
     command: >
       wait-for-it db:5432 -- sh -c "
-      createdb --host=db --username=postgres cmsdb ;
+      dropdb --host=db --username=postgres cmsdbfortesting ;
       createdb --host=db --username=postgres cmsdbfortesting ;
       cmsInitDB ;
       sudo chown cmsuser:cmsuser ./codecov ;
-      TEST_SUITE=unittests cmsRunTests -v --coverage codecov/unittests.xml ;
-      TEST_SUITE=functionaltests cmsRunTests -v --coverage codecov/functionaltests.xml ;
+      pytest --cov . --cov-report xml:codecov/unittests.xml ;
+      dropdb --host=db --username=postgres cmsdbfortesting ;
+      createdb --host=db --username=postgres cmsdbfortesting ;
+      cmsInitDB ;
+      cmsRunTests -v --coverage codecov/functionaltests.xml ;
       "
