@@ -32,10 +32,7 @@
 import logging
 import traceback
 
-try:
-    import tornado4.web as tornado_web
-except ImportError:
-    import tornado.web as tornado_web
+import tornado.web as tornado_web
 from werkzeug.datastructures import LanguageAccept
 from werkzeug.http import parse_accept_header
 

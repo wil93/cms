@@ -33,10 +33,7 @@ import json
 import logging
 import re
 
-try:
-    import tornado4.web as tornado_web
-except ImportError:
-    import tornado.web as tornado_web
+import tornado.web as tornado_web
 from sqlalchemy.orm.exc import NoResultFound
 
 from cms import config

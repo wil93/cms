@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:20.04
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update
 RUN apt-get install -y \
@@ -16,12 +18,12 @@ RUN apt-get install -y \
     libyaml-dev \
     mono-mcs \
     openjdk-8-jdk-headless \
-    php7.4-cli \
+    php8.1-cli \
     postgresql-client \
     python2 \
     python3-pip \
-    python3.8 \
-    python3.8-dev \
+    python3.10 \
+    python3.10-dev \
     rustc \
     sudo \
     wait-for-it \

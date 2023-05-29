@@ -29,10 +29,7 @@
 import logging
 import traceback
 
-try:
-    import tornado4.web as tornado_web
-except ImportError:
-    import tornado.web as tornado_web
+import tornado.web as tornado_web
 
 from cms.db import Attachment, Dataset, Session, Statement, Submission, Task
 from cmscommon.datetime import make_datetime

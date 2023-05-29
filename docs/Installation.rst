@@ -16,7 +16,7 @@ These are our requirements (in particular we highlight those that are not usuall
 
 * `GNU compiler collection <https://gcc.gnu.org/>`_ (in particular the C compiler ``gcc``);
 
-* `Python <http://www.python.org/>`_ >= 3.8;
+* `Python <http://www.python.org/>`_ >= 3.10;
 
 * `libcg <http://libcg.sourceforge.net/>`_;
 
@@ -55,11 +55,11 @@ On Ubuntu 20.04, one will need to run the following script to satisfy all depend
 
     # Feel free to change OpenJDK packages with your preferred JDK.
     sudo apt-get install build-essential openjdk-11-jdk-headless fp-compiler \
-        postgresql postgresql-client python3.8 cppreference-doc-en-html \
+        postgresql postgresql-client python3.10 cppreference-doc-en-html \
         cgroup-lite libcap-dev zip
 
     # Only if you are going to use pip/venv to install python dependencies
-    sudo apt-get install python3.8-dev libpq-dev libcups2-dev libyaml-dev \
+    sudo apt-get install python3.10-dev libpq-dev libcups2-dev libyaml-dev \
         libffi-dev python3-pip
 
     # Optional

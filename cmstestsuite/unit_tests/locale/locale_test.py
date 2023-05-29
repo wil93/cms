@@ -508,23 +508,23 @@ class TestFormatSize(unittest.TestCase):
 
     def test_localized_zero(self):
         self.assertEqual(FRENCH.format_size(0),
-                         "0 octet")
+                         "0\N{NO-BREAK SPACE}octet")
 
     def test_localized_small_values(self):
         self.assertEqual(FRENCH.format_size(1),
-                         "1 octet")
+                         "1\N{NO-BREAK SPACE}octet")
         self.assertEqual(FRENCH.format_size(2),
-                         "2 octets")
+                         "2\N{NO-BREAK SPACE}octets")
 
     def test_localized_cutoff_kib(self):
         self.assertEqual(FRENCH.format_size(999),
-                         "999 octets")
+                         "999\N{NO-BREAK SPACE}octets")
         self.assertEqual(FRENCH.format_size(1000),
-                         "1\N{NO-BREAK SPACE}000 octets")
+                         "1\N{NARROW NO-BREAK SPACE}000\N{NO-BREAK SPACE}octets")
         self.assertEqual(FRENCH.format_size(1001),
-                         "1\N{NO-BREAK SPACE}001 octets")
+                         "1\N{NARROW NO-BREAK SPACE}001\N{NO-BREAK SPACE}octets")
         self.assertEqual(FRENCH.format_size(1023),
-                         "1\N{NO-BREAK SPACE}023 octets")
+                         "1\N{NARROW NO-BREAK SPACE}023\N{NO-BREAK SPACE}octets")
         self.assertEqual(FRENCH.format_size(1024),
                          "1,00 Kio")
         self.assertEqual(FRENCH.format_size(1025),
@@ -534,11 +534,11 @@ class TestFormatSize(unittest.TestCase):
         self.assertEqual(FRENCH.format_size(999 * 1024),
                          "999 Kio")
         self.assertEqual(FRENCH.format_size(1000 * 1024),
-                         "1\N{NO-BREAK SPACE}000 Kio")
+                         "1\N{NARROW NO-BREAK SPACE}000 Kio")
         self.assertEqual(FRENCH.format_size(1001 * 1024),
-                         "1\N{NO-BREAK SPACE}001 Kio")
+                         "1\N{NARROW NO-BREAK SPACE}001 Kio")
         self.assertEqual(FRENCH.format_size(1023 * 1024),
-                         "1\N{NO-BREAK SPACE}023 Kio")
+                         "1\N{NARROW NO-BREAK SPACE}023 Kio")
         self.assertEqual(FRENCH.format_size(1024 * 1024),
                          "1,00 Mio")
         self.assertEqual(FRENCH.format_size(1025 * 1024),
@@ -553,7 +553,7 @@ class TestFormatSize(unittest.TestCase):
         self.assertEqual(FRENCH.format_size(456_789_000_000_000),
                          "415 Tio")
         self.assertEqual(FRENCH.format_size(5_678_912_300_000_000),
-                         "5\N{NO-BREAK SPACE}165 Tio")
+                         "5\N{NARROW NO-BREAK SPACE}165 Tio")
 
 
 class TestFormatDecimal(unittest.TestCase):

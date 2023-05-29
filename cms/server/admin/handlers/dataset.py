@@ -32,10 +32,7 @@ import logging
 import re
 import zipfile
 
-try:
-    import tornado4.web as tornado_web
-except ImportError:
-    import tornado.web as tornado_web
+import tornado.web as tornado_web
 
 from cms.db import Dataset, Manager, Message, Participation, \
     Session, Submission, Task, Testcase

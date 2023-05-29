@@ -20,10 +20,7 @@
 
 import unittest
 
-try:
-    from tornado4.web import MissingArgumentError
-except ImportError:
-    from tornado.web import MissingArgumentError
+from tornado.web import MissingArgumentError
 
 from cms.grading.ParameterTypes import ParameterTypeString, \
     ParameterTypeInt, ParameterTypeChoice, ParameterTypeCollection

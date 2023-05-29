@@ -29,10 +29,7 @@
 
 import logging
 
-try:
-    import tornado4.web as tornado_web
-except ImportError:
-    import tornado.web as tornado_web
+import tornado.web as tornado_web
 
 from cms.server import multi_contest
 from cms.server.contest.communication import accept_question, \

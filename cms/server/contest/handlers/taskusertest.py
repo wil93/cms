@@ -31,10 +31,7 @@
 import logging
 import re
 
-try:
-    import tornado4.web as tornado_web
-except ImportError:
-    import tornado.web as tornado_web
+import tornado.web as tornado_web
 
 from cms import config
 from cms.db import UserTest, UserTestResult

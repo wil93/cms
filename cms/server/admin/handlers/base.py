@@ -34,10 +34,7 @@ import traceback
 from datetime import datetime, timedelta
 from functools import wraps
 
-try:
-    import tornado4.web as tornado_web
-except ImportError:
-    import tornado.web as tornado_web
+import tornado.web as tornado_web
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import subqueryload
 

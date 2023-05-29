@@ -21,10 +21,7 @@
 
 import logging
 
-try:
-    import tornado4.wsgi as tornado_wsgi
-except ImportError:
-    import tornado.wsgi as tornado_wsgi
+import tornado.wsgi as tornado_wsgi
 from gevent.pywsgi import WSGIServer
 from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
