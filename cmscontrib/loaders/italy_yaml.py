@@ -389,8 +389,8 @@ class YamlLoader(ContestLoader, TaskLoader, UserLoader, TeamLoader):
             for (lang, lang_code) in LANGUAGE_MAP.items():
                 if lang_code == primary_language:
                     continue
-                paths = [os.path.join(self.path, "statement", "{}.pdf" % lang),
-                         os.path.join(self.path, "testo", "{}.pdf" % lang)]
+                paths = [os.path.join(self.path, "statement", "%s.pdf" % lang),
+                         os.path.join(self.path, "testo", "%s.pdf" % lang)]
                 for path in paths:
                     if os.path.exists(path):
                         digest = self.file_cacher.put_file_from_path(
@@ -821,8 +821,8 @@ class YamlLoader(ContestLoader, TaskLoader, UserLoader, TeamLoader):
         files.append(os.path.join(self.path, "statement", "statement.pdf"))
         files.append(os.path.join(self.path, "testo", "testo.pdf"))
         for lang in LANGUAGE_MAP:
-            files.append(os.path.join(self.path, "statement", "{}.pdf" % lang))
-            files.append(os.path.join(self.path, "testo", "{}.pdf" % lang))
+            files.append(os.path.join(self.path, "statement", "%s.pdf" % lang))
+            files.append(os.path.join(self.path, "testo", "%s.pdf" % lang))
 
         # Managers
         files.append(os.path.join(self.path, "check", "checker"))
