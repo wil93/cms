@@ -61,7 +61,10 @@ class JavaJDK(Language):
                                  source_filenames, executable_filename,
                                  for_evaluation=True):
         """See Language.get_compilation_commands."""
-        compile_command = ["/usr/bin/javac"] + source_filenames
+        compile_command = [
+                ["/usr/bin/sed", "-Ez", rf"s/package\s([a-zA-Z0-9_$.]|\s)*;//;s/public\s+class\s+[a-zA-Z0-9_$]*/public class {src_filename[:-5]}/", "-i", src_filename]
+                for src_filename in source_filenames
+        ] + [["/usr/bin/javac"] + source_filenames]
         # We need to let the shell expand *.class as javac create
         # a class file for each inner class.
         if JavaJDK.USE_JAR:
@@ -69,13 +72,13 @@ class JavaJDK(Language):
                            " ".join(["jar", "cf",
                                      shell_quote(executable_filename),
                                      "*.class"])]
-            return [compile_command, jar_command]
+            return [*compile_command, jar_command]
         else:
             zip_command = ["/bin/sh", "-c",
                            " ".join(["zip",
                                      shell_quote(executable_filename),
                                      "*.class"])]
-            return [compile_command, zip_command]
+            return [*compile_command, zip_command]
 
     def get_evaluation_commands(
             self, executable_filename, main=None, args=None):
