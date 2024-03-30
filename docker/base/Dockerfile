@@ -13,7 +13,8 @@ RUN apt update && \
 	libcups2-dev \
 	libyaml-dev \
 	libffi-dev \
-	python3-pip
+	python3-pip && \
+    rm -r /var/lib/apt/lists/*
 
 # Install python dependencies
 COPY requirements.txt /cms/
@@ -27,13 +28,8 @@ COPY . /cms
 # Install cms
 RUN make -C isolate clean
 RUN python3 prerequisites.py --yes --no-conf --as-root install && \
-	python3 setup.py install
-
-# Cleanup
-RUN rm -rf \
-	/var/lib/apt/lists/* \
-	/tmp \
-	/root/.cache
+	python3 setup.py install && \
+    rm -r /tmp
 
 # Copy base configuration files
 COPY docker/base/root /
@@ -48,4 +44,3 @@ WORKDIR /cms
 
 ENV CMS_CONFIG=/config/cms.conf
 VOLUME ["/config"]
-ENTRYPOINT ["/init"]

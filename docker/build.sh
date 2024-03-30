@@ -33,9 +33,7 @@ for comp in "${components[@]}"; do
     image="ghcr.io/$ghcr_user/cms-$comp"
     echo "Building image $image"
     docker build \
-        -t "$image" \
+        -t "$image:$tag" \
         -f "docker/$comp/Dockerfile" \
         .
-    echo "Tagging $image -> $image:$tag"
-    docker tag "$image" "$image:$tag"
 done

@@ -6,6 +6,7 @@ if [ ! -d "$CMS_DOC_PATH" ]; then
     echo "C++ documentation is missing, copying..."
 
     mkdir -p "$CMS_DOC_PATH"
-    cp -r /defaults/doc/reference/* "$CMS_DOC_PATH"
+    unzip -q /defaults/cppreference.zip "reference/*" -d /tmp
+    mv /tmp/reference/* "$CMS_DOC_PATH"
     chown -R "$PUID:$PGID" "$CMS_DOC_PATH"
 fi
