@@ -44,6 +44,7 @@ services:
         volumes:
             - ./volumes/config:/config
         privileged: true
+        cgroup: host
 
     ranking:
         image: ghcr.io/edomora97/cms-rws

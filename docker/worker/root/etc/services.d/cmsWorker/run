@@ -1,3 +1,5 @@
 #!/usr/bin/with-contenv bash
 
+mkdir -p /run/isolate
+echo "/sys/fs/cgroup" > /run/isolate/cgroup
 exec cmsWorker
