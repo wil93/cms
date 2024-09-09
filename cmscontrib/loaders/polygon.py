@@ -20,7 +20,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import imp
 import logging
 import os
 import subprocess
@@ -146,6 +145,8 @@ class PolygonTaskLoader(TaskLoader):
         if os.path.exists(task_cms_conf_path):
             logger.info("Found additional CMS options for task %s.", name)
             with open(task_cms_conf_path, 'rb') as f:
+                # TODO(veluca): consider fixing this
+                import imp
                 task_cms_conf = imp.load_module('cms_conf', f,
                                                 task_cms_conf_path,
                                                 ('.py', 'r', imp.PY_SOURCE))
