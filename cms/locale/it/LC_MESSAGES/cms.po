@@ -64,14 +64,14 @@ msgid "Output is correct"
 msgstr "L'output è corretto"
 
 msgid "Your submission ran and gave the correct answer"
-msgstr "La tua sottoposizione è stata eseguita, è ha dato la risposta corretta"
+msgstr "La tua sottoposizione è stata eseguita, e ha dato la risposta corretta"
 
 msgid "Output is partially correct"
 msgstr "L'output è parzialmente corretto"
 
 msgid "Your submission ran and gave the partially correct answer"
 msgstr ""
-"La tua sottoposizione è stata eseguita, è ha dato una risposta parzialmente "
+"La tua sottoposizione è stata eseguita, e ha dato una risposta parzialmente "
 "corretta"
 
 msgid "Output isn't correct"
