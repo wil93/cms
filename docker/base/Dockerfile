@@ -1,4 +1,4 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:focal as initial
+FROM ghcr.io/linuxserver/baseimage-ubuntu:jammy AS initial
 
 # Install build dependencies
 RUN apt update && \
@@ -36,7 +36,7 @@ COPY docker/base/root /
 
 # Multi-stage build merging all the layers from the previous step
 FROM ghcr.io/linuxserver/baseimage-ubuntu:focal
-LABEL org.opencontainers.image.source https://github.com/edomora97/cms
+LABEL org.opencontainers.image.source=https://github.com/edomora97/cms
 LABEL maintainer="Edoardo Morassutto <edoardo.morassutto@gmail.com>"
 
 COPY --from=initial / /
