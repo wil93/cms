@@ -16,11 +16,20 @@ services:
             PUID: 1000
             PGID: 1000
             TZ: Europe/Rome
-            CMS_PROXY_SERVICE_DISABLED: "false"
         volumes:
             - ./volumes/config:/config
         ports:
             - 8889:8889
+
+    ps:
+        image: ghcr.io/edomora97/cms-ps
+        environment:
+            PUID: 1000
+            PGID: 1000
+            TZ: Europe/Rome
+            CMS_SHARD:
+        volumes:
+            - ./volumes/config:/config
 
     cws:
         image: ghcr.io/edomora97/cms-cws

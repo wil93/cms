@@ -27,7 +27,7 @@ done
 
 cd "$CONTEXT"
 
-components=(base core cws worker rws)
+components=(base core cws worker rws ps)
 
 for comp in "${components[@]}"; do
     image="ghcr.io/$ghcr_user/cms-$comp"

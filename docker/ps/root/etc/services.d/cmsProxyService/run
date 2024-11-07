@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+
+shard=${CMS_SHARD:-0}
+
+if [ -n "$CMS_CONTEST_ID" ]; then
+    exec cmsProxyService -c "$CMS_CONTEST_ID" "$shard"
+else
+    echo | exec cmsProxyService "$shard"
+fi

@@ -263,7 +263,10 @@ class ProxyService(TriggeredService):
         """
         super().__init__(shard)
 
-        self.contest_id = contest_id
+        if hasattr(config, "proxy_service_contest_id"):
+            self.contest_id = config.proxy_service_contest_id[shard]
+        else:
+            self.contest_id = contest_id
 
         # Store what data we already sent to rankings, to avoid
         # sending it twice.
@@ -272,8 +275,11 @@ class ProxyService(TriggeredService):
 
         # Create one executor for each ranking.
         self.rankings = list()
-        for ranking in config.rankings:
-            self.add_executor(ProxyExecutor(ranking))
+        if hasattr(config, "proxy_service_contest_id"):
+            self.add_executor(ProxyExecutor(config.rankings[shard]))
+        else:
+            for ranking in config.rankings:
+                self.add_executor(ProxyExecutor(ranking))
 
         # Enqueue the dispatch of some initial data to rankings. Needs
         # to be done before the sweeper is started, as otherwise RWS
