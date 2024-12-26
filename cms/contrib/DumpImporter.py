@@ -52,9 +52,9 @@ from cms.db import version as model_version, Codename, Filename, \
     Submission, SubmissionResult, User, Participation, UserTest, \
     UserTestResult, PrintJob, Announcement, init_db, drop_db, enumerate_files
 from cms.db.filecacher import FileCacher
-from cmscommon.archive import Archive
-from cmscommon.datetime import make_datetime
-from cmscommon.digest import path_digest
+from cms.common.archive import Archive
+from cms.common.datetime import make_datetime
+from cms.common.digest import path_digest
 
 
 logger = logging.getLogger(__name__)
@@ -223,8 +223,11 @@ class DumpImporter:
                 for version in range(dump_version, model_version):
                     # Update from version to version+1
                     updater = __import__(
-                        "cmscontrib.updaters.update_%d" % (version + 1),
-                        globals(), locals(), ["Updater"]).Updater(self.datas)
+                        "cms.contrib.updaters.update_%d" % (version + 1),
+                        globals(),
+                        locals(),
+                        ["Updater"],
+                    ).Updater(self.datas)
                     self.datas = updater.run()
                     self.datas["_version"] = version + 1
 

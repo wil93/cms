@@ -43,7 +43,7 @@ import babel.units
 import pkg_resources
 
 from cms import config
-from cmscommon.datetime import utc
+from cms.common.datetime import utc
 
 
 logger = logging.getLogger(__name__)

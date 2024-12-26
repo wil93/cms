@@ -21,7 +21,7 @@ At the moment, CMS comes with two loaders pre-installed:
 * :file:`italy_yaml`, for tasks/users stored in the "Italian Olympiad" format.
 * :file:`polygon_xml`, for tasks made with `Polygon <https://polygon.codeforces.com/>`_.
 
-The first one is not particularly suited for general use (see below for more details), so, if you don't want to migrate to one of the aforementioned formats then we encourage you to **write a loader** for your favorite format and then get in touch with CMS authors to have it accepted in CMS. See the file :gh_blob:`cmscontrib/loaders/base_loader.py` for some hints.
+The first one is not particularly suited for general use (see below for more details), so, if you don't want to migrate to one of the aforementioned formats then we encourage you to **write a loader** for your favorite format and then get in touch with CMS authors to have it accepted in CMS. See the file :gh_blob:`cms/contrib/loaders/base_loader.py` for some hints.
 
 
 Italian import format

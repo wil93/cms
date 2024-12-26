@@ -24,12 +24,15 @@ import unittest
 from datetime import timedelta
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms.grading.scoring import task_score
-from cmscommon.constants import \
-    SCORE_MODE_MAX, SCORE_MODE_MAX_SUBTASK, SCORE_MODE_MAX_TOKENED_LAST
-from cmscommon.datetime import make_datetime
+from cms.common.constants import (
+    SCORE_MODE_MAX,
+    SCORE_MODE_MAX_SUBTASK,
+    SCORE_MODE_MAX_TOKENED_LAST,
+)
+from cms.common.datetime import make_datetime
 
 
 class TaskScoreMixin(DatabaseMixin):

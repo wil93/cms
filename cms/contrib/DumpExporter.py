@@ -49,8 +49,8 @@ from cms.db import version as model_version, Codename, Filename, \
     Task, Submission, UserTest, SubmissionResult, UserTestResult, PrintJob, \
     Announcement, Participation, enumerate_files
 from cms.db.filecacher import FileCacher
-from cmscommon.datetime import make_timestamp
-from cmscommon.digest import path_digest
+from cms.common.datetime import make_timestamp
+from cms.common.digest import path_digest
 
 
 logger = logging.getLogger(__name__)

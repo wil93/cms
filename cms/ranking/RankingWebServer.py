@@ -38,18 +38,18 @@ from werkzeug.wsgi import responder, wrap_file, SharedDataMiddleware, \
     DispatcherMiddleware
 
 # Needed for initialization. Do not remove.
-import cmsranking.Logger  # noqa
-from cmscommon.eventsource import EventSource
-from cmsranking.Config import Config
-from cmsranking.Contest import Contest
-from cmsranking.Entity import InvalidData
-from cmsranking.Scoring import ScoringStore
-from cmsranking.Store import Store
-from cmsranking.Subchange import Subchange
-from cmsranking.Submission import Submission
-from cmsranking.Task import Task
-from cmsranking.Team import Team
-from cmsranking.User import User
+import cms.ranking.Logger  # noqa
+from cms.common.eventsource import EventSource
+from cms.ranking.Config import Config
+from cms.ranking.Contest import Contest
+from cms.ranking.Entity import InvalidData
+from cms.ranking.Scoring import ScoringStore
+from cms.ranking.Store import Store
+from cms.ranking.Subchange import Subchange
+from cms.ranking.Submission import Submission
+from cms.ranking.Task import Task
+from cms.ranking.Team import Team
+from cms.ranking.User import User
 
 
 logger = logging.getLogger(__name__)

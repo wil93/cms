@@ -110,8 +110,10 @@ def ask_for_contest(skip=None):
             n_contests = len(contests)
             if n_contests == 0:
                 print("No contests in the database.")
-                print("You may want to use some of the facilities in "
-                      "cmscontrib to import a contest.")
+                print(
+                    "You may want to use some of the facilities in "
+                    "cms.contrib to import a contest."
+                )
                 sys.exit(0)
             print("Contests available:")
             for i, row in enumerate(contests):

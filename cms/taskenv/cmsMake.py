@@ -34,9 +34,8 @@ import yaml
 
 from cms import utf8_decoder
 from cms.grading.languagemanager import SOURCE_EXTS, filename_to_language
-from cmscommon.terminal import move_cursor, add_color_to_string, \
-    colors, directions
-from cmstaskenv.Test import test_testcases, clean_test_env
+from cms.common.terminal import move_cursor, add_color_to_string, colors, directions
+from cms.taskenv.Test import test_testcases, clean_test_env
 
 
 SOL_DIRNAME = 'sol'
@@ -62,8 +61,10 @@ INPUT_DIRNAME = 'input'
 OUTPUT_DIRNAME = 'output'
 RESULT_DIRNAME = 'result'
 
-DATA_DIRS = [os.path.join('.', 'cmstaskenv', 'data'),
-             os.path.join('/', 'usr', 'local', 'share', 'cms', 'cmsMake')]
+DATA_DIRS = [
+    os.path.join(".", "cms", "taskenv", "data"),
+    os.path.join("/", "usr", "local", "share", "cms", "cmsMake"),
+]
 
 logger = logging.getLogger()
 

@@ -23,7 +23,7 @@ import re
 
 from gevent.lock import RLock
 
-from cmsranking.Entity import Entity, InvalidKey, InvalidData
+from cms.ranking.Entity import Entity, InvalidKey, InvalidData
 
 
 logger = logging.getLogger(__name__)

@@ -21,11 +21,11 @@
 import unittest
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms.db import Participation, SessionGen, User
-from cmscontrib.ImportUser import UserImporter
-from cmscontrib.loaders.base_loader import UserLoader
+from cms.contrib.ImportUser import UserImporter
+from cms.contrib.loaders.base_loader import UserLoader
 
 
 def fake_loader_factory(user):

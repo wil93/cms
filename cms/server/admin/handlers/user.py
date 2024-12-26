@@ -28,7 +28,7 @@
 """
 
 from cms.db import Contest, Participation, Submission, Team, User
-from cmscommon.datetime import make_datetime
+from cms.common.datetime import make_datetime
 
 from .base import BaseHandler, SimpleHandler, require_permission
 

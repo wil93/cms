@@ -43,7 +43,7 @@ except ImportError:
     import tornado.web as tornado_web
 
 from cms.server import multi_contest
-from cmscommon.mimetypes import get_type_for_file_name
+from cms.common.mimetypes import get_type_for_file_name
 from .contest import ContestHandler, FileHandler
 from ..phase_management import actual_phase_required
 

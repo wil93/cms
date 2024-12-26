@@ -32,11 +32,10 @@ from unittest.mock import patch, PropertyMock
 import gevent
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms.service.ScoringService import ScoringService
-from cmstestsuite.unit_tests.testidgenerator import unique_long_id, \
-    unique_unicode_id
+from cms.testsuite.unit_tests.testidgenerator import unique_long_id, unique_unicode_id
 
 
 class TestScoringService(DatabaseMixin, unittest.TestCase):

@@ -26,15 +26,15 @@ from datetime import timedelta
 from unittest.mock import patch
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms import config
 from cms.server.contest.authentication import validate_login, \
     authenticate_request
 # Prefer build_password (which defaults to a plaintext method) over
 # hash_password (which defaults to bcrypt) as it is a lot faster.
-from cmscommon.crypto import build_password, hash_password
-from cmscommon.datetime import make_datetime
+from cms.common.crypto import build_password, hash_password
+from cms.common.datetime import make_datetime
 
 
 class TestValidateLogin(DatabaseMixin, unittest.TestCase):

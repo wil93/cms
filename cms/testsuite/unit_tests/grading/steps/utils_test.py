@@ -22,9 +22,8 @@ import unittest
 
 from cms.grading.Sandbox import Sandbox
 from cms.grading.steps.utils import generic_step
-from cmstestsuite.unit_tests.grading.steps.fakeisolatesandbox \
-    import FakeIsolateSandbox
-from cmstestsuite.unit_tests.grading.steps.stats_test import get_stats
+from cms.testsuite.unit_tests.grading.steps.fakeisolatesandbox import FakeIsolateSandbox
+from cms.testsuite.unit_tests.grading.steps.stats_test import get_stats
 
 
 INVALID_UTF8 = b"\xc3\x28"

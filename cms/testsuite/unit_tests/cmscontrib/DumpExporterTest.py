@@ -23,13 +23,13 @@ import os
 import unittest
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms.db import Contest, Executable, Participation, Statement, Submission, \
     SubmissionResult, Task, User, version
-from cmscommon.digest import bytes_digest
-from cmscontrib.DumpExporter import DumpExporter
-from cmstestsuite.unit_tests.filesystemmixin import FileSystemMixin
+from cms.common.digest import bytes_digest
+from cms.contrib.DumpExporter import DumpExporter
+from cms.testsuite.unit_tests.filesystemmixin import FileSystemMixin
 
 
 class TestDumpExporter(DatabaseMixin, FileSystemMixin, unittest.TestCase):

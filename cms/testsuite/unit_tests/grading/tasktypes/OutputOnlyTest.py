@@ -25,8 +25,11 @@ from cms.db import File
 from cms.grading.Job import EvaluationJob
 from cms.grading.tasktypes.OutputOnly import OutputOnly
 from cms.service.esoperations import ESOperation
-from cmstestsuite.unit_tests.grading.tasktypes.tasktypetestutils import \
-    OUTCOME, TEXT, TaskTypeTestMixin
+from cms.testsuite.unit_tests.grading.tasktypes.tasktypetestutils import (
+    OUTCOME,
+    TEXT,
+    TaskTypeTestMixin,
+)
 
 
 FILE_001 = File(digest="digest of 001", filename="output_001.txt")

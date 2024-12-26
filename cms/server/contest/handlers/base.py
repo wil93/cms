@@ -49,7 +49,7 @@ from werkzeug.http import parse_accept_header
 from cms.db import Contest
 from cms.locale import DEFAULT_TRANSLATION, choose_language_code
 from cms.server import CommonRequestHandler
-from cmscommon.datetime import utc as utc_tzinfo
+from cms.common.datetime import utc as utc_tzinfo
 
 
 logger = logging.getLogger(__name__)

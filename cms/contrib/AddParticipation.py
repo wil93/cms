@@ -38,7 +38,7 @@ from sqlalchemy.exc import IntegrityError
 from cms import utf8_decoder
 from cms.db import Contest, Participation, SessionGen, Team, User, \
     ask_for_contest
-from cmscommon.crypto import build_password, hash_password
+from cms.common.crypto import build_password, hash_password
 
 
 logger = logging.getLogger(__name__)

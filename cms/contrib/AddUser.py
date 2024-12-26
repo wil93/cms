@@ -34,8 +34,7 @@ from sqlalchemy.exc import IntegrityError
 
 from cms import utf8_decoder
 from cms.db import SessionGen, User
-from cmscommon.crypto import generate_random_password, build_password, \
-    hash_password
+from cms.common.crypto import generate_random_password, build_password, hash_password
 
 
 logger = logging.getLogger(__name__)

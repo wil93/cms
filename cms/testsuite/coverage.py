@@ -26,7 +26,7 @@
 import logging
 import sys
 
-from cmstestsuite import CONFIG, sh
+from cms.testsuite import CONFIG, sh
 
 
 logger = logging.getLogger(__name__)
@@ -34,10 +34,10 @@ logger = logging.getLogger(__name__)
 
 _COVERAGE_DIRECTORIES = [
     "cms",
-    "cmscommon",
-    "cmscontrib",
-    "cmsranking",
-    "cmstaskenv",
+    "cms/common",
+    "cms/contrib",
+    "cms/ranking",
+    "cms/taskenv",
 ]
 _COVERAGE_CMDLINE = [
     sys.executable, "-m", "coverage", "run", "-p",

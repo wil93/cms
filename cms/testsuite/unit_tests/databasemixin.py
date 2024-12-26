@@ -44,8 +44,11 @@ from cms.db import engine, metadata, Announcement, Contest, Dataset, Evaluation,
     UserTest, UserTestResult, drop_db, init_db, Token, UserTestFile, \
     UserTestManager
 from cms.db.filecacher import DBBackend
-from cmstestsuite.unit_tests.testidgenerator import unique_long_id, \
-    unique_unicode_id, unique_digest
+from cms.testsuite.unit_tests.testidgenerator import (
+    unique_long_id,
+    unique_unicode_id,
+    unique_digest,
+)
 
 
 class DatabaseObjectGeneratorMixin:

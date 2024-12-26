@@ -43,7 +43,7 @@ from cms import config
 from cms.db import SessionGen, Contest, Participation, Task, Submission, \
     get_submissions
 from cms.io import Executor, QueueItem, TriggeredService, rpc_method
-from cmscommon.datetime import make_timestamp
+from cms.common.datetime import make_timestamp
 
 
 logger = logging.getLogger(__name__)

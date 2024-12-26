@@ -26,7 +26,7 @@
 """
 
 from cms.db import Contest, Task
-from cmscommon.datetime import make_datetime
+from cms.common.datetime import make_datetime
 
 from .base import BaseHandler, require_permission
 

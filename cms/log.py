@@ -48,7 +48,7 @@ import sys
 
 import gevent.lock
 
-from cmscommon.terminal import colors, add_color_to_string, has_color_support
+from cms.common.terminal import colors, add_color_to_string, has_color_support
 
 
 class StreamHandler(logging.StreamHandler):

@@ -42,7 +42,7 @@ from functools import total_ordering
 
 from gevent.event import Event
 
-from cmscommon.datetime import make_datetime, make_timestamp
+from cms.common.datetime import make_datetime, make_timestamp
 
 
 class QueueItem:

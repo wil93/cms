@@ -31,10 +31,10 @@ from unittest.mock import patch, PropertyMock
 import gevent
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms.service.ProxyService import ProxyService
-from cmscommon.constants import SCORE_MODE_MAX
+from cms.common.constants import SCORE_MODE_MAX
 
 
 class TestProxyService(DatabaseMixin, unittest.TestCase):

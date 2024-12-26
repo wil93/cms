@@ -20,7 +20,7 @@
 
 import unittest
 
-from cmscommon.commands import pretty_print_cmdline
+from cms.common.commands import pretty_print_cmdline
 
 
 class TestPrettyPrintCmdline(unittest.TestCase):

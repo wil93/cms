@@ -22,8 +22,7 @@ import unittest
 
 from cms.grading.Sandbox import Sandbox
 from cms.grading.steps import execution_stats, merge_execution_stats
-from cmstestsuite.unit_tests.grading.steps.fakeisolatesandbox \
-    import FakeIsolateSandbox
+from cms.testsuite.unit_tests.grading.steps.fakeisolatesandbox import FakeIsolateSandbox
 
 
 INVALID_UTF8 = b"\xc3\x28"

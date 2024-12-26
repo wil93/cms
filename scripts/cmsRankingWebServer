@@ -24,7 +24,7 @@ gevent.monkey.patch_all()  # noqa
 
 import sys
 
-from cmsranking.RankingWebServer import main
+from cms.ranking.RankingWebServer import main
 
 
 if __name__ == "__main__":

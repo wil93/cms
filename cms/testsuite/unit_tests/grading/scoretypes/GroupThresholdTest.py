@@ -21,8 +21,9 @@
 import unittest
 
 from cms.grading.scoretypes.GroupThreshold import GroupThreshold
-from cmstestsuite.unit_tests.grading.scoretypes.scoretypetestutils \
-    import ScoreTypeTestMixin
+from cms.testsuite.unit_tests.grading.scoretypes.scoretypetestutils import (
+    ScoreTypeTestMixin,
+)
 
 
 class TestGroupThreshold(ScoreTypeTestMixin, unittest.TestCase):

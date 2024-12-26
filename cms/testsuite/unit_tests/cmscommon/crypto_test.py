@@ -21,11 +21,20 @@
 import re
 import unittest
 
-from cmscommon.binary import bin_to_b64
-from cmscommon.crypto import build_password, \
-    decrypt_binary, decrypt_number, encrypt_binary, encrypt_number, \
-    generate_random_password, get_hex_random_key, get_random_key, \
-    hash_password, parse_authentication, validate_password
+from cms.common.binary import bin_to_b64
+from cms.common.crypto import (
+    build_password,
+    decrypt_binary,
+    decrypt_number,
+    encrypt_binary,
+    encrypt_number,
+    generate_random_password,
+    get_hex_random_key,
+    get_random_key,
+    hash_password,
+    parse_authentication,
+    validate_password,
+)
 
 
 class TestGetRandomKey(unittest.TestCase):

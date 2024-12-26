@@ -30,8 +30,8 @@ import logging
 
 from cms import ServiceCoord, get_service_shards, get_service_address
 from cms.db import Admin, Contest, Question
-from cmscommon.crypto import validate_password
-from cmscommon.datetime import make_datetime, make_timestamp
+from cms.common.crypto import validate_password
+from cms.common.datetime import make_datetime, make_timestamp
 from .base import BaseHandler, SimpleHandler, require_permission
 
 

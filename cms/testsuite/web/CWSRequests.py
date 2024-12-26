@@ -30,8 +30,8 @@ from urllib.parse import parse_qs, urlsplit
 
 from cms import config
 from cms.grading.languagemanager import filename_to_language
-from cmscommon.crypto import decrypt_number
-from cmstestsuite.web import GenericRequest, LoginRequest
+from cms.common.crypto import decrypt_number
+from cms.testsuite.web import GenericRequest, LoginRequest
 
 
 logger = logging.getLogger(__name__)

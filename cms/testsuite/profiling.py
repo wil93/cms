@@ -38,7 +38,7 @@ using `python -m line_profile output.lprof`
 
 """
 
-from cmstestsuite import CONFIG
+from cms.testsuite import CONFIG
 
 
 PROFILER_NONE = ""

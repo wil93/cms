@@ -44,7 +44,7 @@ except ImportError:
 
 from cms.db import Session
 from cms.server.file_middleware import FileServerMiddleware
-from cmscommon.datetime import make_datetime
+from cms.common.datetime import make_datetime
 
 
 logger = logging.getLogger(__name__)

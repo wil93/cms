@@ -21,8 +21,9 @@
 import unittest
 
 from cms.grading.scoretypes.Sum import Sum
-from cmstestsuite.unit_tests.grading.scoretypes.scoretypetestutils \
-    import ScoreTypeTestMixin
+from cms.testsuite.unit_tests.grading.scoretypes.scoretypetestutils import (
+    ScoreTypeTestMixin,
+)
 
 
 class TestSum(ScoreTypeTestMixin, unittest.TestCase):

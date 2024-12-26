@@ -21,13 +21,13 @@
 import unittest
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms.db import File, Submission
-from cmscommon.datetime import make_datetime
-from cmscommon.digest import bytes_digest
-from cmscontrib.AddSubmission import add_submission
-from cmstestsuite.unit_tests.filesystemmixin import FileSystemMixin
+from cms.common.datetime import make_datetime
+from cms.common.digest import bytes_digest
+from cms.contrib.AddSubmission import add_submission
+from cms.testsuite.unit_tests.filesystemmixin import FileSystemMixin
 
 
 _TS = 1_234_567_890

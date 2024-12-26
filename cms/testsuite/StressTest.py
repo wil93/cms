@@ -29,16 +29,21 @@ import sys
 import threading
 import time
 
-import cmstestsuite.web
+import cms.testsuite.web
 from cms import config, ServiceCoord, get_service_address, utf8_decoder
 from cms.db import Contest, SessionGen
-from cmscommon.crypto import parse_authentication
-from cmstestsuite.web import Browser
-from cmstestsuite.web.CWSRequests import HomepageRequest, CWSLoginRequest, \
-    TaskRequest, TaskStatementRequest, SubmitRandomRequest
+from cms.common.crypto import parse_authentication
+from cms.testsuite.web import Browser
+from cms.testsuite.web.CWSRequests import (
+    HomepageRequest,
+    CWSLoginRequest,
+    TaskRequest,
+    TaskStatementRequest,
+    SubmitRandomRequest,
+)
 
 
-cmstestsuite.web.debug = True
+cms.testsuite.web.debug = True
 
 
 class RequestLog:

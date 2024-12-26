@@ -37,10 +37,13 @@ from cms import TOKEN_MODE_DISABLED, TOKEN_MODE_FINITE, TOKEN_MODE_INFINITE, \
 from cms.db import Contest, User, Task, Statement, Attachment, Team, Dataset, \
     Manager, Testcase
 from cms.grading.languagemanager import LANGUAGES, HEADER_EXTS
-from cmscommon.constants import \
-    SCORE_MODE_MAX, SCORE_MODE_MAX_SUBTASK, SCORE_MODE_MAX_TOKENED_LAST
-from cmscommon.crypto import build_password
-from cmscontrib import touch
+from cms.common.constants import (
+    SCORE_MODE_MAX,
+    SCORE_MODE_MAX_SUBTASK,
+    SCORE_MODE_MAX_TOKENED_LAST,
+)
+from cms.common.crypto import build_password
+from cms.contrib import touch
 from .base_loader import ContestLoader, TaskLoader, UserLoader, TeamLoader, LANGUAGE_MAP
 
 

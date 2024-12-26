@@ -56,8 +56,8 @@ from cms.server.contest.authentication import validate_login
 from cms.server.contest.communication import get_communications
 from cms.server.contest.printing import accept_print_job, PrintingDisabled, \
     UnacceptablePrintJob
-from cmscommon.crypto import hash_password, validate_password
-from cmscommon.datetime import make_datetime, make_timestamp
+from cms.common.crypto import hash_password, validate_password
+from cms.common.datetime import make_datetime, make_timestamp
 from .contest import ContestHandler
 from ..phase_management import actual_phase_required
 

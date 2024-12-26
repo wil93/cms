@@ -21,8 +21,9 @@
 import unittest
 
 from cms.grading.scoretypes.GroupMul import GroupMul
-from cmstestsuite.unit_tests.grading.scoretypes.scoretypetestutils \
-    import ScoreTypeTestMixin
+from cms.testsuite.unit_tests.grading.scoretypes.scoretypetestutils import (
+    ScoreTypeTestMixin,
+)
 
 
 class TestGroupMul(ScoreTypeTestMixin, unittest.TestCase):

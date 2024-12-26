@@ -18,7 +18,7 @@ CMS philosophy is that, unless you want, it should not change how you develop ta
 
 To achieve this goal, CMS has tools to import a contest from a custom filesystem description. There are commands which read a filesystem description and use it to create contests, tasks, or users. Specifically: the ``cmsImportContest``, ``cmsImportTasl``, ``cmsImportUser`` commands (by default) will analyze the directory given as first argument and detect if it can be loaded (respectively) as a new contest, task, user. Run the commands with a ``-h`` or ``--help`` flag in order to better understand how they can be used.
 
-In order to make these tools compatible with your filesystem format, you have to write a Python module that converts your filesystem description to the internal CMS representation of the contest. You have to extend the classes ``ContestLoader``, ``TaskLoader``, ``UserLoader`` defined in :gh_blob:`cmscontrib/loaders/base_loader.py`, implementing missing methods as required by the docstrings (or use one of the existing loaders in :file:`cmscontrib/loaders/` as a template). If you do not use complex task types, or many different configurations, loaders can be very simple.
+In order to make these tools compatible with your filesystem format, you have to write a Python module that converts your filesystem description to the internal CMS representation of the contest. You have to extend the classes ``ContestLoader``, ``TaskLoader``, ``UserLoader`` defined in :gh_blob:`cms/contrib/loaders/base_loader.py`, implementing missing methods as required by the docstrings (or use one of the existing loaders in :file:`cms/contrib/loaders/` as a template). If you do not use complex task types, or many different configurations, loaders can be very simple.
 
 Out of the box, CMS offers loaders for two formats:
 
@@ -26,7 +26,7 @@ Out of the box, CMS offers loaders for two formats:
 
 - The `Polygon format <https://polygon.codeforces.com/>`_, which is the format used in several contests and by Codeforces. Polygon does not support all of CMS features, but having this importer is especially useful if you have a big repository of tasks in this format.
 
-CMS also has several convenience scripts to add data to the database specifying it on the command line, or to remove data from the database. Look in :file:`cmscontrib` or at commands starting with ``cmsAdd`` or ``cmsRemove``.
+CMS also has several convenience scripts to add data to the database specifying it on the command line, or to remove data from the database. Look in :file:`cms/contrib` or at commands starting with ``cmsAdd`` or ``cmsRemove``.
 
 Creating a contest from an exported contest
 ===========================================

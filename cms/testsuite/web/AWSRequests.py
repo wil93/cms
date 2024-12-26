@@ -25,7 +25,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from cmstestsuite.web import GenericRequest, LoginRequest
+from cms.testsuite.web import GenericRequest, LoginRequest
 
 
 class AWSLoginRequest(LoginRequest):

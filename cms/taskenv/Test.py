@@ -25,14 +25,13 @@ import os
 import select
 import sys
 
-import cmscontrib.loaders
+import cms.contrib.loaders
 from cms.db import Executable
 from cms.db.filecacher import FileCacher
 from cms.grading import format_status_text
 from cms.grading.Job import EvaluationJob
 from cms.service.esoperations import ESOperation
-from cmscommon.terminal import move_cursor, add_color_to_string, \
-    colors, directions
+from cms.common.terminal import move_cursor, add_color_to_string, colors, directions
 
 
 # TODO - Use a context object instead of global variables
@@ -95,7 +94,7 @@ def test_testcases(base_dir, solution, language, assume=None):
     if file_cacher is None:
         file_cacher = FileCacher(null=True)
 
-    cmscontrib.loaders.italy_yaml.logger = NullLogger()
+    cms.contrib.loaders.italy_yaml.logger = NullLogger()
     # Load the task
     # TODO - This implies copying a lot of data to the FileCacher,
     # which is annoying if you have to do it continuously; it would be
@@ -103,8 +102,7 @@ def test_testcases(base_dir, solution, language, assume=None):
     # filesystem-based instead of database-based) and somehow detect
     # when the task has already been loaded
     if task is None:
-        loader = cmscontrib.loaders.italy_yaml.YamlLoader(base_dir,
-                                                          file_cacher)
+        loader = cms.contrib.loaders.italy_yaml.YamlLoader(base_dir, file_cacher)
         task = loader.get_task(get_statement=False)
 
     # Prepare the EvaluationJob

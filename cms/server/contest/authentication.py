@@ -34,8 +34,8 @@ from sqlalchemy.orm import contains_eager, joinedload
 
 from cms import config
 from cms.db import Participation, User
-from cmscommon.crypto import validate_password
-from cmscommon.datetime import make_datetime, make_timestamp
+from cms.common.crypto import validate_password
+from cms.common.datetime import make_datetime, make_timestamp
 
 
 __all__ = ["validate_login", "authenticate_request"]

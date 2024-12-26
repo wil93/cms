@@ -54,8 +54,8 @@ from cms.server.contest.submission import get_submission_count, \
     UnacceptableSubmission, accept_submission
 from cms.server.contest.tokening import \
     UnacceptableToken, TokenAlreadyPlayed, accept_token, tokens_available
-from cmscommon.crypto import encrypt_number
-from cmscommon.mimetypes import get_type_for_file_name
+from cms.common.crypto import encrypt_number
+from cms.common.mimetypes import get_type_for_file_name
 from .contest import ContestHandler, FileHandler
 from ..phase_management import actual_phase_required
 

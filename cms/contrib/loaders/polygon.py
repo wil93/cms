@@ -28,8 +28,8 @@ from datetime import datetime, timedelta
 
 from cms import config
 from cms.db import Contest, User, Task, Statement, Dataset, Manager, Testcase
-from cmscommon.crypto import build_password
-from cmscontrib import touch
+from cms.common.crypto import build_password
+from cms.contrib import touch
 from .base_loader import ContestLoader, TaskLoader, UserLoader, LANGUAGE_MAP
 
 

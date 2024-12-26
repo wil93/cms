@@ -34,7 +34,7 @@ from sqlalchemy.schema import Column, ForeignKey, CheckConstraint, \
 from sqlalchemy.types import Boolean, Integer, String, Unicode, DateTime, \
     Interval
 
-from cmscommon.crypto import generate_random_password, build_password
+from cms.common.crypto import generate_random_password, build_password
 from . import CastingArray, Codename, Base, Admin, Contest
 
 

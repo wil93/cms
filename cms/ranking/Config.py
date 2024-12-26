@@ -24,7 +24,7 @@ import sys
 
 import pkg_resources
 
-from cmsranking.Logger import add_file_handler
+from cms.ranking.Logger import add_file_handler
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ class Config:
         # Buffers
         self.buffer_size = 100  # Needs to be strictly positive.
 
-        self.web_dir = pkg_resources.resource_filename("cmsranking", "static")
+        self.web_dir = pkg_resources.resource_filename("cms.ranking", "static")
         self.log_dir = os.path.join("/", "var", "local", "log", "cms", "ranking")
         self.lib_dir = os.path.join("/", "var", "local", "lib", "cms", "ranking")
         self.conf_paths = [

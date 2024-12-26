@@ -49,7 +49,7 @@ from cms.db import Contest, Submission, Task, UserTest
 from cms.locale import filter_language_codes
 from cms.server import FileHandlerMixin
 from cms.server.contest.authentication import authenticate_request
-from cmscommon.datetime import get_timezone
+from cms.common.datetime import get_timezone
 from .base import BaseHandler
 from ..phase_management import compute_actual_phase
 

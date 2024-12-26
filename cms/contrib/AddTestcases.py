@@ -30,7 +30,7 @@ import sys
 from cms import utf8_decoder
 from cms.db import Contest, Dataset, SessionGen, Task
 from cms.db.filecacher import FileCacher
-from cmscommon.importers import import_testcases_from_zipfile
+from cms.common.importers import import_testcases_from_zipfile
 
 
 logger = logging.getLogger(__name__)

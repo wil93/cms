@@ -34,7 +34,7 @@ from gevent.event import Event
 
 from cms.db import SessionGen
 from cms.grading.Job import JobGroup
-from cmscommon.datetime import make_datetime, make_timestamp
+from cms.common.datetime import make_datetime, make_timestamp
 
 
 logger = logging.getLogger(__name__)

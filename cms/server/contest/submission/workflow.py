@@ -31,7 +31,7 @@ import logging
 
 from cms import config
 from cms.db import Submission, File, UserTestManager, UserTestFile, UserTest
-from cmscommon.datetime import make_timestamp
+from cms.common.datetime import make_timestamp
 from .check import check_max_number, check_min_interval
 from .file_matching import InvalidFilesOrLanguage, match_files_and_language
 from .file_retrieval import InvalidArchive, extract_files_from_tornado

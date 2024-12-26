@@ -22,14 +22,13 @@ import logging
 import os
 import sys
 
-import cmstestsuite.tasks.batch_50 as batch_50
-from cmstestsuite import CONFIG
-from cmstestsuite.Test import Test
-from cmstestsuite.Tests import LANG_C
-from cmstestsuite.functionaltestframework import FunctionalTestFramework
-from cmstestsuite.profiling import \
-    PROFILER_KERNPROF, PROFILER_NONE, PROFILER_YAPPI
-from cmstestsuite.testrunner import TestRunner
+import cms.testsuite.tasks.batch_50 as batch_50
+from cms.testsuite import CONFIG
+from cms.testsuite.Test import Test
+from cms.testsuite.Tests import LANG_C
+from cms.testsuite.functionaltestframework import FunctionalTestFramework
+from cms.testsuite.profiling import PROFILER_KERNPROF, PROFILER_NONE, PROFILER_YAPPI
+from cms.testsuite.testrunner import TestRunner
 
 
 logger = logging.getLogger(__name__)
@@ -50,7 +49,7 @@ class TimeTest:
         self.submission_ids = []
 
     def submit(self, task_id, user_id, language):
-        # Source files are stored under cmstestsuite/code/.
+        # Source files are stored under cms.testsuite/code/.
         path = os.path.join(os.path.dirname(__file__), 'code')
 
         # Choose the correct file to submit.

@@ -22,17 +22,16 @@ from datetime import timedelta
 from unittest.mock import MagicMock, PropertyMock, patch, sentinel
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms import config
 from cms.db import Submission, UserTest
 from cms.server.contest.submission import InvalidArchive, \
     InvalidFilesOrLanguage, StorageFailed, UnacceptableSubmission, \
     accept_submission, TestingNotAllowed, UnacceptableUserTest, accept_user_test
-from cmscommon.datetime import make_datetime
-from cmscommon.digest import bytes_digest
-from cmstestsuite.unit_tests.testidgenerator import unique_long_id, \
-    unique_unicode_id
+from cms.common.datetime import make_datetime
+from cms.common.digest import bytes_digest
+from cms.testsuite.unit_tests.testidgenerator import unique_long_id, unique_unicode_id
 
 
 MockHTTPFile = namedtuple("MockHTTPFile", ["filename", "body"])

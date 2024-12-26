@@ -28,7 +28,7 @@ from werkzeug.wsgi import responder
 
 from cms.db.filecacher import TombstoneError
 from cms.server.file_middleware import FileServerMiddleware
-from cmscommon.digest import bytes_digest
+from cms.common.digest import bytes_digest
 
 
 class TestFileByDigestMiddleware(unittest.TestCase):

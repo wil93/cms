@@ -30,7 +30,7 @@ from cms.db import File, Participation, SessionGen, Submission, Task, User, \
 from cms.db.filecacher import FileCacher
 from cms.grading.languagemanager import filename_to_language
 from cms.io import RemoteServiceClient
-from cmscommon.datetime import make_datetime
+from cms.common.datetime import make_datetime
 
 
 logger = logging.getLogger(__name__)

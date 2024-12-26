@@ -38,7 +38,7 @@ from collections import namedtuple
 
 from patoolib.util import PatoolError
 
-from cmscommon.archive import Archive
+from cms.common.archive import Archive
 
 
 # Represents a file received through HTTP from an HTML form.

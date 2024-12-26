@@ -30,7 +30,7 @@ import bcrypt
 from Cryptodome import Random
 from Cryptodome.Cipher import AES
 
-from cmscommon.binary import bin_to_hex, hex_to_bin, bin_to_b64, b64_to_bin
+from cms.common.binary import bin_to_hex, hex_to_bin, bin_to_b64, b64_to_bin
 
 
 __all__ = [

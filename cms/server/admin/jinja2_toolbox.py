@@ -30,7 +30,7 @@ from cms.grading.scoretypes import SCORE_TYPES
 from cms.grading.tasktypes import TASK_TYPES
 from cms.server.admin.formatting import format_dataset_attrs
 from cms.server.jinja2_toolbox import GLOBAL_ENVIRONMENT
-from cmscommon.crypto import get_hex_random_key, parse_authentication
+from cms.common.crypto import get_hex_random_key, parse_authentication
 
 
 def safe_parse_authentication(auth):

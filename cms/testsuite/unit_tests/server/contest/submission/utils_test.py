@@ -23,16 +23,15 @@ from datetime import timedelta
 from unittest.mock import MagicMock, patch
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms import config
 from cms.db import Submission, UserTest
 from cms.server.contest.submission import \
     fetch_file_digests_from_previous_submission, StorageFailed, store_local_copy
-from cmscommon.datetime import make_datetime
-from cmstestsuite.unit_tests.filesystemmixin import FileSystemMixin
-from cmstestsuite.unit_tests.testidgenerator import unique_digest, \
-    unique_unicode_id
+from cms.common.datetime import make_datetime
+from cms.testsuite.unit_tests.filesystemmixin import FileSystemMixin
+from cms.testsuite.unit_tests.testidgenerator import unique_digest, unique_unicode_id
 
 
 def make_language(name, source_extensions):

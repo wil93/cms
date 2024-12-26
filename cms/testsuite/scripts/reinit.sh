@@ -2,4 +2,4 @@
 
 ./scripts/cmsDropDB -y \
     && ./scripts/cmsInitDB \
-    && ./cmscontrib/AddAdmin.py myadmin -p admin
+    && ./cms.contrib/AddAdmin.py myadmin -p admin

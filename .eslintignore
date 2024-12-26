@@ -2,4 +2,4 @@ cms/server/admin/static/jq/*
 cms/server/admin/static/sh/*
 cms/server/static/jq/*
 cms/server/contest/static/js/bootstrap.js
-cmsranking/static/lib/*
+cms/ranking/static/lib/*

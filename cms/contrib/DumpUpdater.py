@@ -41,7 +41,7 @@ import sys
 
 from cms import utf8_decoder
 from cms.db import version as model_version
-from cmscommon.archive import Archive
+from cms.common.archive import Archive
 
 
 logger = logging.getLogger(__name__)
@@ -129,8 +129,11 @@ def main():
     for version in range(dump_version, to_version):
         # Update from version to version+1
         updater = __import__(
-            "cmscontrib.updaters.update_%d" % (version + 1),
-            globals(), locals(), ["Updater"]).Updater(data)
+            "cms.contrib.updaters.update_%d" % (version + 1),
+            globals(),
+            locals(),
+            ["Updater"],
+        ).Updater(data)
         data = updater.run()
         data["_version"] = version + 1
 

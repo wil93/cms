@@ -327,7 +327,7 @@ def install():
         makedir(_dir, cmsuser_pw, 0o770)
 
     print("===== Copying Polygon testlib")
-    path = os.path.join("cmscontrib", "loaders", "polygon", "testlib.h")
+    path = os.path.join("cms", "contrib", "loaders", "polygon", "testlib.h")
     dest_path = os.path.join(USR_ROOT, "include", "cms", "testlib.h")
     copyfile(path, dest_path, root_pw, 0o644)
 

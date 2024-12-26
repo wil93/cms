@@ -35,7 +35,7 @@ from sqlalchemy.schema import Column, ForeignKey, ForeignKeyConstraint, \
 from sqlalchemy.types import Integer, Float, String, Unicode, DateTime, Enum, \
     BigInteger
 
-from cmscommon.datetime import make_datetime
+from cms.common.datetime import make_datetime
 from . import Filename, FilenameSchema, Digest, Base, Participation, Task, \
     Dataset, Testcase
 

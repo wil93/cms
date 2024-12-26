@@ -24,8 +24,8 @@
 import logging
 
 from cms.db import Admin
-from cmscommon.crypto import hash_password
-from cmscommon.datetime import make_datetime
+from cms.common.crypto import hash_password
+from cms.common.datetime import make_datetime
 from .base import BaseHandler, SimpleHandler, require_permission
 
 

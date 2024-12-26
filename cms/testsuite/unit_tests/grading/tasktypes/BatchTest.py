@@ -24,10 +24,20 @@ from unittest.mock import MagicMock, call, ANY
 from cms.db import File, Manager, Executable
 from cms.grading.Job import CompilationJob, EvaluationJob
 from cms.grading.tasktypes.Batch import Batch
-from cmstestsuite.unit_tests.grading.tasktypes.tasktypetestutils import \
-    COMPILATION_COMMAND_1, COMPILATION_COMMAND_2, EVALUATION_COMMAND_1, \
-    LANG_1, LANG_2, OUTCOME, STATS_OK, STATS_RE, TEXT, \
-    TaskTypeTestMixin, fake_compilation_commands, fake_evaluation_commands
+from cms.testsuite.unit_tests.grading.tasktypes.tasktypetestutils import (
+    COMPILATION_COMMAND_1,
+    COMPILATION_COMMAND_2,
+    EVALUATION_COMMAND_1,
+    LANG_1,
+    LANG_2,
+    OUTCOME,
+    STATS_OK,
+    STATS_RE,
+    TEXT,
+    TaskTypeTestMixin,
+    fake_compilation_commands,
+    fake_evaluation_commands,
+)
 
 
 FILE_FOO_L1 = File(digest="digest of foo.l1", filename="foo.%l")

@@ -20,8 +20,11 @@
 
 import unittest
 
-from cmscommon.mimetypes import get_icon_for_type, get_name_for_type, \
-    get_type_for_file_name
+from cms.common.mimetypes import (
+    get_icon_for_type,
+    get_name_for_type,
+    get_type_for_file_name,
+)
 
 
 class TestGetIconForType(unittest.TestCase):

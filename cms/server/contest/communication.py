@@ -30,7 +30,7 @@
 import logging
 
 from cms.db import Question, Announcement, Message
-from cmscommon.datetime import make_timestamp
+from cms.common.datetime import make_timestamp
 
 
 logger = logging.getLogger(__name__)

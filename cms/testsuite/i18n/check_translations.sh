@@ -10,7 +10,7 @@ for FILE in cms/locale/*/LC_MESSAGES/cms.po; do
 done
 
 for FILE in cms/locale/cms.pot .*.msgmerge.po; do
-    msgfmt -o /dev/null -vv ${FILE} 2>&1 | ./cmstestsuite/i18n/parse_msgfmt.py
+    msgfmt -o /dev/null -vv ${FILE} 2>&1 | ./cms/testsuite/i18n/parse_msgfmt.py
 done
 
 rm -f .*.msgmerge.po

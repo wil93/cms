@@ -21,11 +21,11 @@
 import unittest
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms.db import Admin
-from cmscommon.crypto import validate_password
-from cmscontrib.AddAdmin import add_admin
+from cms.common.crypto import validate_password
+from cms.contrib.AddAdmin import add_admin
 
 
 class TestAddAdmin(DatabaseMixin, unittest.TestCase):

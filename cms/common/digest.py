@@ -19,7 +19,7 @@
 import hashlib
 import io
 
-from cmscommon.binary import bin_to_hex
+from cms.common.binary import bin_to_hex
 
 
 __all__ = [

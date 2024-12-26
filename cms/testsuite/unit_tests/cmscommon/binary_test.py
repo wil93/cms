@@ -21,7 +21,7 @@
 import binascii
 import unittest
 
-from cmscommon.binary import bin_to_hex, hex_to_bin, bin_to_b64, b64_to_bin
+from cms.common.binary import bin_to_hex, hex_to_bin, bin_to_b64, b64_to_bin
 
 
 class TestBinToHex(unittest.TestCase):

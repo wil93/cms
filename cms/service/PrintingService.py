@@ -36,9 +36,9 @@ from cms.db import SessionGen, PrintJob
 from cms.db.filecacher import FileCacher
 from cms.io import Executor, QueueItem, TriggeredService, rpc_method
 from cms.server.jinja2_toolbox import GLOBAL_ENVIRONMENT
-from cmscommon.commands import pretty_print_cmdline
-from cmscommon.datetime import get_timezone, utc
-from cmscommon.tex import escape_tex_normal, escape_tex_tt
+from cms.common.commands import pretty_print_cmdline
+from cms.common.datetime import get_timezone, utc
+from cms.common.tex import escape_tex_normal, escape_tex_tt
 
 
 logger = logging.getLogger(__name__)

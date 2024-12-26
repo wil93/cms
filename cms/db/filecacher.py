@@ -39,7 +39,7 @@ from sqlalchemy.exc import IntegrityError
 
 from cms import config, mkdir, rmtree
 from cms.db import SessionGen, Digest, FSObject, LargeObject
-from cmscommon.digest import Digester
+from cms.common.digest import Digester
 
 
 logger = logging.getLogger(__name__)

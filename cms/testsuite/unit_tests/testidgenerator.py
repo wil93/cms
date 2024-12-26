@@ -20,7 +20,7 @@
 
 import random
 
-from cmscommon.digest import bytes_digest
+from cms.common.digest import bytes_digest
 
 
 def unique_long_id():

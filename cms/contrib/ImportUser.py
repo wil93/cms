@@ -42,8 +42,8 @@ import sys
 from cms import utf8_decoder
 from cms.db import Participation, SessionGen, User
 from cms.db.filecacher import FileCacher
-from cmscontrib.importing import ImportDataError, contest_from_db
-from cmscontrib.loaders import choose_loader, build_epilog
+from cms.contrib.importing import ImportDataError, contest_from_db
+from cms.contrib.loaders import choose_loader, build_epilog
 
 
 logger = logging.getLogger(__name__)

@@ -27,7 +27,7 @@ import gevent.event
 import gevent.socket
 
 from cms.io import FakeQueueItem, PriorityQueue
-from cmscommon.datetime import make_datetime
+from cms.common.datetime import make_datetime
 
 
 class TestPriorityQueue(unittest.TestCase):

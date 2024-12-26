@@ -21,12 +21,12 @@ from datetime import timedelta
 from unittest.mock import call, patch
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms.db import UserTest, Submission
 from cms.server.contest.submission import get_submission_count, \
     check_max_number, get_latest_submission, check_min_interval
-from cmscommon.datetime import make_datetime
+from cms.common.datetime import make_datetime
 
 
 class TestGetSubmissionCount(DatabaseMixin, unittest.TestCase):

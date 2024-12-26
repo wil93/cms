@@ -38,8 +38,8 @@ import sys
 from cms import utf8_decoder
 from cms.db import SessionGen, Team
 from cms.db.filecacher import FileCacher
-from cmscontrib.importing import ImportDataError
-from cmscontrib.loaders import choose_loader, build_epilog
+from cms.contrib.importing import ImportDataError
+from cms.contrib.loaders import choose_loader, build_epilog
 
 
 logger = logging.getLogger(__name__)

@@ -33,11 +33,17 @@ from cms.db import SubmissionResult, UserTestResult
 from cms.grading import format_status_text
 from cms.grading.languagemanager import get_language
 from cms.locale import DEFAULT_TRANSLATION
-from cmscommon.constants import \
-    SCORE_MODE_MAX, SCORE_MODE_MAX_SUBTASK, SCORE_MODE_MAX_TOKENED_LAST
-from cmscommon.datetime import make_datetime, make_timestamp, utc, local_tz
-from cmscommon.mimetypes import get_type_for_file_name, get_name_for_type, \
-    get_icon_for_type
+from cms.common.constants import (
+    SCORE_MODE_MAX,
+    SCORE_MODE_MAX_SUBTASK,
+    SCORE_MODE_MAX_TOKENED_LAST,
+)
+from cms.common.datetime import make_datetime, make_timestamp, utc, local_tz
+from cms.common.mimetypes import (
+    get_type_for_file_name,
+    get_name_for_type,
+    get_icon_for_type,
+)
 
 
 @contextfilter

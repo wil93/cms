@@ -34,7 +34,7 @@ import gevent
 from gevent import subprocess
 
 from cms import config, rmtree
-from cmscommon.commands import pretty_print_cmdline
+from cms.common.commands import pretty_print_cmdline
 
 
 logger = logging.getLogger(__name__)

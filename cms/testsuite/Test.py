@@ -23,7 +23,7 @@ import re
 from abc import ABC, abstractmethod
 
 from cms.grading.languagemanager import get_language
-from cmstestsuite.functionaltestframework import FunctionalTestFramework
+from cms.testsuite.functionaltestframework import FunctionalTestFramework
 
 
 class TestFailure(Exception):
@@ -191,7 +191,7 @@ class Test:
             return filenames
 
     def _sources_names(self, language):
-        # Source files are stored under cmstestsuite/code/.
+        # Source files are stored under cms.testsuite/code/.
         path = os.path.join(os.path.dirname(__file__), 'code')
 
         filenames = self._filenames_for_language(language, self.filenames,

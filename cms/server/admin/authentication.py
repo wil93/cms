@@ -24,8 +24,8 @@ from werkzeug.local import Local, LocalManager
 from werkzeug.wrappers import Request, Response
 
 from cms import config
-from cmscommon.binary import hex_to_bin
-from cmscommon.datetime import make_timestamp
+from cms.common.binary import hex_to_bin
+from cms.common.datetime import make_timestamp
 
 
 class UTF8JSON:

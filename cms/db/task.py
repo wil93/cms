@@ -37,8 +37,11 @@ from sqlalchemy.types import Boolean, Integer, Float, String, Unicode, \
 
 from cms import TOKEN_MODE_DISABLED, TOKEN_MODE_FINITE, TOKEN_MODE_INFINITE, \
     FEEDBACK_LEVEL_FULL, FEEDBACK_LEVEL_RESTRICTED
-from cmscommon.constants import \
-    SCORE_MODE_MAX, SCORE_MODE_MAX_SUBTASK, SCORE_MODE_MAX_TOKENED_LAST
+from cms.common.constants import (
+    SCORE_MODE_MAX,
+    SCORE_MODE_MAX_SUBTASK,
+    SCORE_MODE_MAX_TOKENED_LAST,
+)
 from . import Codename, Filename, FilenameSchemaArray, Digest, Base, Contest
 
 

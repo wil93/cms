@@ -28,12 +28,18 @@ import re
 import sys
 import time
 
-from cmstestsuite import CONFIG, TestException, sh
-from cmstestsuite.web import Browser
-from cmstestsuite.web.AWSRequests import \
-    AWSLoginRequest, AWSSubmissionViewRequest, AWSUserTestViewRequest
-from cmstestsuite.web.CWSRequests import \
-    CWSLoginRequest, SubmitRequest, SubmitUserTestRequest
+from cms.testsuite import CONFIG, TestException, sh
+from cms.testsuite.web import Browser
+from cms.testsuite.web.AWSRequests import (
+    AWSLoginRequest,
+    AWSSubmissionViewRequest,
+    AWSUserTestViewRequest,
+)
+from cms.testsuite.web.CWSRequests import (
+    CWSLoginRequest,
+    SubmitRequest,
+    SubmitUserTestRequest,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -128,10 +134,15 @@ class FunctionalTestFramework:
             self.admin_info["username"] = "admin_%s" % suffix
             logger.info("Trying %(username)s" % self.admin_info)
             try:
-                sh([sys.executable, "cmscontrib/AddAdmin.py",
-                    "%(username)s" % self.admin_info,
-                    "-p", "%(password)s" % self.admin_info],
-                   ignore_failure=False)
+                sh(
+                    [
+                        "cmsAddAdmin",
+                        "%(username)s" % self.admin_info,
+                        "-p",
+                        "%(password)s" % self.admin_info,
+                    ],
+                    ignore_failure=False,
+                )
             except TestException:
                 suffix = str(int(suffix) + 1)
             else:

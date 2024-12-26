@@ -30,7 +30,7 @@
 
 from cms import ServiceCoord, get_service_shards, get_service_address
 from cms.db import Contest, Participation, Submission
-from cmscommon.datetime import make_datetime
+from cms.common.datetime import make_datetime
 
 from .base import BaseHandler, SimpleContestHandler, SimpleHandler, \
     require_permission

@@ -9,26 +9,26 @@ Files: *
 Copyright: 2010-2018 The CMS development team <contestms@googlegroups.com>
 License: AGPL-3+
 
-Files: cmsranking/images/*
-       cmsranking/static/img/*.png
+Files: cms/ranking/images/*
+       cms/ranking/static/img/*.png
 Copyright: 2011-2012 Luca Wehrstedt <luca.wehrstedt@gmail.com>
 License: CC-BY-SA-3.0
 
-Files: cmsranking/static/lib/jquery.js
+Files: cms/ranking/static/lib/jquery.js
 Copyright: 2021 OpenJS Foundation and other contributors, http://jquery.org/
 License: Expat
 Comment: See http://jquery.org/license
 
-Files: cmsranking/static/lib/explorercanvas.js
+Files: cms/ranking/static/lib/explorercanvas.js
 Copyright: 2006 Google Inc., http://code.google.com/p/explorercanvas/
 License: Apache-2.0
 
-Files: cmsranking/static/lib/eventsource.js
+Files: cms/ranking/static/lib/eventsource.js
 Copyright: 2012 Remy Sharp, http://remysharp.com
 License: Expat
 Comment: See http://rem.mit-license.org/
 
-Files: cmsranking/static/lib/raphael.js
+Files: cms/ranking/static/lib/raphael.js
 Copyright: 2008-2016 Dmitry Baranovskiy (http://raphaeljs.com)
            2008-2016 Sencha Labs (http://sencha.com)
            2013 Adobe Systems Incorporated. All rights reserved.

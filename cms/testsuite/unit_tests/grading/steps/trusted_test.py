@@ -24,9 +24,8 @@ from unittest.mock import ANY, MagicMock, call, patch
 from cms.grading.Sandbox import Sandbox
 from cms.grading.steps import extract_outcome_and_text, trusted_step, \
     checker_step, trusted
-from cmstestsuite.unit_tests.grading.steps.fakeisolatesandbox \
-    import FakeIsolateSandbox
-from cmstestsuite.unit_tests.grading.steps.stats_test import get_stats
+from cms.testsuite.unit_tests.grading.steps.fakeisolatesandbox import FakeIsolateSandbox
+from cms.testsuite.unit_tests.grading.steps.stats_test import get_stats
 
 
 INVALID_UTF8 = b"\xc3\x28"

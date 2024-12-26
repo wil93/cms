@@ -40,7 +40,7 @@ except ImportError:
     import tornado.web as tornado_web
 
 from cms.db import Contest, Question, Participation
-from cmscommon.datetime import make_datetime
+from cms.common.datetime import make_datetime
 from .base import BaseHandler, require_permission
 
 

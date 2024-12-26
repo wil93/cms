@@ -49,8 +49,8 @@ from cms.grading.languagemanager import get_language
 from cms.server import multi_contest
 from cms.server.contest.submission import get_submission_count, \
     TestingNotAllowed, UnacceptableUserTest, accept_user_test
-from cmscommon.crypto import encrypt_number
-from cmscommon.mimetypes import get_type_for_file_name
+from cms.common.crypto import encrypt_number
+from cms.common.mimetypes import get_type_for_file_name
 from .contest import ContestHandler, FileHandler
 from ..phase_management import actual_phase_required
 

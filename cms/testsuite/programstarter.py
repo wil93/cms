@@ -34,10 +34,10 @@ from urllib.parse import urlsplit
 
 import psutil
 
-from cmstestsuite import CONFIG, TestException
-from cmstestsuite.coverage import coverage_cmdline
-from cmstestsuite.functionaltestframework import FunctionalTestFramework
-from cmstestsuite.profiling import profiling_cmdline
+from cms.testsuite import CONFIG, TestException
+from cms.testsuite.coverage import coverage_cmdline
+from cms.testsuite.functionaltestframework import FunctionalTestFramework
+from cms.testsuite.profiling import profiling_cmdline
 
 
 logger = logging.getLogger(__name__)

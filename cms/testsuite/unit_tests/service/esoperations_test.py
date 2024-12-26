@@ -24,7 +24,7 @@ functions to compute them).
 import unittest
 
 # Needs to be first to allow for monkey patching the DB connection string.
-from cmstestsuite.unit_tests.databasemixin import DatabaseMixin
+from cms.testsuite.unit_tests.databasemixin import DatabaseMixin
 
 from cms.io.priorityqueue import PriorityQueue
 from cms.service.esoperations import ESOperation, get_submissions_operations, \
