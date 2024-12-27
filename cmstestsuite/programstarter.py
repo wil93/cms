@@ -105,8 +105,7 @@ class Program:
     def start(self):
         """Start a CMS service."""
         logger.info("Starting %s.", self.service_name)
-        executable = os.path.join(
-            ".", "scripts", "cms%s" % (self.service_name))
+        executable = f"cms{self.service_name}"
         if CONFIG["TEST_DIR"] is None:
             executable = "cms%s" % self.service_name
 
