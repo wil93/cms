@@ -65,7 +65,6 @@ from cms.db import (
 )
 from cms.grading.Job import JobGroup
 from cms.io import Executor, TriggeredService, rpc_method
-from cms.service.EvaluationService import EvaluationService
 from cmscommon.datetime import make_timestamp
 
 from .esoperations import (

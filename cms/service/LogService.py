@@ -38,7 +38,6 @@ from collections import deque
 from cms import ConfigError, config, default_argument_parser, mkdir
 from cms.io import Service, rpc_method
 from cms.log import DetailedFormatter, FileHandler, root_logger, shell_handler
-from cms.service.LogService import LogService
 
 logger = logging.getLogger(__name__)
 

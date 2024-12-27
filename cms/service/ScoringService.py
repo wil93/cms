@@ -43,7 +43,6 @@ from cms.db import (
     test_db_connection,
 )
 from cms.io import Executor, TriggeredService, rpc_method
-from cms.service.ScoringService import ScoringService
 from cmscommon.datetime import make_datetime
 
 from .scoringoperations import ScoringOperation, get_operations
