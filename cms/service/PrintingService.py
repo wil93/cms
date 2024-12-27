@@ -21,25 +21,31 @@
 
 """
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
 import contextlib
-import cups
 import logging
 import os
 import subprocess
+import sys
 import tempfile
 
-from PyPDF2 import PdfFileReader, PdfFileMerger
+import cups
 from jinja2 import PackageLoader
+from PyPDF2 import PdfFileMerger, PdfFileReader
 
-from cms import config, rmtree
-from cms.db import SessionGen, PrintJob
+from cms import ConfigError, config, default_argument_parser, rmtree
+from cms.db import PrintJob, SessionGen, test_db_connection
 from cms.db.filecacher import FileCacher
 from cms.io import Executor, QueueItem, TriggeredService, rpc_method
 from cms.server.jinja2_toolbox import GLOBAL_ENVIRONMENT
 from cmscommon.commands import pretty_print_cmdline
 from cmscommon.datetime import get_timezone, utc
 from cmscommon.tex import escape_tex_normal, escape_tex_tt
-
 
 logger = logging.getLogger(__name__)
 
@@ -256,3 +262,16 @@ class PrintingService(TriggeredService):
 
         """
         self.enqueue(PrintingOperation(printjob_id))
+
+
+def main():
+    """Parse arguments and launch service."""
+    try:
+        test_db_connection()
+        success = default_argument_parser(
+            "Printing job handler for CMS.", PrintingService
+        ).run()
+        sys.exit(0 if success is True else 1)
+    except ConfigError as error:
+        logger.critical(error)
+        sys.exit(1)

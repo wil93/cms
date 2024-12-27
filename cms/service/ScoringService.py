@@ -25,14 +25,28 @@
 
 """
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
 import logging
+import sys
 
-from cms import ServiceCoord, config
-from cms.db import SessionGen, Submission, Dataset, get_submission_results
+from cms import ConfigError, ServiceCoord, config, default_argument_parser
+from cms.db import (
+    Dataset,
+    SessionGen,
+    Submission,
+    get_submission_results,
+    test_db_connection,
+)
 from cms.io import Executor, TriggeredService, rpc_method
+from cms.service.ScoringService import ScoringService
 from cmscommon.datetime import make_datetime
-from .scoringoperations import ScoringOperation, get_operations
 
+from .scoringoperations import ScoringOperation, get_operations
 
 logger = logging.getLogger(__name__)
 
@@ -225,3 +239,16 @@ class ScoringService(TriggeredService):
             self.enqueue(item, timestamp=timestamp)
 
         logger.info("Invalidated %d submission results.", len(temp_queue))
+
+
+def main():
+    """Parse arguments and launch service."""
+    try:
+        test_db_connection()
+        success = default_argument_parser(
+            "Score computer for CMS.", ScoringService
+        ).run()
+        sys.exit(0 if success is True else 1)
+    except ConfigError as error:
+        logger.critical(error)
+        sys.exit(1)

@@ -23,15 +23,22 @@
 
 """
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
 import logging
 import os
+import sys
 import time
 from collections import deque
 
-from cms import config, mkdir
+from cms import ConfigError, config, default_argument_parser, mkdir
 from cms.io import Service, rpc_method
-from cms.log import root_logger, shell_handler, FileHandler, DetailedFormatter
-
+from cms.log import DetailedFormatter, FileHandler, root_logger, shell_handler
+from cms.service.LogService import LogService
 
 logger = logging.getLogger(__name__)
 
@@ -120,3 +127,13 @@ class LogService(Service):
     @rpc_method
     def last_messages(self):
         return list(self._last_messages)
+
+
+def main():
+    """Parse arguments and launch service."""
+    try:
+        success = default_argument_parser("Logger for CMS.", LogService).run()
+        sys.exit(0 if success is True else 1)
+    except ConfigError as error:
+        logger.critical(error)
+        sys.exit(1)

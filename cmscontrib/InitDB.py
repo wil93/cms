@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Contest Management System - http://cms-dev.github.io/
-# Copyright © 2013 Luca Wehrstedt <luca.wehrstedt@gmail.com>
+# Copyright © 2013-2014 Luca Wehrstedt <luca.wehrstedt@gmail.com>
 # Copyright © 2016 Stefano Maggiolo <s.maggiolo@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -17,37 +17,41 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Script to initialize the database schema used by CMS.
+
+It will not check the current status of the DB and we therefore suggest
+to run it only on an blank DB (we don't guarantee this script to be
+idempotent).
+
+"""
+
 # We enable monkey patching to make many libraries gevent-friendly
 # (for instance, urllib3, used by requests)
 import gevent.monkey
+
 gevent.monkey.patch_all()  # noqa
 
+import argparse
 import logging
 import sys
 
-from cms import ConfigError, default_argument_parser
-from cms.db import ask_for_contest, test_db_connection
-from cms.service.EvaluationService import EvaluationService
+from cms import ConfigError
+from cms.db import test_db_connection, init_db
 
 
 logger = logging.getLogger(__name__)
 
 
 def main():
-    """Parse arguments and launch service.
-
-    """
-    test_db_connection()
-    success = default_argument_parser(
-        "Submission's compiler and evaluator for CMS.",
-        EvaluationService,
-        ask_contest=ask_for_contest).run()
-    return 0 if success is True else 1
-
-
-if __name__ == "__main__":
+    """Parse arguments and perform operation."""
     try:
-        sys.exit(main())
+        test_db_connection()
+
+        parser = argparse.ArgumentParser(description=__doc__)
+        args = parser.parse_args()
+
+        success = init_db()
+        sys.exit(0 if success is True else 1)
     except ConfigError as error:
         logger.critical(error)
         sys.exit(1)

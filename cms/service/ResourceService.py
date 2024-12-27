@@ -25,6 +25,13 @@ that saves the resources usage in that machine.
 
 """
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
+import argparse
 import logging
 import os
 import re
@@ -36,9 +43,16 @@ from shlex import quote as shell_quote
 import psutil
 from gevent import subprocess
 
-from cms import config, get_safe_shard, ServiceCoord
+from cms import (
+    ConfigError,
+    ServiceCoord,
+    config,
+    contest_id_from_args,
+    get_safe_shard,
+    utf8_decoder,
+)
+from cms.db import ask_for_contest, test_db_connection
 from cms.io import Service, rpc_method
-
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +65,8 @@ MAX_RESOURCE_SECONDS = 11 * 60  # MAX time window for remote resource query
 
 PSUTIL_PROC_ATTRS = \
     ["cmdline", "cpu_times", "create_time", "memory_info", "num_threads"]
+
+RESTART_DISABLED = "RESTART_DISABLED"
 
 
 class ProcessMatcher:
@@ -473,3 +489,50 @@ class ResourceService(Service):
                     service.name, service.shard, self._will_restart[service])
 
         return self._will_restart[service]
+
+
+def main():
+    """Parses arguments and launch service."""
+    parser = argparse.ArgumentParser(
+        description="Resource monitor and service starter for CMS."
+    )
+    parser.add_argument(
+        "-a",
+        "--autorestart",
+        action="store",
+        nargs="?",
+        type=utf8_decoder,
+        const=None,
+        metavar="CONTEST_ID",
+        dest="contest_id",
+        default=RESTART_DISABLED,
+        help="restart automatically services on its machine; "
+        "a contest id or 'ALL' can be specified",
+    )
+    parser.add_argument("shard", action="store", type=int, nargs="?")
+    args = parser.parse_args()
+
+    try:
+        args.shard = get_safe_shard("ResourceService", args.shard)
+    except ValueError:
+        raise ConfigError(
+            "Couldn't autodetect shard number and "
+            "no shard specified for service %s, "
+            "quitting." % ("ResourceService",)
+        )
+
+    try:
+        test_db_connection()
+
+        autorestart = args.contest_id != RESTART_DISABLED
+        contest_id = None
+        if autorestart:
+            contest_id = contest_id_from_args(args.contest_id, ask_for_contest)
+        success = ResourceService(
+            args.shard, contest_id=contest_id, autorestart=autorestart
+        ).run()
+
+        sys.exit(0 if success is True else 1)
+    except ConfigError as error:
+        logger.critical(error)
+        sys.exit(1)

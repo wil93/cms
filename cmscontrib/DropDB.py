@@ -29,6 +29,7 @@ by CMS will be deleted as well.
 # We enable monkey patching to make many libraries gevent-friendly
 # (for instance, urllib3, used by requests)
 import gevent.monkey
+
 gevent.monkey.patch_all()  # noqa
 
 import argparse
@@ -43,34 +44,32 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    """Parse arguments and perform operation.
-
-    """
-    test_db_connection()
-
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("-y", "--yes", action="store_true",
-                        help="do not require confirmation")
-    args = parser.parse_args()
-
-    if not args.yes:
-        ans = input("Are you sure you want to DROP the database? [y/N] ")\
-            .strip().lower()
-        if ans in ["y", "yes"]:
-            args.yes = True
-
-    if args.yes:
-        print("Dropping database.")
-        success = drop_db()
-    else:
-        print("Not dropping database.")
-        success = True
-    return 0 if success is True else 1
-
-
-if __name__ == "__main__":
+    """Parse arguments and perform operation."""
     try:
-        sys.exit(main())
+        test_db_connection()
+
+        parser = argparse.ArgumentParser(description=__doc__)
+        parser.add_argument(
+            "-y", "--yes", action="store_true", help="do not require confirmation"
+        )
+        args = parser.parse_args()
+
+        if not args.yes:
+            ans = (
+                input("Are you sure you want to DROP the database? [y/N] ")
+                .strip()
+                .lower()
+            )
+            if ans in ["y", "yes"]:
+                args.yes = True
+
+        if args.yes:
+            print("Dropping database.")
+            success = drop_db()
+        else:
+            print("Not dropping database.")
+            success = True
+        sys.exit(0 if success is True else 1)
     except ConfigError as error:
         logger.critical(error)
         sys.exit(1)

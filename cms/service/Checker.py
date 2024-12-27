@@ -22,12 +22,18 @@
 
 """
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
 import logging
+import sys
 import time
 
-from cms import config, ServiceCoord
+from cms import ConfigError, ServiceCoord, config, default_argument_parser
 from cms.io import Service
-
 
 logger = logging.getLogger(__name__)
 
@@ -90,3 +96,15 @@ class Checker(Service):
                 del self.waiting_for[service]
         except KeyError:
             logger.error("Echo answer mis-shapen.")
+
+
+def main():
+    """Parse arguments and launch service."""
+    try:
+        success = default_argument_parser(
+            "Checker for aliveness of other CMS service.", Checker
+        ).run()
+        sys.exit(0 if success is True else 1)
+    except ConfigError as error:
+        logger.critical(error)
+        sys.exit(1)

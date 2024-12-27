@@ -30,7 +30,14 @@ the current ranking.
 
 """
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
 import logging
+import sys
 from collections import defaultdict
 from datetime import timedelta
 from functools import wraps
@@ -39,20 +46,39 @@ import gevent.lock
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
-from cms import ServiceCoord, get_service_shards
-from cmscommon.datetime import make_timestamp
-from cms.db import SessionGen, Digest, Dataset, Evaluation, Submission, \
-    SubmissionResult, Testcase, UserTest, UserTestResult, get_submissions, \
-    get_submission_results, get_datasets_to_judge
+from cms import ConfigError, ServiceCoord, default_argument_parser, get_service_shards
+from cms.db import (
+    Dataset,
+    Digest,
+    Evaluation,
+    SessionGen,
+    Submission,
+    SubmissionResult,
+    Testcase,
+    UserTest,
+    UserTestResult,
+    ask_for_contest,
+    get_datasets_to_judge,
+    get_submission_results,
+    get_submissions,
+    test_db_connection,
+)
 from cms.grading.Job import JobGroup
 from cms.io import Executor, TriggeredService, rpc_method
-from .esoperations import ESOperation, get_relevant_operations, \
-    get_submissions_operations, get_user_tests_operations, \
-    submission_get_operations, submission_to_evaluate, \
-    user_test_get_operations
+from cms.service.EvaluationService import EvaluationService
+from cmscommon.datetime import make_timestamp
+
+from .esoperations import (
+    ESOperation,
+    get_relevant_operations,
+    get_submissions_operations,
+    get_user_tests_operations,
+    submission_get_operations,
+    submission_to_evaluate,
+    user_test_get_operations,
+)
 from .flushingdict import FlushingDict
 from .workerpool import WorkerPool
-
 
 logger = logging.getLogger(__name__)
 
@@ -1039,3 +1065,18 @@ class EvaluationService(TriggeredService):
         return sorted(
             self.get_executor().queue_status_cumulative.values(),
             key=lambda x: (x["priority"], x["timestamp"]))
+
+
+def main():
+    """Parse arguments and launch service."""
+    try:
+        test_db_connection()
+        success = default_argument_parser(
+            "Submission's compiler and evaluator for CMS.",
+            EvaluationService,
+            ask_contest=ask_for_contest,
+        ).run()
+        sys.exit(0 if success is True else 1)
+    except ConfigError as error:
+        logger.critical(error)
+        sys.exit(1)

@@ -25,20 +25,40 @@
 
 """
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
 import logging
+import sys
 
-from sqlalchemy import func, not_, literal_column
+from sqlalchemy import func, literal_column, not_
 
-from cms import config, ServiceCoord, get_service_shards
-from cms.db import SessionGen, Dataset, Submission, SubmissionResult, Task
+from cms import (
+    ConfigError,
+    ServiceCoord,
+    config,
+    default_argument_parser,
+    get_service_shards,
+)
+from cms.db import (
+    Dataset,
+    SessionGen,
+    Submission,
+    SubmissionResult,
+    Task,
+    test_db_connection,
+)
 from cms.io import WebService, rpc_method
 from cms.service import EvaluationService
 from cmscommon.binary import hex_to_bin
+
 from .authentication import AWSAuthMiddleware
 from .handlers import HANDLERS
 from .jinja2_toolbox import AWS_ENVIRONMENT
 from .rpc_authorization import rpc_authorization_checker
-
 
 logger = logging.getLogger(__name__)
 
@@ -190,3 +210,16 @@ class AdminWebServer(WebService):
         stats['compiling'] += 2 * stats['total'] - sum(stats.values())
 
         return stats
+
+
+def main():
+    """Parse arguments and launch service."""
+    try:
+        test_db_connection()
+        success = default_argument_parser(
+            "Admins' web server for CMS.", AdminWebServer
+        ).run()
+        sys.exit(0 if success is True else 1)
+    except ConfigError as error:
+        logger.critical(error)
+        sys.exit(1)

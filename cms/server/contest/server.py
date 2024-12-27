@@ -37,19 +37,27 @@
 
 """
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
 import logging
+import sys
 
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 
-from cms import ConfigError, ServiceCoord, config
+from cms import ConfigError, ServiceCoord, config, default_argument_parser
+from cms.db import ask_for_contest, test_db_connection
 from cms.io import WebService
 from cms.locale import get_translations
 from cms.server.contest.jinja2_toolbox import CWS_ENVIRONMENT
 from cmscommon.binary import hex_to_bin
+
 from .handlers import HANDLERS
 from .handlers.base import ContestListHandler
 from .handlers.main import MainHandler
-
 
 logger = logging.getLogger(__name__)
 
@@ -145,3 +153,18 @@ class ContestWebServer(WebService):
         if username not in self.notifications:
             self.notifications[username] = []
         self.notifications[username].append((timestamp, subject, text, level))
+
+
+def main():
+    """Parse arguments and launch service."""
+    try:
+        test_db_connection()
+        success = default_argument_parser(
+            "Contestants' web server for CMS.",
+            ContestWebServer,
+            ask_contest=ask_for_contest,
+        ).run()
+        sys.exit(0 if success is True else 1)
+    except ConfigError as error:
+        logger.critical(error)
+        sys.exit(1)

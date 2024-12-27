@@ -16,6 +16,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
 import argparse
 import functools
 import json
@@ -25,17 +31,29 @@ import pprint
 import re
 import shutil
 import signal
+import sys
 import time
 from datetime import datetime
 
 import gevent
 from gevent.pywsgi import WSGIServer
-from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized, \
-    Forbidden, NotFound, NotAcceptable, UnsupportedMediaType
+from werkzeug.exceptions import (
+    BadRequest,
+    Forbidden,
+    HTTPException,
+    NotAcceptable,
+    NotFound,
+    Unauthorized,
+    UnsupportedMediaType,
+)
 from werkzeug.routing import Map, Rule
 from werkzeug.wrappers import Request, Response
-from werkzeug.wsgi import responder, wrap_file, SharedDataMiddleware, \
-    DispatcherMiddleware
+from werkzeug.wsgi import (
+    DispatcherMiddleware,
+    SharedDataMiddleware,
+    responder,
+    wrap_file,
+)
 
 # Needed for initialization. Do not remove.
 import cmsranking.Logger  # noqa
@@ -50,7 +68,6 @@ from cmsranking.Submission import Submission
 from cmsranking.Task import Task
 from cmsranking.Team import Team
 from cmsranking.User import User
-
 
 logger = logging.getLogger(__name__)
 
@@ -542,7 +559,7 @@ def main():
             shutil.rmtree(config.lib_dir)
         else:
             print("Not removing directory %s." % config.lib_dir)
-        return 0
+        sys.exit(0)
 
     stores = dict()
 
@@ -633,4 +650,4 @@ def main():
         pass
     finally:
         gevent.joinall(list(gevent.spawn(s.stop) for s in servers))
-    return 0
+    sys.exit(0)

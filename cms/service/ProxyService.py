@@ -28,9 +28,16 @@
 
 """
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
 import json
 import logging
 import string
+import sys
 from urllib.parse import urljoin, urlsplit
 
 import gevent
@@ -39,12 +46,19 @@ import requests
 import requests.exceptions
 from sqlalchemy import not_
 
-from cms import config
-from cms.db import SessionGen, Contest, Participation, Task, Submission, \
-    get_submissions
+from cms import ConfigError, config, default_argument_parser
+from cms.db import (
+    Contest,
+    Participation,
+    SessionGen,
+    Submission,
+    Task,
+    ask_for_contest,
+    get_submissions,
+    test_db_connection,
+)
 from cms.io import Executor, QueueItem, TriggeredService, rpc_method
 from cmscommon.datetime import make_timestamp
-
 
 logger = logging.getLogger(__name__)
 
@@ -587,3 +601,16 @@ class ProxyService(TriggeredService):
                         submission.get_result().scored():
                     for operation in self.operations_for_score(submission):
                         self.enqueue(operation)
+
+
+def main():
+    """Parse arguments and launch service."""
+    try:
+        test_db_connection()
+        success = default_argument_parser(
+            "Ranking relayer for CMS.", ProxyService, ask_contest=ask_for_contest
+        ).run()
+        sys.exit(0 if success is True else 1)
+    except ConfigError as error:
+        logger.critical(error)
+        sys.exit(1)

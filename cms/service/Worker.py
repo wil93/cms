@@ -25,18 +25,25 @@
 
 """
 
+# We enable monkey patching to make many libraries gevent-friendly
+# (for instance, urllib3, used by requests)
+import gevent.monkey
+
+gevent.monkey.patch_all()  # noqa
+
 import logging
+import sys
 import time
 
 import gevent.lock
 
-from cms.db import SessionGen, Contest, enumerate_files
+from cms import ConfigError, default_argument_parser
+from cms.db import Contest, SessionGen, enumerate_files, test_db_connection
 from cms.db.filecacher import FileCacher, TombstoneError
 from cms.grading import JobException
 from cms.grading.Job import CompilationJob, EvaluationJob, JobGroup
 from cms.grading.tasktypes import get_task_type
 from cms.io import Service, rpc_method
-
 
 logger = logging.getLogger(__name__)
 
@@ -196,3 +203,16 @@ class Worker(Service):
                     "busyness is %.1lf%%; avg free time is %.3lf "
                     "avg busy time is %.3lf ",
                     busy_time, free_time, ratio, avg_free_time, avg_busy_time)
+
+
+def main():
+    """Parse arguments and launch service."""
+    try:
+        test_db_connection()
+        success = default_argument_parser(
+            "Safe command executer for CMS.", Worker
+        ).run()
+        sys.exit(0 if success is True else 1)
+    except ConfigError as error:
+        logger.critical(error)
+        sys.exit(1)
