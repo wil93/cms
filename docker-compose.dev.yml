@@ -6,12 +6,17 @@ services:
     volumes:
       - "./.dev/postgres-data:/var/lib/postgresql/data"
 
+  devredis:
+    image: redis:7
+
   devcms:
     build: .
     depends_on:
       - "devdb"
+      - "devredis"
     environment:
       CMS_CONFIG: /usr/local/etc/cms-devdb.conf
+      REDIS_URL: redis://devredis:6379/0
     volumes:
       - "./.dev/home:/home/cmsuser"
       - ".:/home/cmsuser/cms"

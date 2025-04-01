@@ -4,16 +4,21 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
 
+  testredis:
+    image: redis:7
+
   testcms:
     build: .
     depends_on:
       - "testdb"
+      - "testredis"
     environment:
       CMS_CONFIG: /usr/local/etc/cms-testdb.conf
       # Could be removed in the future, see:
       # - https://github.com/pytest-dev/pytest/issues/7443
       # - https://github.com/actions/runner/issues/241
       PYTEST_ADDOPTS: --color=yes
+      REDIS_URL: redis://testredis:6379/0
     volumes:
       - "./codecov:/home/cmsuser/cms/codecov"
     privileged: true
