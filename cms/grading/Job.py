@@ -57,8 +57,8 @@ def _is_contest_multithreaded(contest):
     return any(get_language(l).requires_multithreading
                for l in contest.languages)
 
-
-class Job:
+# TODO: We could rename CMS's concept of job so to avoid confusion with RQ's job
+class BaseJob:
     """Base class for all jobs.
 
     Input data (usually filled by ES): task_type,
@@ -232,7 +232,7 @@ class Job:
         return job
 
 
-class CompilationJob(Job):
+class CompilationJob(BaseJob):
     """Job representing a compilation.
 
     Can represent either the compilation of a user test, or of a
@@ -261,15 +261,28 @@ class CompilationJob(Job):
 
         """
 
-        Job.__init__(self, operation, task_type, task_type_parameters,
-                     language, multithreaded_sandbox,
-                     shard, keep_sandbox, sandboxes, info, success, text,
-                     files, managers, executables)
+        BaseJob.__init__(
+            self,
+            operation,
+            task_type,
+            task_type_parameters,
+            language,
+            multithreaded_sandbox,
+            shard,
+            keep_sandbox,
+            sandboxes,
+            info,
+            success,
+            text,
+            files,
+            managers,
+            executables,
+        )
         self.compilation_success = compilation_success
         self.plus = plus
 
     def export_to_dict(self):
-        res = Job.export_to_dict(self)
+        res = BaseJob.export_to_dict(self)
         res.update({
             'type': 'compilation',
             'compilation_success': self.compilation_success,
@@ -278,7 +291,9 @@ class CompilationJob(Job):
         return res
 
     @staticmethod
-    def from_submission(operation, submission, dataset):
+    def from_submission(
+        operation: ESOperation, submission: Submission, dataset: Dataset
+    ):
         """Create a CompilationJob from a submission.
 
         operation (ESOperation): a COMPILATION operation.
@@ -426,7 +441,7 @@ class CompilationJob(Job):
             ur.executables.set(u_executable)
 
 
-class EvaluationJob(Job):
+class EvaluationJob(BaseJob):
     """Job representing an evaluation on a testcase.
 
     Can represent either the evaluation of a user test, or of a
@@ -471,10 +486,23 @@ class EvaluationJob(Job):
             tests).
 
         """
-        Job.__init__(self, operation, task_type, task_type_parameters,
-                     language, multithreaded_sandbox,
-                     shard, keep_sandbox, sandboxes, info, success, text,
-                     files, managers, executables)
+        BaseJob.__init__(
+            self,
+            operation,
+            task_type,
+            task_type_parameters,
+            language,
+            multithreaded_sandbox,
+            shard,
+            keep_sandbox,
+            sandboxes,
+            info,
+            success,
+            text,
+            files,
+            managers,
+            executables,
+        )
         self.input = input
         self.output = output
         self.time_limit = time_limit
@@ -486,7 +514,7 @@ class EvaluationJob(Job):
         self.get_output = get_output
 
     def export_to_dict(self):
-        res = Job.export_to_dict(self)
+        res = BaseJob.export_to_dict(self)
         res.update({
             'type': 'evaluation',
             'input': self.input,
@@ -667,7 +695,7 @@ class JobGroup:
     def import_from_dict(cls, data):
         jobs = []
         for job in data["jobs"]:
-            jobs.append(Job.import_from_dict_with_type(job))
+            jobs.append(BaseJob.import_from_dict_with_type(job))
         return cls(jobs)
 
     @staticmethod
@@ -682,5 +710,5 @@ class JobGroup:
                 object_ = UserTest.get_from_id(operation.object_id, session)
             dataset = Dataset.get_from_id(operation.dataset_id, session)
 
-            jobs.append(Job.from_operation(operation, object_, dataset))
+            jobs.append(BaseJob.from_operation(operation, object_, dataset))
         return JobGroup(jobs)

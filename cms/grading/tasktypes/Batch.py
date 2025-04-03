@@ -24,6 +24,8 @@ import logging
 import os
 
 from cms.db import Executable
+from cms.db.filecacher import FileCacher
+from cms.grading.Job import CompilationJob, EvaluationJob
 from cms.grading.ParameterTypes import ParameterTypeCollection, \
     ParameterTypeChoice, ParameterTypeString
 from cms.grading.languagemanager import LANGUAGES, get_language
@@ -185,7 +187,7 @@ class Batch(TaskType):
                                 for codename in codenames))
         return name + language.executable_extension
 
-    def compile(self, job, file_cacher):
+    def compile(self, job: CompilationJob, file_cacher: FileCacher):
         """See TaskType.compile."""
         language = get_language(job.language)
         source_ext = language.source_extension
@@ -250,7 +252,7 @@ class Batch(TaskType):
         # Cleanup.
         delete_sandbox(sandbox, job.success, job.keep_sandbox)
 
-    def evaluate(self, job, file_cacher):
+    def evaluate(self, job: EvaluationJob, file_cacher: FileCacher):
         """See TaskType.evaluate."""
         if not check_executables_number(job, 1):
             return

@@ -54,7 +54,7 @@ def get_task_type_class(name):
     return TASK_TYPES[name]
 
 
-def get_task_type(name, parameters):
+def get_task_type(name, parameters) -> TaskType:
     """Construct the TaskType specified by parameters.
 
     Load the TaskType class named "name" and instantiate it with the
