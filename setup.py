@@ -171,6 +171,9 @@ setup(
             "cmsMake=cmstaskenv.cmsMake:main",
             "cmsPrometheusExporter=cmscontrib.PrometheusExporter:main",
             "cmsTelegramBot=cmscontrib.TelegramBot:main",
+            "cmsEvaluationService2=cms.service2.evaluation:main",
+            "cmsScoringService2=cms.service2.scoring:main",
+            "cmsWorker2=cms.service2.worker:main",
         ],
         "cms.grading.tasktypes": [
             "Batch=cms.grading.tasktypes.Batch:Batch",

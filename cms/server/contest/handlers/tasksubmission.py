@@ -54,6 +54,8 @@ from cms.server.contest.submission import get_submission_count, \
     UnacceptableSubmission, accept_submission
 from cms.server.contest.tokening import \
     UnacceptableToken, TokenAlreadyPlayed, accept_token, tokens_available
+from cms.service2.evaluation import process_new_submission
+from cms.service2.queues import new_submission_queue
 from cmscommon.crypto import encrypt_number
 from cmscommon.mimetypes import get_type_for_file_name
 from .contest import ContestHandler, FileHandler
@@ -97,8 +99,7 @@ class SubmitHandler(ContestHandler):
             logger.info("Sent error: `%s' - `%s'", e.subject, e.formatted_text)
             self.notify_error(e.subject, e.text, e.text_params)
         else:
-            self.service.evaluation_service.new_submission(
-                submission_id=submission.id)
+            new_submission_queue.enqueue(process_new_submission, submission.id)
             self.notify_success(N_("Submission received"),
                                 N_("Your submission has been received "
                                    "and is currently being evaluated."))
