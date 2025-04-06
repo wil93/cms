@@ -6,6 +6,9 @@ services:
     volumes:
       - "./.dev/postgres-data:/var/lib/postgresql/data"
 
+  devrabbitmq:
+    image: rabbitmq:4.0
+
   devredis:
     image: redis:7
 
@@ -13,9 +16,11 @@ services:
     build: .
     depends_on:
       - "devdb"
+      - "devrabbitmq"
       - "devredis"
     environment:
       CMS_CONFIG: /usr/local/etc/cms-devdb.conf
+      RABBITMQ_URL: pyamqp://guest@devrabbitmq//
       REDIS_URL: redis://devredis:6379/0
     volumes:
       - "./.dev/home:/home/cmsuser"
