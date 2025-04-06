@@ -22,6 +22,7 @@
 import io
 import logging
 import os
+import random
 import resource
 import select
 import stat
@@ -32,7 +33,6 @@ from functools import wraps, partial
 
 import gevent
 from gevent import subprocess
-from rq import get_current_job
 
 from cms import config, rmtree
 from cmscommon.commands import pretty_print_cmdline
@@ -864,11 +864,7 @@ class IsolateSandbox(SandboxBase):
         # range [0, 10) for other uses (command-line scripts like cmsMake or
         # direct console users of isolate). Inside each range ids are assigned
         # sequentially, with a wrap-around.
-        job = get_current_job()
-        assert job is not None
-        worker_name = job.worker_name
-        assert worker_name is not None
-        shard = int(worker_name.split(":")[-1])
+        shard = random.randint(0, 100)  # TODO: do this better
 
         box_id = ((shard + 1) * 10 + (IsolateSandbox.next_id % 10)) % 1000
         IsolateSandbox.next_id += 1
