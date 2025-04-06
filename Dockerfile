@@ -25,7 +25,11 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     shared-mime-info \
     sudo \
     wait-for-it \
+    wget \
     zip
+
+RUN wget https://mj.ucw.cz/x/dcdbfca20d63350a5f261a82634c8da0/isolate_2.0-1_arm64.deb
+RUN sudo dpkg -i isolate_2.0-1_arm64.deb
 
 # Create cmsuser user with sudo privileges
 RUN useradd -ms /bin/bash cmsuser && \
@@ -44,6 +48,9 @@ RUN sudo pip3 install --break-system-packages -r requirements.txt
 RUN sudo pip3 install --break-system-packages -r dev-requirements.txt
 
 COPY --chown=cmsuser:cmsuser . /home/cmsuser/cms
+
+# Overwrite default isolate configuration
+RUN sudo cp config/isolate.conf.sample /etc/isolate
 
 RUN sudo python3 setup.py install
 

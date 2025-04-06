@@ -6,7 +6,7 @@
 # Copyright © 2010-2012 Matteo Boscariol <boscarim@hotmail.com>
 # Copyright © 2013 Luca Wehrstedt <luca.wehrstedt@gmail.com>
 # Copyright © 2014 Artem Iglikov <artem.iglikov@gmail.com>
-# Copyright © 2015 William Di Luigi <williamdiluigi@gmail.com>
+# Copyright © 2015-2025 William Di Luigi <williamdiluigi@gmail.com>
 # Copyright © 2016 Myungwoo Chun <mc.tamaki@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ import os
 import pwd
 import shutil
 import subprocess
-import sys
 from glob import glob
 
 
@@ -51,8 +50,8 @@ AS_ROOT = False
 # samples) when installing.
 NO_CONF = False
 # The user and group that CMS will be run as: will be created and will
-# receive the correct permissions to access isolate, the configuration
-# file and the system directories.
+# receive the correct permissions to access the configuration file and the
+# system directories.
 CMSUSER = "cmsuser"
 
 
@@ -188,57 +187,6 @@ def get_real_user():
     return name
 
 
-def build_isolate():
-    """This function compiles the isolate sandbox.
-
-    """
-    assert_not_root()
-
-    print("===== Compiling isolate")
-    # We make only the executable isolate, otherwise the tool a2x
-    # is needed and we have to add more compilation dependencies.
-    subprocess.check_call(["make", "-C", "isolate", "isolate"])
-
-
-def install_isolate():
-    """This function installs the isolate sandbox.
-
-    """
-    assert_root()
-    root = pwd.getpwnam("root")
-    try:
-        cmsuser_grp = grp.getgrgid(pwd.getpwnam(CMSUSER).pw_gid)
-    except:
-        print("[Error] The user %s doesn't exist yet" % CMSUSER)
-        print("[Error] You need to run the install command at least once")
-        exit(1)
-
-    # Check if build_isolate() has been called
-    if not os.path.exists(os.path.join("isolate", "isolate")):
-        print("[Error] You must run the build_isolate command first")
-        exit(1)
-
-    print("===== Copying isolate to /usr/local/bin/")
-    makedir(os.path.join(USR_ROOT, "bin"), root, 0o755)
-    copyfile(os.path.join(".", "isolate", "isolate"),
-             os.path.join(USR_ROOT, "bin", "isolate"),
-             root, 0o4750, group=cmsuser_grp)
-
-    print("===== Copying isolate config to /usr/local/etc/")
-    makedir(os.path.join(USR_ROOT, "etc"), root, 0o755)
-    copyfile(os.path.join(".", "config", "isolate.conf.sample"),
-             os.path.join(USR_ROOT, "etc", "isolate"),
-             root, 0o640, group=cmsuser_grp)
-
-
-def build():
-    """This function builds all the prerequisites by calling:
-    - build_isolate
-
-    """
-    build_isolate()
-
-
 def install_conf():
     """Install configuration files"""
     assert_root()
@@ -269,7 +217,6 @@ def install_conf():
 def install():
     """This function prepares all that's needed to run CMS:
     - creation of cmsuser user
-    - compilation and installation of isolate
     - installation of configuration files
     and so on.
 
@@ -290,16 +237,6 @@ def install():
     cmsuser_gr = grp.getgrgid(cmsuser_pw.pw_gid)
 
     root_pw = pwd.getpwnam("root")
-
-    if real_user == "root":
-        # Run build() command as root
-        build()
-    else:
-        # Run build() command as not root
-        subprocess.check_call(["sudo", "-E", "-u", real_user,
-                               sys.executable, sys.argv[0], "build"])
-
-    install_isolate()
 
     # We set permissions for each manually installed files, so we want
     # max liberty to change them.
@@ -365,15 +302,11 @@ def uninstall():
     """This function deletes all that was installed by the install()
     function:
     - deletion of the cmsuser user
-    - deletion of isolate
     - deletion of configuration files
     and so on.
 
     """
     assert_root()
-
-    print("===== Deleting isolate from /usr/local/bin/")
-    try_delete(os.path.join(USR_ROOT, "bin", "isolate"))
 
     print("===== Deleting configuration to /usr/local/etc/")
     if ask("Type Y if you really want to remove configuration files: "):
@@ -444,15 +377,6 @@ if __name__ == '__main__':
 
     subparsers = parser.add_subparsers(metavar="command",
                                        help="Subcommand to run")
-    subparsers.add_parser("build_isolate",
-                          help="Build \"isolate\" sandbox") \
-        .set_defaults(func=build_isolate)
-    subparsers.add_parser("build",
-                          help="Build everything") \
-        .set_defaults(func=build)
-    subparsers.add_parser("install_isolate",
-                          help="Install \"isolate\" sandbox (requires root)") \
-        .set_defaults(func=install_isolate)
     subparsers.add_parser("install",
                           help="Install everything (requires root)") \
         .set_defaults(func=install)

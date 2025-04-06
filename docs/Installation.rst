@@ -53,6 +53,10 @@ On Ubuntu 24.04, one will need to run the following script to satisfy all depend
 
 .. sourcecode:: bash
 
+    # Install isolate from the official repository
+    curl https://www.ucw.cz/isolate/debian/signing-key.asc | sudo tee /etc/apt/keyrings/isolate.asc
+    echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/isolate.asc] http://www.ucw.cz/isolate/debian/ noble-isolate main" | sudo tee /etc/apt/sources.list.d/isolate.list
+
     # Feel free to change OpenJDK packages with your preferred JDK.
     sudo apt-get install build-essential openjdk-11-jdk-headless fp-compiler \
         postgresql postgresql-client python3.12 cppreference-doc-en-html \
